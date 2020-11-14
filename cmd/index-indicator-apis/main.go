@@ -1,12 +1,7 @@
 package main
 
-import (
-	"fmt"
-
-	"index-indicator-apis/config"
-)
+import "index-indicator-apis/fgi"
 
 func main() {
-	fmt.Println(config.Config.FgiAPIKey)
-	fmt.Println(config.Config.FgiAPIHost)
+	fgi.DoRequest()
 }

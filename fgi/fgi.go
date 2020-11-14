@@ -1,25 +1,27 @@
-// package fgi
+package fgi
 
-// import (
-// 	"fmt"
-// 	"io/ioutil"
-// 	"net/http"
-// )
+import (
+	"fmt"
+	"io/ioutil"
+	"net/http"
 
-// const baseUrl := "https://fear-and-greed-index.p.rapidapi.com/v1/fgi"
-// func main() {
+	"index-indicator-apis/config"
+)
 
-// 	req, _ := http.NewRequest("GET", url, nil)
+func DoRequest() {
 
-// 	req.Header.Add("x-rapidapi-host", "")
-// 	req.Header.Add("x-rapidapi-key", "")
+	url := "https://fear-and-greed-index.p.rapidapi.com/v1/fgi"
 
-// 	res, _ := http.DefaultClient.Do(req)
+	req, _ := http.NewRequest("GET", url, nil)
 
-// 	defer res.Body.Close()
-// 	body, _ := ioutil.ReadAll(res.Body)
+	req.Header.Add("x-rapidapi-host", config.Config.FgiAPIHost)
+	req.Header.Add("x-rapidapi-key", config.Config.FgiAPIKey)
 
-// 	fmt.Println(res)
-// 	fmt.Println(string(body))
+	res, _ := http.DefaultClient.Do(req)
 
-// }
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+
+	fmt.Println(string(body))
+
+}
