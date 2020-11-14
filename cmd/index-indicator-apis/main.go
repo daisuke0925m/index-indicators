@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"index-indicator-apis/config"
+)
 
 func main() {
-	fmt.Println("hello world")
+	fmt.Println(config.Config.FgiAPIKey)
+	fmt.Println(config.Config.FgiAPIHost)
 }
