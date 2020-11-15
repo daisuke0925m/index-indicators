@@ -19,7 +19,8 @@ func New(key, host string) *FgiClient {
 	return fgiClient
 }
 
-func (fgi *FgiClient) DoRequest() {
+// GetFgi api実行
+func (fgi *FgiClient) GetFgi() {
 
 	url := "https://fear-and-greed-index.p.rapidapi.com/v1/fgi"
 
@@ -28,7 +29,10 @@ func (fgi *FgiClient) DoRequest() {
 	req.Header.Add("x-rapidapi-host", fgi.host)
 	req.Header.Add("x-rapidapi-key", fgi.key)
 
-	res, _ := http.DefaultClient.Do(req)
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return
+	}
 
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
