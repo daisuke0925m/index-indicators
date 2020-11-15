@@ -8,21 +8,21 @@ import (
 	"net/http"
 )
 
-// FgiClient api情報格納
-type FgiClient struct {
+// APIClientFgi api情報格納
+type APIClientFgi struct {
 	key        string
 	host       string
 	httpClient *http.Client
 }
 
 // New struct生成
-func New(key, host string) *FgiClient {
-	fgiClient := &FgiClient{key, host, &http.Client{}}
+func New(key, host string) *APIClientFgi {
+	fgiClient := &APIClientFgi{key, host, &http.Client{}}
 	return fgiClient
 }
 
-// FgiStruct fgi格納
-type FgiStruct struct {
+// StructFgi fgi格納
+type StructFgi struct {
 	Fgi struct {
 		Now struct {
 			Value     int    `json:"value"`
@@ -48,7 +48,7 @@ type FgiStruct struct {
 }
 
 // GetFgi api実行
-func (fgi *FgiClient) GetFgi() {
+func (fgi *APIClientFgi) GetFgi() {
 
 	url := "https://fear-and-greed-index.p.rapidapi.com/v1/fgi"
 
@@ -65,7 +65,7 @@ func (fgi *FgiClient) GetFgi() {
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 
-	var fgiStruct FgiStruct
+	var fgiStruct StructFgi
 	if err := json.Unmarshal(body, &fgiStruct); err != nil {
 		log.Fatal(err)
 	}
