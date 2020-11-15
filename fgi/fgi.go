@@ -1,8 +1,10 @@
 package fgi
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -17,6 +19,32 @@ type FgiClient struct {
 func New(key, host string) *FgiClient {
 	fgiClient := &FgiClient{key, host, &http.Client{}}
 	return fgiClient
+}
+
+// FgiStruct fgi格納
+type FgiStruct struct {
+	Fgi struct {
+		Now struct {
+			Value     int    `json:"value"`
+			ValueText string `json:"valueText"`
+		} `json:"now"`
+		PreviousClose struct {
+			Value     int    `json:"value"`
+			ValueText string `json:"valueText"`
+		} `json:"previousClose"`
+		OneWeekAgo struct {
+			Value     int    `json:"value"`
+			ValueText string `json:"valueText"`
+		} `json:"oneWeekAgo"`
+		OneMonthAgo struct {
+			Value     int    `json:"value"`
+			ValueText string `json:"valueText"`
+		} `json:"oneMonthAgo"`
+		OneYearAgo struct {
+			Value     int    `json:"value"`
+			ValueText string `json:"valueText"`
+		} `json:"oneYearAgo"`
+	} `json:"fgi"`
 }
 
 // GetFgi api実行
@@ -37,6 +65,10 @@ func (fgi *FgiClient) GetFgi() {
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 
-	fmt.Println(string(body))
+	var fgiStruct FgiStruct
+	if err := json.Unmarshal(body, &fgiStruct); err != nil {
+		log.Fatal(err)
+	}
 
+	fmt.Printf("%v\n", fgiStruct.Fgi.Now.Value)
 }
