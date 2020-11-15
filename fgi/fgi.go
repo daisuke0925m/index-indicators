@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-
-	"index-indicator-apis/config"
 )
 
 // FgiClient api情報格納
@@ -27,8 +25,8 @@ func (fgi *FgiClient) DoRequest() {
 
 	req, _ := http.NewRequest("GET", url, nil)
 
-	req.Header.Add("x-rapidapi-host", config.Config.FgiAPIHost)
-	req.Header.Add("x-rapidapi-key", config.Config.FgiAPIKey)
+	req.Header.Add("x-rapidapi-host", fgi.host)
+	req.Header.Add("x-rapidapi-key", fgi.key)
 
 	res, _ := http.DefaultClient.Do(req)
 

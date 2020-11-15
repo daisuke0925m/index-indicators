@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	fgiClient := fgi.New(config.Config.FgiAPIKey, config.Config.FgiAPIKey)
+	fgiClient := fgi.New(config.Config.FgiAPIKey, config.Config.FgiAPIHost)
 	fgiClient.DoRequest()
 }
