@@ -62,7 +62,11 @@ func (fgi *APIClientFgi) GetFgi() (StructFgi, error) {
 	}
 
 	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return StructFgi{}, nil
+	}
 
 	var fgiStruct StructFgi
 	if err := json.Unmarshal(body, &fgiStruct); err != nil {
