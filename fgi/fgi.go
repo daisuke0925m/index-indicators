@@ -2,7 +2,6 @@ package fgi
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -48,7 +47,7 @@ type StructFgi struct {
 }
 
 // GetFgi api実行
-func (fgi *APIClientFgi) GetFgi() {
+func (fgi *APIClientFgi) GetFgi() (StructFgi, error) {
 
 	url := "https://fear-and-greed-index.p.rapidapi.com/v1/fgi"
 
@@ -59,7 +58,7 @@ func (fgi *APIClientFgi) GetFgi() {
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return
+		return StructFgi{}, nil
 	}
 
 	defer res.Body.Close()
@@ -70,5 +69,5 @@ func (fgi *APIClientFgi) GetFgi() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("%v\n", fgiStruct.Fgi.Now.Value)
+	return fgiStruct, nil
 }
