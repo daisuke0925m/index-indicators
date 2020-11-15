@@ -1,7 +1,11 @@
 package main
 
-import "index-indicator-apis/fgi"
+import (
+	"index-indicator-apis/config"
+	"index-indicator-apis/fgi"
+)
 
 func main() {
-	fgi.DoRequest()
+	fgiClient := fgi.New(config.Config.FgiAPIKey, config.Config.FgiAPIKey)
+	fgiClient.DoRequest()
 }
