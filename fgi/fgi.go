@@ -2,6 +2,7 @@ package fgi
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -72,6 +73,13 @@ func (fgi *APIClientFgi) GetFgi() (StructFgi, error) {
 	if err := json.Unmarshal(body, &fgiStruct); err != nil {
 		log.Fatal(err)
 	}
+
+	now := fgiStruct.Fgi.Now
+	pc := fgiStruct.Fgi.PreviousClose
+	ow := fgiStruct.Fgi.OneWeekAgo
+	om := fgiStruct.Fgi.OneMonthAgo
+	oy := fgiStruct.Fgi.OneYearAgo
+	fmt.Println(now, pc, ow, om, oy)
 
 	return fgiStruct, nil
 }
