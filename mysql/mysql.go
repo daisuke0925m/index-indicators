@@ -2,8 +2,10 @@ package mysql
 
 import (
 	"database/sql"
+	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jinzhu/gorm"
 )
 
 // DbConnection grobal
@@ -22,36 +24,27 @@ func checkIsDb() {
 	}
 	DbConnection.Close()
 
-	DbConnection, err = sql.Open("mysql", "admin:admin@tcp(127.0.0.1:3306)/index_indicator_apis")
-	if err != nil {
-		panic(err)
-	}
-	defer DbConnection.Close()
-	// cmd := `CREATE TABLE IF NOT EXISTS index_indicator_apis`
-	// _, err := DbConnection.Exec(cmd)
-	// if err != nil {
-	// 	log.Fatalln(err)
-	// }
 	return
 }
 
-// func gormConnect() *gorm.DB {
-// 	USER := "root"
-// 	PASS := ""
-// 	PROTOCOL := "tcp(127.0.0.1:3306)"
-// 	DBNAME := "index_indicator_apis"
+func sqlConnect() (database *gorm.DB, err error) {
+	DBMS := "mysql"
+	USER := "root"
+	PASS := ""
+	PROTOCOL := "tcp(localhost:3306)"
+	DBNAME := "index_indicator_apis"
 
-// 	dsn := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8mb4&parseTime=True&loc=Local"
-// 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-// 	if err != nil {
-// 		panic(err.Error())
-// 	}
-// 	return db
-// }
+	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo"
+	return gorm.Open(DBMS, CONNECT)
+}
 
 // ConnectMysql DB存在チェック後に接続
 func ConnectMysql() {
 	checkIsDb()
-	// db := gormConnect()
-	// defer db.Close()
+	_, err := sqlConnect()
+	if err != nil {
+		panic(err.Error())
+	} else {
+		fmt.Println("DB接続")
+	}
 }
