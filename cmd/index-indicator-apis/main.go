@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
+	mysql.CheckIsDb()
 	fgiClient := fgi.New(config.Config.FgiAPIKey, config.Config.FgiAPIHost)
-	mysql.ConnectMysql()
 	fgiClient.GetFgi()
 }
