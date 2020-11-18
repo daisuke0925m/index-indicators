@@ -8,17 +8,6 @@ const (
 	tableNameFgis = "fgis"
 )
 
-//Init マイグレーション
-func Init() {
-	var err error
-	db, err := mysql.SqlConnect()
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
-	db.AutoMigrate(&Fgis{})
-}
-
 // Fgis 日足格納
 type Fgis struct {
 	ID        int    `json:"id,omitempty"`
@@ -33,4 +22,15 @@ type Fgis struct {
 	OneMText  string `json:"one_m_text,omitempty"`
 	OneYValue int    `json:"one_y_value,omitempty"`
 	OneYText  string `json:"one_y_text,omitempty"`
+}
+
+//Init マイグレーション
+func Init() {
+	var err error
+	db, err := mysql.SqlConnect()
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+	db.AutoMigrate(&Fgis{})
 }
