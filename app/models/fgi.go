@@ -38,7 +38,7 @@ func InitFgis() {
 }
 
 // NewFgis fgi.StructFgiを受け取り、Fgisに変換して返す
-func NewFgis(id int, createdAt string, f fgi.StructFgi) *Fgis {
+func NewFgis(id int, createdAt time.Date, f fgi.StructFgi) *Fgis {
 	createdAt := time.Now()
 	nowValue := f.Fgi.Now.Value
 	nowText := f.Fgi.Now.ValueText
