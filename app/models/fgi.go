@@ -1,7 +1,9 @@
 package models
 
 import (
+	"index-indicator-apis/fgi"
 	"index-indicator-apis/mysql"
+	"time"
 )
 
 const (
@@ -24,8 +26,8 @@ type Fgis struct {
 	OneYText  string `json:"one_y_text,omitempty"`
 }
 
-//Init マイグレーション
-func Init() {
+//InitFgis マイグレーション
+func InitFgis() {
 	var err error
 	db, err := mysql.SqlConnect()
 	if err != nil {
@@ -34,3 +36,37 @@ func Init() {
 	defer db.Close()
 	db.AutoMigrate(&Fgis{})
 }
+
+// NewFgis fgi.StructFgiを受け取り、Fgisに変換して返す
+func NewFgis(id int, createdAt string, f fgi.StructFgi) *Fgis {
+	createdAt := time.Now()
+	nowValue := f.Fgi.Now.Value
+	nowText := f.Fgi.Now.ValueText
+	pcValue := f.Fgi.PreviousClose.Value
+	pcText := f.Fgi.PreviousClose.ValueText
+	oneWValue := f.Fgi.OneWeekAgo.Value
+	oneWText := f.Fgi.OneWeekAgo.ValueText
+	oneMValue := f.Fgi.OneMonthAgo.Value
+	oneMText := f.Fgi.OneMonthAgo.ValueText
+	oneYValue := f.Fgi.OneYearAgo.Value
+	oneYText := f.Fgi.OneYearAgo.ValueText
+
+	return &Fgis{
+		id,
+		createdAt,
+		nowValue,
+		nowText,
+		pcValue,
+		pcText,
+		oneWValue,
+		oneWText,
+		oneMValue,
+		oneMText,
+		oneYValue,
+		oneYText,
+	}
+}
+
+// func (f *Fgis) Create() error {
+
+// }

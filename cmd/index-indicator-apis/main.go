@@ -1,15 +1,9 @@
 package main
 
 import (
-	"index-indicator-apis/app/models"
-	"index-indicator-apis/config"
-	"index-indicator-apis/fgi"
 	"index-indicator-apis/mysql"
 )
 
 func main() {
 	mysql.CheckIsDb()
-	fgiClient := fgi.New(config.Config.FgiAPIKey, config.Config.FgiAPIHost)
-	fgiClient.GetFgi()
-	models.Init()
 }
