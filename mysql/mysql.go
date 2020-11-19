@@ -7,9 +7,6 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// DbConnection grobal
-var DbConnection *sql.DB
-
 // CheckIsDb DBチェック
 func CheckIsDb() {
 	DbConnection, err := sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/")
@@ -27,8 +24,11 @@ func CheckIsDb() {
 	return
 }
 
-// SqlConnect　DB接続
-func SqlConnect() (database *gorm.DB, err error) {
+// DbConnection grobal
+var DbConnection *gorm.DB
+
+// SQLConnect DB接続
+func SQLConnect() (database *gorm.DB, err error) {
 	DBMS := "mysql"
 	USER := "root"
 	PASS := ""
