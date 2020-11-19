@@ -23,7 +23,7 @@ func New(key, host string) *APIClientFgi {
 // StructFgi fgi格納
 type StructFgi struct {
 	Fgi struct {
-		Now struct {
+		Current struct {
 			Value     int    `json:"value"`
 			ValueText string `json:"valueText"`
 		} `json:"now"`
