@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"index-indicator-apis/mysql"
 	"time"
 
@@ -79,10 +80,15 @@ func (f *Fgis) Create() error {
 }
 
 // CreateNewFgis migration後にapiを叩きdbに保存する
-func CreateNewFgis() {
+func CreateNewFgis() error {
 	// initFgis()　migration
 	fgiClient := fgi.New(config.Config.FgiAPIKey, config.Config.FgiAPIHost)
-	f, _ := fgiClient.GetFgi()
+	f, err := fgiClient.GetFgi()
+	if err != nil {
+		return err
+	}
 	fgi := NewFgis(f)
-	(fgi.Create())
+	fmt.Println(fgi)
+	fmt.Println(fgi.Create())
+	return err
 }
