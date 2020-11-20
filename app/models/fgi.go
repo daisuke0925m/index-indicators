@@ -82,7 +82,6 @@ func (f *Fgis) Create() error {
 func CreateNewFgis() {
 	initFgis()
 	fgiClient := fgi.New(config.Config.FgiAPIKey, config.Config.FgiAPIHost)
-	// fmt.Println(fgiClient.GetFgi())
 	f, _ := fgiClient.GetFgi()
 	fgi := NewFgis(f)
 	fgi.Create()
