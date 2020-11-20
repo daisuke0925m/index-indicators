@@ -80,10 +80,9 @@ func (f *Fgis) Create() error {
 
 // CreateNewFgis migration後にapiを叩きdbに保存する
 func CreateNewFgis() {
-	initFgis()
+	// initFgis()　migration
 	fgiClient := fgi.New(config.Config.FgiAPIKey, config.Config.FgiAPIHost)
-	// fmt.Println(fgiClient.GetFgi())
 	f, _ := fgiClient.GetFgi()
 	fgi := NewFgis(f)
-	fgi.Create()
+	(fgi.Create())
 }
