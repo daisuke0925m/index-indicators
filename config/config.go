@@ -11,6 +11,7 @@ import (
 type ConfigList struct {
 	FgiAPIKey  string
 	FgiAPIHost string
+	Port       int
 }
 
 // Config グローバル定義
@@ -26,5 +27,6 @@ func init() {
 	Config = ConfigList{
 		FgiAPIKey:  cfg.Section("fgi").Key("api_key").String(),
 		FgiAPIHost: cfg.Section("fgi").Key("api_host").String(),
+		Port:       cfg.Section("web").Key("port").MustInt(),
 	}
 }
