@@ -88,3 +88,15 @@ func CreateNewFgis() error {
 	fmt.Println(fgi.Create())
 	return err
 }
+
+func GetLatestFgi() Fgi {
+	db, err := mysql.SQLConnect()
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+
+	fgi := Fgi{}
+	db.Last(&fgi)
+	return fgi
+}
