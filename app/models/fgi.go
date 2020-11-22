@@ -9,12 +9,8 @@ import (
 	"index-indicator-apis/fgi"
 )
 
-const (
-	tableNameFgis = "fgis"
-)
-
-// Fgis 日足格納
-type Fgis struct {
+// Fgi 日足格納
+type Fgi struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	NowValue  int       `json:"now_value,omitempty"`
 	NowText   string    `json:"now_text,omitempty"`
@@ -36,11 +32,11 @@ func initFgis() {
 		panic(err.Error())
 	}
 	defer db.Close()
-	db.AutoMigrate(&Fgis{})
+	db.AutoMigrate(&Fgi{})
 }
 
 // NewFgis fgi.StructFgiを受け取り、Fgisに変換して返す
-func NewFgis(f fgi.StructFgi) *Fgis {
+func NewFgis(f fgi.StructFgi) *Fgi {
 	createdAt := time.Now()
 	nowValue := f.Fgi.Current.Value
 	nowText := f.Fgi.Current.ValueText
@@ -53,7 +49,7 @@ func NewFgis(f fgi.StructFgi) *Fgis {
 	oneYValue := f.Fgi.OneYearAgo.Value
 	oneYText := f.Fgi.OneYearAgo.ValueText
 
-	return &Fgis{
+	return &Fgi{
 		createdAt,
 		nowValue,
 		nowText,
@@ -69,7 +65,7 @@ func NewFgis(f fgi.StructFgi) *Fgis {
 }
 
 // Create NewFgisをsaveする
-func (f *Fgis) Create() error {
+func (f *Fgi) Create() error {
 	db, err := mysql.SQLConnect()
 	if err != nil {
 		panic(err.Error())
@@ -81,7 +77,7 @@ func (f *Fgis) Create() error {
 
 // CreateNewFgis migration後にapiを叩きdbに保存する
 func CreateNewFgis() error {
-	// initFgis()　migration
+	// initFgis() //migration
 	fgiClient := fgi.New(config.Config.FgiAPIKey, config.Config.FgiAPIHost)
 	f, err := fgiClient.GetFgi()
 	if err != nil {
