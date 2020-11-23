@@ -68,6 +68,6 @@ func apiFgiHandler(w http.ResponseWriter, r *http.Request) {
 // StartWebServer webserver立ち上げ
 func StartWebServer() error {
 	http.HandleFunc("/api/fgi/", apiMakeHandler(apiFgiHandler))
-	http.HandleFunc("/chart/", viewFgiHandler)
+	http.HandleFunc("/", viewFgiHandler)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }
