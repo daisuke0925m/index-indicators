@@ -89,14 +89,14 @@ func CreateNewFgis() error {
 	return err
 }
 
-func GetLatestFgi() Fgi {
+func GetFgis(limit int) []Fgi {
 	db, err := mysql.SQLConnect()
 	if err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
 
-	fgi := Fgi{}
-	db.Last(&fgi)
-	return fgi
+	fgis := []Fgi{}
+	db.Order("created_at desc").Limit(limit).Find(&fgis)
+	return fgis
 }

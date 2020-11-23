@@ -17,8 +17,7 @@ var templates = template.Must(template.ParseFiles("app/views/fgi.html"))
 
 // viewFgiHandler
 func viewFgiHandler(w http.ResponseWriter, r *http.Request) {
-	result := models.GetLatestFgi()
-	err := templates.ExecuteTemplate(w, "fgi.html", result)
+	err := templates.ExecuteTemplate(w, "fgi.html", nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -57,7 +56,7 @@ func apiFgiHandler(w http.ResponseWriter, r *http.Request) {
 	if strLimit == "" || err != nil || limit < 0 || limit > 100 {
 		limit = 100
 	}
-	fgi := models.GetLatestFgi()
+	fgi := models.GetFgis(limit)
 	js, err := json.Marshal(fgi)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
