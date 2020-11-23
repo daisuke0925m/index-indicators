@@ -1,11 +1,11 @@
 package main
 
 import (
-	"index-indicator-apis/app/models"
-	"index-indicator-apis/mysql"
+	"index-indicator-apis/app/controllers"
 )
 
 func main() {
-	mysql.CheckIsDb()
-	models.CreateNewFgis()
+	// mysql.CheckIsDb()
+	// controllers.StreamIngestionData()
+	controllers.StartWebServer()
 }
