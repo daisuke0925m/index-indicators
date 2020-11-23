@@ -23,11 +23,13 @@ func viewFgiHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// JSONError エラー情報を格納
 type JSONError struct {
 	Error string `json:"error"`
 	Code  int    `json:"code"`
 }
 
+// APIError APIエラーを返す
 func APIError(w http.ResponseWriter, errMessage string, code int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
