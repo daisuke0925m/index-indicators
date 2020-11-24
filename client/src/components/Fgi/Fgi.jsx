@@ -17,8 +17,8 @@ const Fgi = () => {
     return (
         <div>
             {
-                data.length ? data.map(d => (
-                    <div>
+                data.length ? data.map((d, i) => (
+                    <div key={i}>
                         {d.now_value}
                     </div>
                 ))
