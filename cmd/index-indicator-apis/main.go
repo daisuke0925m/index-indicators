@@ -6,6 +6,6 @@ import (
 
 func main() {
 	// mysql.CheckIsDb()
-	// controllers.StreamIngestionData()
+	controllers.StreamIngestionData()
 	controllers.StartWebServer()
 }
