@@ -1,7 +1,7 @@
 package main
 
 import (
-	"index-indicator-apis/app/controllers"
+	"index-indicator-apis/server/app/controllers"
 )
 
 func main() {

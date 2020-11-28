@@ -2,11 +2,11 @@ package models
 
 import (
 	"fmt"
-	"index-indicator-apis/mysql"
+	"index-indicator-apis/server/mysql"
 	"time"
 
-	"index-indicator-apis/config"
-	"index-indicator-apis/fgi"
+	"index-indicator-apis/server/config"
+	"index-indicator-apis/server/fgi"
 )
 
 // Fgi 日足格納

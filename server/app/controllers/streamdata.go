@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"fmt"
-	"index-indicator-apis/app/models"
+	"index-indicator-apis/server/app/models"
 )
 
 // StreamIngestionData api保存を定期実行

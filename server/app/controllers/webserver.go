@@ -8,8 +8,8 @@ import (
 	"regexp"
 	"strconv"
 
-	"index-indicator-apis/app/models"
-	"index-indicator-apis/config"
+	"index-indicator-apis/server/app/models"
+	"index-indicator-apis/server/config"
 )
 
 // var templates = template.Must(template.ParseFiles("app/views/fgi.html"))
