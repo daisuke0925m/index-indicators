@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"regexp"
@@ -13,14 +12,15 @@ import (
 	"index-indicator-apis/config"
 )
 
-var templates = template.Must(template.ParseFiles("app/views/fgi.html"))
+// var templates = template.Must(template.ParseFiles("app/views/fgi.html"))
 
 // viewFgiHandler
 func viewFgiHandler(w http.ResponseWriter, r *http.Request) {
-	err := templates.ExecuteTemplate(w, "fgi.html", nil)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	// err := templates.ExecuteTemplate(w, "fgi.html", nil)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// }
+	fmt.Fprintf(w, "Hello astaxie!")
 }
 
 // JSONError エラー情報を格納
@@ -64,6 +64,7 @@ func apiFgiHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Write(js)
 }
 
