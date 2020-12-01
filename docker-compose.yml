@@ -11,3 +11,14 @@ services:
         command: bash -c "cd /usr/src/app/client && yarn start"
         ports:
         - "3000:3000"
+    go:
+        build:
+            context: ./server
+            dockerfile: Dockerfile
+        container_name: go_container
+        tty: true
+        volumes:
+        - ./server:/usr/src/app/server
+        # command: bash -c "cd /usr/src/app/client && yarn start"
+        ports:
+        - "8080:8080"
