@@ -77,7 +77,7 @@ func (f *Fgi) Create() error {
 
 // CreateNewFgis migration後にapiを叩きdbに保存する
 func CreateNewFgis() error {
-	// initFgis() //migration
+	initFgis() //migration
 	fgiClient := fgi.New(config.Config.FgiAPIKey, config.Config.FgiAPIHost)
 	f, err := fgiClient.GetFgi()
 	if err != nil {
