@@ -19,15 +19,36 @@ services:
         tty: true
         volumes:
         - ./server:/usr/src/app/server
-        # command: bash -c "cd /usr/src/app/client && yarn start"
+        # command: ["/usr/src/app/server/wait-for-it.sh", "db:3306", "--", "/usr/src/app/server/main"]
         ports:
         - "8080:8080"
     nginx:
         image: nginx
         container_name: nginx_container
         ports:
-            - 80:80
+        - "80:80"
         environment:
-            - TZ=Asia/Tokyo
+        - TZ=Asia/Tokyo
         volumes:
-            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+        - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    db:
+        build:
+            context: ./DB
+            dockerfile: Dockerfile
+        container_name: mysql_container
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: index_indicator_apis
+            # TZ: 'Asia/Tokyo'
+        volumes:
+        - ./DB/initdb.d:/docker-entrypoint-initdb.d
+        - ./DB/conf.d:/etc/mysql/conf.d
+        - ./DB/mysql_data:/var/lib/mysql
+        command:
+        - mysqld
+        - --character-set-server=utf8mb4
+        - --collation-server=utf8mb4_unicode_ci
+        ports:
+        - 3306:3306
+        links:
+        - go
