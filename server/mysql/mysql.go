@@ -9,7 +9,7 @@ import (
 
 // CheckIsDb DBチェック
 func CheckIsDb() {
-	DbConnection, err := sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/")
+	DbConnection, err := sql.Open("mysql", "root:root@tcp(mysql_container)/")
 	if err != nil {
 		panic(err)
 	}
@@ -31,10 +31,11 @@ var DbConnection *gorm.DB
 func SQLConnect() (database *gorm.DB, err error) {
 	DBMS := "mysql"
 	USER := "root"
-	PASS := ""
-	PROTOCOL := "tcp(localhost:3306)"
+	PASS := "root"
+	PROTOCOL := "tcp(mysql_container)"
 	DBNAME := "index_indicator_apis"
 
-	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo"
+	CONNECT := (USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo")
+
 	return gorm.Open(DBMS, CONNECT)
 }
