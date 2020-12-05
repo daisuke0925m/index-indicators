@@ -1,3 +1,4 @@
+# TODO マルチステージビルド(timezone) wait-for-it up時のコンテナ停止を防ぐ(DBの接続制御)
 FROM golang:1.15-alpine
 
 ENV CGO_ENABLED=0
