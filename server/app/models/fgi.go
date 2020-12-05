@@ -85,7 +85,7 @@ func CreateNewFgis() error {
 	}
 	fgi := NewFgis(f)
 	fmt.Println(fgi)
-	// fmt.Println(fgi.Create()) TODO 日本時間の定期実行/contorollers/streamIngestionData
+	fmt.Println(fgi.Create()) //TODO 日本時間の定期実行/contorollers/streamIngestionData
 	return err
 }
 
