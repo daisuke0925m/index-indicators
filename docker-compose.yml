@@ -22,6 +22,10 @@ services:
         # command: ["/usr/src/app/server/wait-for-it.sh", "db:3306", "--", "/usr/src/app/server/main"]
         ports:
         - "8080:8080"
+        depends_on:
+            - "db"
+        environment:
+            MYSQL_HOST: mysql_container
     nginx:
         image: nginx
         container_name: nginx_container
@@ -32,23 +36,18 @@ services:
         volumes:
         - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     db:
-        build:
-            context: ./DB
-            dockerfile: Dockerfile
+        image: mysql:8.0
         container_name: mysql_container
-        environment:
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: index_indicator_apis
-            # TZ: 'Asia/Tokyo'
         volumes:
-        - ./DB/initdb.d:/docker-entrypoint-initdb.d
-        - ./DB/conf.d:/etc/mysql/conf.d
-        - ./DB/mysql_data:/var/lib/mysql
-        command:
-        - mysqld
-        - --character-set-server=utf8mb4
-        - --collation-server=utf8mb4_unicode_ci
+            - db-store:/var/lib/mysql
+            - ./DB/logs:/var/log/mysql
+            - ./DB/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+        environment:
+            - MYSQL_DATABASE=index_indicator_apis
+            - MYSQL_USER=root
+            - MYSQL_ROOT_PASSWORD=root
+            - TZ=Asia/Tokyo
         ports:
-        - 3306:3306
-        links:
-        - go
+            - "3306:3306"
+volumes:
+    db-store:
