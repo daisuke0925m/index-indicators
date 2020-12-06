@@ -17,8 +17,8 @@ services:
             dockerfile: Dockerfile
         container_name: go_container
         tty: true
-        volumes:
-        - ./server:/usr/src/app/server
+        # volumes:
+        # - ./server:/usr/src/app/server
         # command: ["/usr/src/app/server/wait-for-it.sh", "db:3306", "--", "/usr/src/app/server/main"]
         ports:
         - "8080:8080"

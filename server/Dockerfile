@@ -28,6 +28,8 @@ RUN apk add --no-cache ca-certificates && \
 
 RUN go build -o main ./cmd/index-indicator-apis/main.go
 
-CMD ["./main"]
+CMD ["/usr/src/app/server/./main"]
 # デバック用↓
 # CMD ["sleep", "5000"]
+
+EXPOSE 8080
