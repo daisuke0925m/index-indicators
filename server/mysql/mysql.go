@@ -9,7 +9,7 @@ import (
 
 // CheckIsDb DBチェック
 func CheckIsDb() {
-	DbConnection, err := sql.Open("mysql", "root:root@tcp(mysql_container)/")
+	DbConnection, err := sql.Open("mysql", "root:root@tcp(mysql_container:3306)/")
 	if err != nil {
 		panic(err)
 	}
@@ -32,7 +32,7 @@ func SQLConnect() (database *gorm.DB, err error) {
 	DBMS := "mysql"
 	USER := "root"
 	PASS := "root"
-	PROTOCOL := "tcp(mysql_container)"
+	PROTOCOL := "tcp(mysql_container:3306)"
 	DBNAME := "index_indicator_apis"
 
 	CONNECT := (USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo")
