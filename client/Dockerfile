@@ -1,3 +1,4 @@
+# TODO alpine
 FROM node:14.15.1
 
 WORKDIR /usr/src/app/client
@@ -11,4 +12,3 @@ COPY --chown=node:node . .
 USER node
 
 CMD [ "yarn", "start" ]
-# TODO alpine
