@@ -5,7 +5,7 @@ const Fgi = () => {
 
     useEffect(() => {
         async function fetchData() {
-            const resResult = await fetch('http://localhost:8080/api/fgi/')
+            const resResult = await fetch('/server/api/fgi/')
             resResult
                 .json()
                 .then((resResult) => setData(resResult))
