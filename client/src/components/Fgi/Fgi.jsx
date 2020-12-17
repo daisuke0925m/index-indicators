@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { CntWrap } from '../UiKits/index';
+import { CntWrap, SpaceRow } from '../UiKits/index';
 
 const Fgi = () => {
     const [data, setData] = useState([])
@@ -17,6 +17,7 @@ const Fgi = () => {
 
     return (
         <div>
+            <SpaceRow height={30} />
             <CntWrap title={'Fear&Greed Index'}>
                 {
                     data.length ? data.map((d, i) => (
