@@ -24,7 +24,7 @@ const Fgi = () => {
                 ))
                     : ('loading')
             }
-        </div>
+        </div >
     );
 }
 
