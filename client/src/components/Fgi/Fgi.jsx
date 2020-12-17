@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { CntWrap } from '../UiKits/index';
 
 const Fgi = () => {
     const [data, setData] = useState([])
@@ -16,14 +17,16 @@ const Fgi = () => {
 
     return (
         <div>
-            {
-                data.length ? data.map((d, i) => (
-                    <div key={i}>
-                        {d.now_value}
-                    </div>
-                ))
-                    : ('loading')
-            }
+            <CntWrap title={'Fear&Greed Index'}>
+                {
+                    data.length ? data.map((d, i) => (
+                        <div key={i}>
+                            {d.now_value}
+                        </div>
+                    ))
+                        : ('loading')
+                }
+            </CntWrap>
         </div>
     );
 }
