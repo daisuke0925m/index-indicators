@@ -1,7 +1,7 @@
 import React from 'react'
 import { ThemeProvider } from '@material-ui/core/styles';
 import './style/index.css'
-import Fgi from './components/Fgi/Fgi'
+import Main from './components/Main/Main'
 import Header from './components/Header/Header'
 import { createMuiTheme } from '@material-ui/core/styles';
 
@@ -20,7 +20,7 @@ const App = () => {
         <ThemeProvider theme={theme}>
             <div>
                 <Header />
-                <Fgi />
+                <Main />
             </div>
         </ThemeProvider>
     );
