@@ -48,7 +48,7 @@ const CntWrap = (props) => {
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                     >
-                        <h5>
+                        <h5 style={{ margin: 0 }}>
                             {props.accordionHead}
                         </h5>
                     </AccordionSummary>
