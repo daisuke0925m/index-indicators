@@ -2,6 +2,11 @@ import React from "react";
 import CheckIcon from '@material-ui/icons/Check';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import SpaceRow from "./SpaceRow";
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -19,7 +24,10 @@ const useStyles = makeStyles((theme) => ({
     secondPaper: {
         padding: 10,
         borderColor: '#707070'
-    }
+    },
+    accordionRoot: {
+        width: '100%',
+    },
 }));
 
 const CntWrap = (props) => {
@@ -34,6 +42,21 @@ const CntWrap = (props) => {
             <Paper classes={{ root: classes.secondPaper }} elevation={0} square variant="outlined">
                 {props.children}
             </Paper>
+            <SpaceRow height={20} />
+            <div className={classes.accordionRoot}>
+                <Accordion>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                    >
+                        <h5>
+                            {props.accordionHead}
+                        </h5>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        {props.description}
+                    </AccordionDetails>
+                </Accordion>
+            </div>
         </Paper>
     )
 };
