@@ -10,6 +10,7 @@ import (
 
 // Fgi 日足格納
 type Fgi struct {
+	ID        int       `json:"id,omitempty"`
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	NowValue  int       `json:"now_value,omitempty"`
 	NowText   string    `json:"now_text,omitempty"`
@@ -34,34 +35,6 @@ func initFgis() {
 	db.AutoMigrate(&Fgi{})
 }
 
-// NewFgis fgi.StructFgiを受け取り、Fgisに変換して返す
-func NewFgis(f fgi.StructFgi) *Fgi {
-	return &Fgi{
-		time.Now(),
-		f.Fgi.Current.Value,
-		f.Fgi.Current.ValueText,
-		f.Fgi.PreviousClose.Value,
-		f.Fgi.PreviousClose.ValueText,
-		f.Fgi.OneWeekAgo.Value,
-		f.Fgi.OneWeekAgo.ValueText,
-		f.Fgi.OneMonthAgo.Value,
-		f.Fgi.OneMonthAgo.ValueText,
-		f.Fgi.OneYearAgo.Value,
-		f.Fgi.OneYearAgo.ValueText,
-	}
-}
-
-// Create NewFgisをsaveする
-func (f *Fgi) Create() error {
-	db, err := mysql.SQLConnect()
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
-	db.Create(&f)
-	return err
-}
-
 // CreateNewFgis migration後にapiを叩きdbに保存する
 func CreateNewFgis() error {
 	initFgis() //migration
@@ -70,8 +43,26 @@ func CreateNewFgis() error {
 	if err != nil {
 		return err
 	}
-	fgi := NewFgis(f)
-	fgi.Create()
+
+	db, err := mysql.SQLConnect()
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+	db.Create(&Fgi{
+		CreatedAt: time.Now(),
+		NowValue:  f.Fgi.Current.Value,
+		NowText:   f.Fgi.Current.ValueText,
+		PcValue:   f.Fgi.PreviousClose.Value,
+		PcText:    f.Fgi.PreviousClose.ValueText,
+		OneWValue: f.Fgi.OneWeekAgo.Value,
+		OneWText:  f.Fgi.OneWeekAgo.ValueText,
+		OneMValue: f.Fgi.OneMonthAgo.Value,
+		OneMText:  f.Fgi.OneMonthAgo.ValueText,
+		OneYValue: f.Fgi.OneYearAgo.Value,
+		OneYText:  f.Fgi.OneYearAgo.ValueText,
+	})
+
 	return err
 }
 
