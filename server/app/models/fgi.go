@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"index-indicator-apis/server/mysql"
 	"time"
 
@@ -72,8 +71,7 @@ func CreateNewFgis() error {
 		return err
 	}
 	fgi := NewFgis(f)
-	fmt.Println(fgi)
-	fmt.Println(fgi.Create()) //TODO 日本時間の定期実行/contorollers/streamIngestionData
+	fgi.Create()
 	return err
 }
 
