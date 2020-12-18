@@ -24,9 +24,6 @@ func CheckIsDb() {
 	return
 }
 
-// DbConnection grobal
-var DbConnection *gorm.DB
-
 // SQLConnect DB接続
 func SQLConnect() (database *gorm.DB, err error) {
 	DBMS := "mysql"
