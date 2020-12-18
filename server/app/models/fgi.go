@@ -37,30 +37,18 @@ func initFgis() {
 
 // NewFgis fgi.StructFgiを受け取り、Fgisに変換して返す
 func NewFgis(f fgi.StructFgi) *Fgi {
-	createdAt := time.Now()
-	nowValue := f.Fgi.Current.Value
-	nowText := f.Fgi.Current.ValueText
-	pcValue := f.Fgi.PreviousClose.Value
-	pcText := f.Fgi.PreviousClose.ValueText
-	oneWValue := f.Fgi.OneWeekAgo.Value
-	oneWText := f.Fgi.OneWeekAgo.ValueText
-	oneMValue := f.Fgi.OneMonthAgo.Value
-	oneMText := f.Fgi.OneMonthAgo.ValueText
-	oneYValue := f.Fgi.OneYearAgo.Value
-	oneYText := f.Fgi.OneYearAgo.ValueText
-
 	return &Fgi{
-		createdAt,
-		nowValue,
-		nowText,
-		pcValue,
-		pcText,
-		oneWValue,
-		oneWText,
-		oneMValue,
-		oneMText,
-		oneYValue,
-		oneYText,
+		time.Now(),
+		f.Fgi.Current.Value,
+		f.Fgi.Current.ValueText,
+		f.Fgi.PreviousClose.Value,
+		f.Fgi.PreviousClose.ValueText,
+		f.Fgi.OneWeekAgo.Value,
+		f.Fgi.OneWeekAgo.ValueText,
+		f.Fgi.OneMonthAgo.Value,
+		f.Fgi.OneMonthAgo.ValueText,
+		f.Fgi.OneYearAgo.Value,
+		f.Fgi.OneYearAgo.ValueText,
 	}
 }
 
