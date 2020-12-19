@@ -1,7 +1,7 @@
 package mysql
 
 import (
-	. "index-indicator-apis/server/app/entity"
+	"index-indicator-apis/server/app/entity"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
@@ -28,5 +28,5 @@ func AutoMigrate() {
 		panic(err.Error())
 	}
 	defer db.Close()
-	db.AutoMigrate(&Fgi{})
+	db.AutoMigrate(&entity.Fgi{})
 }
