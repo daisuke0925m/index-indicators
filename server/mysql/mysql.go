@@ -3,6 +3,7 @@ package mysql
 import (
 	"index-indicator-apis/server/app/entity"
 
+	// Register for gorm
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
