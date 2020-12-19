@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	mysql.CheckIsDb()
-	controllers.StreamIngestionData()
+	mysql.AutoMigrate()
+	go controllers.StreamIngestionData()
 	controllers.StartWebServer()
 }

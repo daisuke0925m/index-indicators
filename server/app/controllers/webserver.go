@@ -12,15 +12,9 @@ import (
 	"index-indicator-apis/server/config"
 )
 
-// var templates = template.Must(template.ParseFiles("app/views/fgi.html"))
-
 // viewFgiHandler
 func viewFgiHandler(w http.ResponseWriter, r *http.Request) {
-	// err := templates.ExecuteTemplate(w, "fgi.html", nil)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// }
-	fmt.Fprintf(w, "Hello astaxie!")
+	fmt.Fprintf(w, "connected server")
 }
 
 // JSONError エラー情報を格納
@@ -70,7 +64,9 @@ func apiFgiHandler(w http.ResponseWriter, r *http.Request) {
 
 // StartWebServer webserver立ち上げ
 func StartWebServer() error {
+	fmt.Println("connecting...")
 	http.HandleFunc("/api/fgi/", apiMakeHandler(apiFgiHandler))
 	http.HandleFunc("/", viewFgiHandler)
+	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }

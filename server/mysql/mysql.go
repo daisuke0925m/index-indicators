@@ -1,31 +1,13 @@
 package mysql
 
 import (
-	"database/sql"
+	"fmt"
+	"index-indicator-apis/server/app/entity"
 
+	// Register for gorm
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
-
-// CheckIsDb DBチェック
-func CheckIsDb() {
-	DbConnection, err := sql.Open("mysql", "iia:iia@tcp(mysql_container:3306)/")
-	if err != nil {
-		panic(err)
-	}
-	defer DbConnection.Close()
-
-	_, err = DbConnection.Exec("CREATE DATABASE IF NOT EXISTS index_indicator_apis")
-	if err != nil {
-		panic(err)
-	}
-	DbConnection.Close()
-
-	return
-}
-
-// DbConnection grobal
-var DbConnection *gorm.DB
 
 // SQLConnect DB接続
 func SQLConnect() (database *gorm.DB, err error) {
@@ -38,4 +20,16 @@ func SQLConnect() (database *gorm.DB, err error) {
 	CONNECT := (USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo")
 
 	return gorm.Open(DBMS, CONNECT)
+}
+
+//AutoMigrate マイグレーション
+func AutoMigrate() {
+	fmt.Println("migrating database...")
+	db, err := SQLConnect()
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+	db.AutoMigrate(&entity.Fgi{})
+	fmt.Println("finish migrate!")
 }
