@@ -14,7 +14,7 @@ func SQLConnect() (database *gorm.DB, err error) {
 	DBMS := "mysql"
 	USER := "iia"
 	PASS := "iia"
-	PROTOCOL := "tcp(localhost:3306)"
+	PROTOCOL := "tcp(mysql_container:3306)"
 	DBNAME := "index_indicator_apis"
 
 	CONNECT := (USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo")

@@ -2,19 +2,18 @@ package controllers
 
 import (
 	"index-indicator-apis/server/app/models"
-	"time"
+
+	"github.com/robfig/cron/v3"
 )
 
 // StreamIngestionData api保存を定期実行
 func StreamIngestionData() {
-	ticker := time.NewTicker(time.Millisecond * 100)
-	defer ticker.Stop()
+	c := cron.New()
 
-	for {
-		select {
-		case <-ticker.C:
-			models.CreateNewFgis()
-		}
-	}
+	// 平日23:30 TODO米国平日の市場取引時間
+	c.AddFunc("30 23 * * 1-5", func() {
+		models.CreateNewFgis()
+	})
+	c.Start()
 
 }
