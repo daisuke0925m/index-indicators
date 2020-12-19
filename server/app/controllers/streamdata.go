@@ -2,10 +2,19 @@ package controllers
 
 import (
 	"index-indicator-apis/server/app/models"
+	"time"
 )
 
 // StreamIngestionData api保存を定期実行
 func StreamIngestionData() {
-	go models.CreateNewFgis() //TODO 定期実行(米株市場毎営業日の前後)
+	ticker := time.NewTicker(time.Millisecond * 100)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ticker.C:
+			models.CreateNewFgis()
+		}
+	}
 
 }

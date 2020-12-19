@@ -7,6 +7,6 @@ import (
 
 func main() {
 	mysql.AutoMigrate()
-	controllers.StreamIngestionData()
+	go controllers.StreamIngestionData()
 	controllers.StartWebServer()
 }
