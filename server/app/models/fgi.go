@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"index-indicator-apis/server/app/entity"
 	"index-indicator-apis/server/mysql"
 	"time"
@@ -16,6 +17,7 @@ func CreateNewFgis() error {
 	if err != nil {
 		return err
 	}
+	fmt.Printf("insert value:%v\n", f.Fgi)
 
 	db, err := mysql.SQLConnect()
 	if err != nil {

@@ -1,6 +1,7 @@
 package mysql
 
 import (
+	"fmt"
 	"index-indicator-apis/server/app/entity"
 
 	// Register for gorm
@@ -23,11 +24,12 @@ func SQLConnect() (database *gorm.DB, err error) {
 
 //AutoMigrate マイグレーション
 func AutoMigrate() {
-	var err error
+	fmt.Println("migrating database...")
 	db, err := SQLConnect()
 	if err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
 	db.AutoMigrate(&entity.Fgi{})
+	fmt.Println("finish migrate!")
 }
