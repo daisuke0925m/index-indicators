@@ -1,28 +1,9 @@
 package mysql
 
 import (
-	"database/sql"
-
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
-
-// CheckIsDb DBチェック
-func CheckIsDb() {
-	DbConnection, err := sql.Open("mysql", "iia:iia@tcp(mysql_container:3306)/")
-	if err != nil {
-		panic(err)
-	}
-	defer DbConnection.Close()
-
-	_, err = DbConnection.Exec("CREATE DATABASE IF NOT EXISTS index_indicator_apis")
-	if err != nil {
-		panic(err)
-	}
-	DbConnection.Close()
-
-	return
-}
 
 // SQLConnect DB接続
 func SQLConnect() (database *gorm.DB, err error) {
