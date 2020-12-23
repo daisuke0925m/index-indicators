@@ -28,7 +28,10 @@ func CreateUser(user entity.User) (err error) {
 		panic(err.Error())
 	}
 	defer db.Close()
-	db.Create(&user)
+
+	if err := db.Create(&user).Error; err != nil {
+		return err
+	}
 
 	fmt.Printf("%v\n", user)
 	fmt.Println("finish! created a user")

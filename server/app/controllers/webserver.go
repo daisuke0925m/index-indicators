@@ -74,7 +74,11 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	models.CreateUser(user)
+	// models.CreateUser(user)
+	if err := models.CreateUser(user); err != nil {
+		apiError(w, "username or email are duplicated", http.StatusConflict)
+		return
+	}
 
 	apiError(w, "success", http.StatusCreated)
 }
