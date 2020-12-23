@@ -30,6 +30,6 @@ func AutoMigrate() {
 		panic(err.Error())
 	}
 	defer db.Close()
-	db.AutoMigrate(&entity.Fgi{})
+	db.AutoMigrate(&entity.Fgi{}, &entity.User{})
 	fmt.Println("finish migrate!")
 }
