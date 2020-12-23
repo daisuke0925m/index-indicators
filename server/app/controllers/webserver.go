@@ -12,11 +12,6 @@ import (
 	"index-indicator-apis/server/config"
 )
 
-// viewFgiHandler
-func viewFgiHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "connected server")
-}
-
 // JSONError エラー情報を格納
 type JSONError struct {
 	Error string `json:"error"`
@@ -75,7 +70,6 @@ func apiLoginHandler(w http.ResponseWriter, r *http.Request) {
 // StartWebServer webserver立ち上げ
 func StartWebServer() error {
 	fmt.Println("connecting...")
-	http.HandleFunc("/", viewFgiHandler)
 	http.HandleFunc("/api/fgi/", apiMakeHandler(apiFgiHandler))
 	http.HandleFunc("/api/signup", apiMakeHandler(apiSignupHandler))
 	http.HandleFunc("/api/login", apiMakeHandler(apiLoginHandler))
