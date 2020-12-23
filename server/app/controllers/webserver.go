@@ -34,7 +34,7 @@ func APIError(w http.ResponseWriter, errMessage string, code int) {
 	w.Write(jsonError)
 }
 
-var apiValidPath = regexp.MustCompile("^/api/fgi/$")
+var apiValidPath = regexp.MustCompile("^/api/")
 
 func apiMakeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
