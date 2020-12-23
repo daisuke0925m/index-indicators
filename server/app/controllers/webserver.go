@@ -62,19 +62,25 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	var user entity.User
 	json.NewDecoder(r.Body).Decode(&user)
 
+	if user.UserName == "" {
+		APIError(w, "Email is required", http.StatusBadRequest)
+		return
+	}
+
 	if user.Email == "" {
-		// エラーハンドリング
-		fmt.Println("email error")
+		APIError(w, "Email is required", http.StatusBadRequest)
 		return
 	}
 
 	if user.Password == "" {
-		// エラーハンドリング
-		fmt.Println("pass error")
+		APIError(w, "Password is required", http.StatusBadRequest)
 		return
 	}
 
 	models.CreateUser(user)
+
+	// JSON 形式で結果を返却
+	APIError(w, "success", http.StatusCreated)
 }
 
 func apiLoginHandler(w http.ResponseWriter, r *http.Request) {
