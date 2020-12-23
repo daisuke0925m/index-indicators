@@ -65,12 +65,10 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 		apiError(w, "Email is required", http.StatusBadRequest)
 		return
 	}
-
 	if user.Email == "" {
 		apiError(w, "Email is required", http.StatusBadRequest)
 		return
 	}
-
 	if user.Password == "" {
 		apiError(w, "Password is required", http.StatusBadRequest)
 		return
