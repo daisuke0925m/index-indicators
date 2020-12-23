@@ -57,11 +57,6 @@ func apiFgiHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-func apiSignupHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "signup")
-	fmt.Println("signup 関数実行")
-}
-
 func apiLoginHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "login")
 	fmt.Println("login 関数実行")
@@ -71,7 +66,7 @@ func apiLoginHandler(w http.ResponseWriter, r *http.Request) {
 func StartWebServer() error {
 	fmt.Println("connecting...")
 	http.HandleFunc("/api/fgi/", apiMakeHandler(apiFgiHandler))
-	http.HandleFunc("/api/signup", apiMakeHandler(apiSignupHandler))
+	http.HandleFunc("/api/signup", apiMakeHandler(models.SignupHandler))
 	http.HandleFunc("/api/login", apiMakeHandler(apiLoginHandler))
 	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
