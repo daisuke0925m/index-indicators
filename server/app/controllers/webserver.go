@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strconv"
 
+	"index-indicator-apis/server/app/entity"
 	"index-indicator-apis/server/app/models"
 	"index-indicator-apis/server/config"
 )
@@ -57,6 +58,25 @@ func apiFgiHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
+func signupHandler(w http.ResponseWriter, r *http.Request) {
+	var user entity.User
+	json.NewDecoder(r.Body).Decode(&user)
+
+	if user.Email == "" {
+		// エラーハンドリング
+		fmt.Println("email error")
+		return
+	}
+
+	if user.Password == "" {
+		// エラーハンドリング
+		fmt.Println("pass error")
+		return
+	}
+
+	models.CreateUser(user)
+}
+
 func apiLoginHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "login")
 	fmt.Println("login 関数実行")
@@ -66,7 +86,7 @@ func apiLoginHandler(w http.ResponseWriter, r *http.Request) {
 func StartWebServer() error {
 	fmt.Println("connecting...")
 	http.HandleFunc("/api/fgi/", apiMakeHandler(apiFgiHandler))
-	http.HandleFunc("/api/signup", apiMakeHandler(models.SignupHandler))
+	http.HandleFunc("/api/signup", apiMakeHandler(signupHandler))
 	http.HandleFunc("/api/login", apiMakeHandler(apiLoginHandler))
 	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)

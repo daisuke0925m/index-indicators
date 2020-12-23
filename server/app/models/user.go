@@ -1,10 +1,8 @@
 package models
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"time"
 
 	"index-indicator-apis/server/app/entity"
@@ -13,25 +11,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// SignupHandler user登録
-func SignupHandler(w http.ResponseWriter, r *http.Request) {
+// CreateUser user登録
+func CreateUser(user entity.User) (err error) {
 	fmt.Printf("start signup\n")
-	fmt.Fprintf(w, "signup")
 
-	var user entity.User
-	json.NewDecoder(r.Body).Decode(&user)
-
-	if user.Email == "" {
-		// エラーハンドリング
-		fmt.Println("email error")
-		return
-	}
-
-	if user.Password == "" {
-		// エラーハンドリング
-		fmt.Println("pass error")
-		return
-	}
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
@@ -49,5 +32,5 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("%v\n", user)
 	fmt.Println("finish! created a user")
-
+	return
 }
