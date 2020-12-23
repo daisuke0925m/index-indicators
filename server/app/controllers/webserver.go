@@ -19,8 +19,7 @@ type JSONError struct {
 	Code  int    `json:"code"`
 }
 
-// APIError APIエラーを返す
-func APIError(w http.ResponseWriter, errMessage string, code int) {
+func apiError(w http.ResponseWriter, errMessage string, code int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	jsonError, err := json.Marshal(JSONError{Error: errMessage, Code: code})
@@ -36,7 +35,7 @@ func apiMakeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFun
 	return func(w http.ResponseWriter, r *http.Request) {
 		m := apiValidPath.FindStringSubmatch(r.URL.Path)
 		if len(m) == 0 {
-			APIError(w, "Not found", http.StatusNotFound)
+			apiError(w, "Not found", http.StatusNotFound)
 		}
 		fn(w, r)
 	}
@@ -63,24 +62,23 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&user)
 
 	if user.UserName == "" {
-		APIError(w, "Email is required", http.StatusBadRequest)
+		apiError(w, "Email is required", http.StatusBadRequest)
 		return
 	}
 
 	if user.Email == "" {
-		APIError(w, "Email is required", http.StatusBadRequest)
+		apiError(w, "Email is required", http.StatusBadRequest)
 		return
 	}
 
 	if user.Password == "" {
-		APIError(w, "Password is required", http.StatusBadRequest)
+		apiError(w, "Password is required", http.StatusBadRequest)
 		return
 	}
 
 	models.CreateUser(user)
 
-	// JSON 形式で結果を返却
-	APIError(w, "success", http.StatusCreated)
+	apiError(w, "success", http.StatusCreated)
 }
 
 func apiLoginHandler(w http.ResponseWriter, r *http.Request) {
