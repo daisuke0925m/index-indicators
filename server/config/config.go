@@ -12,6 +12,7 @@ type ConfigList struct {
 	FgiAPIKey  string
 	FgiAPIHost string
 	Port       int
+	JwtSecret  string
 }
 
 // Config グローバル定義
@@ -28,5 +29,6 @@ func init() {
 		FgiAPIKey:  cfg.Section("fgi").Key("api_key").String(),
 		FgiAPIHost: cfg.Section("fgi").Key("api_host").String(),
 		Port:       cfg.Section("web").Key("port").MustInt(),
+		JwtSecret:  cfg.Section("secret").Key("jwt-jwt_secret").String(),
 	}
 }
