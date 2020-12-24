@@ -83,9 +83,23 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	apiError(w, "success", http.StatusCreated)
 }
 
-func apiLoginHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "login")
-	fmt.Println("login 関数実行")
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+	var user entity.User
+	json.NewDecoder(r.Body).Decode(&user)
+
+	searchedUser, err := models.Login(user)
+	if err != nil {
+		apiError(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	fmt.Println(searchedUser)
+	fmt.Println(user)
+	// if user.Password != searchedUser.Password {
+	// 	apiError(w, err.Error(), http.StatusUnauthorized)
+	// 	return
+	// }
+	apiError(w, "success", http.StatusAccepted)
 }
 
 // StartWebServer webserver立ち上げ
@@ -93,7 +107,7 @@ func StartWebServer() error {
 	fmt.Println("connecting...")
 	http.HandleFunc("/api/fgi/", apiMakeHandler(apiFgiHandler))
 	http.HandleFunc("/api/signup", apiMakeHandler(signupHandler))
-	http.HandleFunc("/api/login", apiMakeHandler(apiLoginHandler))
+	http.HandleFunc("/api/login", apiMakeHandler(loginHandler))
 	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }
