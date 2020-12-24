@@ -11,6 +11,8 @@ import (
 	"index-indicator-apis/server/app/entity"
 	"index-indicator-apis/server/app/models"
 	"index-indicator-apis/server/config"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // JSONError エラー情報を格納
@@ -93,12 +95,11 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(searchedUser)
-	fmt.Println(user)
-	// if user.Password != searchedUser.Password {
-	// 	apiError(w, err.Error(), http.StatusUnauthorized)
-	// 	return
-	// }
+	if err := bcrypt.CompareHashAndPassword([]byte(searchedUser.Password), []byte(user.Password)); err != nil {
+		apiError(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
 	apiError(w, "success", http.StatusAccepted)
 }
 
