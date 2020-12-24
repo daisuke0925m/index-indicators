@@ -89,16 +89,18 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	var user entity.User
 	json.NewDecoder(r.Body).Decode(&user)
 
-	searchedUser, err := models.Login(user)
+	searchedUser, err := models.FindUser(user)
 	if err != nil {
 		apiError(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
+	fmt.Println("compare the password")
 	if err := bcrypt.CompareHashAndPassword([]byte(searchedUser.Password), []byte(user.Password)); err != nil {
 		apiError(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
+	fmt.Println("password is be valid")
 
 	apiError(w, "success", http.StatusAccepted)
 }
