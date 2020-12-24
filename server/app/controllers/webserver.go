@@ -64,7 +64,7 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&user)
 
 	if user.UserName == "" {
-		apiError(w, "Email is required", http.StatusBadRequest)
+		apiError(w, "UserName is required", http.StatusBadRequest)
 		return
 	}
 	if user.Email == "" {
