@@ -102,7 +102,15 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("password is be valid")
 
-	apiError(w, "success", http.StatusAccepted)
+	token, err := models.CreateToken(searchedUser.ID)
+	if err != nil {
+		apiError(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	json.NewEncoder(w).Encode(token)
 }
 
 // StartWebServer webserver立ち上げ
