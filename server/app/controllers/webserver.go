@@ -43,7 +43,19 @@ func apiMakeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFun
 	}
 }
 
+func checkHTTPMethod(method string, w http.ResponseWriter, r *http.Request) int {
+	if r.Method != method {
+		return http.StatusMethodNotAllowed
+	}
+	return http.StatusOK
+}
+
 func apiFgiHandler(w http.ResponseWriter, r *http.Request) {
+	if result := checkHTTPMethod("GET", w, r); result != http.StatusOK {
+		apiError(w, "bad request", result)
+		return
+	}
+
 	strLimit := r.URL.Query().Get("limit")
 	limit, err := strconv.Atoi(strLimit)
 	if strLimit == "" || err != nil || limit < 0 || limit > 100 {
@@ -60,6 +72,11 @@ func apiFgiHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func signupHandler(w http.ResponseWriter, r *http.Request) {
+	if result := checkHTTPMethod("POST", w, r); result != http.StatusOK {
+		apiError(w, "bad request", result)
+		return
+	}
+
 	var user entity.User
 	json.NewDecoder(r.Body).Decode(&user)
 
@@ -86,6 +103,10 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
+	if result := checkHTTPMethod("POST", w, r); result != http.StatusOK {
+		apiError(w, "bad request", result)
+		return
+	}
 	var user entity.User
 	json.NewDecoder(r.Body).Decode(&user)
 
@@ -116,7 +137,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 // StartWebServer webserver立ち上げ
 func StartWebServer() error {
 	fmt.Println("connecting...")
-	http.HandleFunc("/api/fgi/", apiMakeHandler(apiFgiHandler))
+	http.HandleFunc("/api/fgi", apiMakeHandler(apiFgiHandler))
 	http.HandleFunc("/api/signup", apiMakeHandler(signupHandler))
 	http.HandleFunc("/api/login", apiMakeHandler(loginHandler))
 	fmt.Printf("connected port :%d\n", config.Config.Port)
