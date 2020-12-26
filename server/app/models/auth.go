@@ -45,7 +45,7 @@ func CreateToken(userid int) (*entity.TokenDetails, error) {
 	atClaims["user_id"] = userid
 	atClaims["exp"] = td.AtExpires
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
-	td.AccessToken, err = at.SignedString([]byte(config.Config.JwtSecret))
+	td.AccessToken, err = at.SignedString([]byte(config.Config.JwtAccess))
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func CreateToken(userid int) (*entity.TokenDetails, error) {
 	rtClaims["user_id"] = userid
 	rtClaims["exp"] = td.RtExpires
 	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
-	td.RefreshToken, err = rt.SignedString([]byte(config.Config.JwtSecret))
+	td.RefreshToken, err = rt.SignedString([]byte(config.Config.JwtRefresh))
 	if err != nil {
 		return nil, err
 	}

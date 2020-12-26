@@ -44,7 +44,7 @@ func tokenVerifyMiddleWare(next http.HandlerFunc) http.HandlerFunc {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 					return nil, fmt.Errorf("Error")
 				}
-				return []byte(config.Config.JwtSecret), nil
+				return []byte(config.Config.JwtAccess), nil
 			})
 
 			if error != nil {
