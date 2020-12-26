@@ -6,11 +6,13 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"index-indicator-apis/server/app/entity"
 	"index-indicator-apis/server/app/models"
 	"index-indicator-apis/server/config"
 
+	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -30,17 +32,39 @@ func apiError(w http.ResponseWriter, errMessage string, code int) {
 	w.Write(jsonError)
 }
 
-// func apiMakeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		m := apiValidPath.FindStringSubmatch(r.URL.Path)
-// 		fmt.Println(len(m))
-// 		if len(m) <= 2 {
-// 			apiError(w, "Not found", http.StatusNotFound)
-// 			return
-// 		}
-// 		fn(w, r)
-// 	}
-// }
+func tokenVerifyMiddleWare(next http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authHeader := r.Header.Get("Authorization")
+		bearerToken := strings.Split(authHeader, " ")
+
+		if len(bearerToken) == 2 {
+			authToken := bearerToken[1]
+
+			token, error := jwt.Parse(authToken, func(token *jwt.Token) (interface{}, error) {
+				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+					return nil, fmt.Errorf("Error")
+				}
+				return []byte(config.Config.JwtSecret), nil
+			})
+			fmt.Println(token)
+
+			if error != nil {
+				apiError(w, error.Error(), http.StatusUnauthorized)
+				return
+			}
+
+			if token.Valid {
+				next.ServeHTTP(w, r)
+			} else {
+				apiError(w, error.Error(), http.StatusUnauthorized)
+				return
+			}
+		} else {
+			apiError(w, "token is required", http.StatusUnauthorized)
+			return
+		}
+	})
+}
 
 func checkHTTPMethod(method string, w http.ResponseWriter, r *http.Request) int {
 	if r.Method != method {
@@ -140,7 +164,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 // StartWebServer webserver立ち上げ
 func StartWebServer() error {
 	fmt.Println("connecting...")
-	http.HandleFunc("/api/fgi", apiFgiHandler)
+	http.HandleFunc("/api/fgi", tokenVerifyMiddleWare(apiFgiHandler))
 	http.HandleFunc("/api/signup", signupHandler)
 	http.HandleFunc("/api/login", loginHandler)
 	fmt.Printf("connected port :%d\n", config.Config.Port)
