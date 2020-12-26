@@ -55,3 +55,12 @@ func SaveTokenToCookie(token string, w http.ResponseWriter) (err error) {
 	http.SetCookie(w, cookie)
 	return err
 }
+
+// ExtractToken cookieからjwtを取得
+func ExtractToken(w http.ResponseWriter, r *http.Request) (string, error) {
+	cookie, err := r.Cookie("jwt")
+	if err != nil {
+		return "", err
+	}
+	return cookie.Value, nil
+}

@@ -160,12 +160,22 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(token)
 }
 
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
+	token, err := models.ExtractToken(w, r)
+	if err != nil {
+		apiError(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	fmt.Println(token)
+}
+
 // StartWebServer webserver立ち上げ
 func StartWebServer() error {
 	fmt.Println("connecting...")
 	http.HandleFunc("/api/fgi", tokenVerifyMiddleWare(apiFgiHandler))
 	http.HandleFunc("/api/signup", signupHandler)
 	http.HandleFunc("/api/login", loginHandler)
+	http.HandleFunc("/api/logout", tokenVerifyMiddleWare(logoutHandler))
 	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }
