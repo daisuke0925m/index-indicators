@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"regexp"
 	"strconv"
 
 	"index-indicator-apis/server/app/entity"
@@ -31,17 +30,17 @@ func apiError(w http.ResponseWriter, errMessage string, code int) {
 	w.Write(jsonError)
 }
 
-var apiValidPath = regexp.MustCompile("^/api/")
-
-func apiMakeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		m := apiValidPath.FindStringSubmatch(r.URL.Path)
-		if len(m) == 0 {
-			apiError(w, "Not found", http.StatusNotFound)
-		}
-		fn(w, r)
-	}
-}
+// func apiMakeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
+// 	return func(w http.ResponseWriter, r *http.Request) {
+// 		m := apiValidPath.FindStringSubmatch(r.URL.Path)
+// 		fmt.Println(len(m))
+// 		if len(m) <= 2 {
+// 			apiError(w, "Not found", http.StatusNotFound)
+// 			return
+// 		}
+// 		fn(w, r)
+// 	}
+// }
 
 func checkHTTPMethod(method string, w http.ResponseWriter, r *http.Request) int {
 	if r.Method != method {
@@ -141,9 +140,9 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 // StartWebServer webserver立ち上げ
 func StartWebServer() error {
 	fmt.Println("connecting...")
-	http.HandleFunc("/api/fgi", apiMakeHandler(apiFgiHandler))
-	http.HandleFunc("/api/signup", apiMakeHandler(signupHandler))
-	http.HandleFunc("/api/login", apiMakeHandler(loginHandler))
+	http.HandleFunc("/api/fgi", apiFgiHandler)
+	http.HandleFunc("/api/signup", signupHandler)
+	http.HandleFunc("/api/login", loginHandler)
 	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }
