@@ -5,6 +5,7 @@ import (
 	"index-indicator-apis/server/app/entity"
 	"index-indicator-apis/server/config"
 	"index-indicator-apis/server/mysql"
+	"net/http"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -41,4 +42,16 @@ func CreateToken(userid int) (string, error) {
 		return "", err
 	}
 	return token, nil
+}
+
+// SaveTokenToCookie jwtTokenをCookieに保存
+func SaveTokenToCookie(token string, w http.ResponseWriter) (err error) {
+	cookie := &http.Cookie{
+		Name:     "jwt",
+		Value:    token,
+		HttpOnly: true,
+	}
+
+	http.SetCookie(w, cookie)
+	return err
 }

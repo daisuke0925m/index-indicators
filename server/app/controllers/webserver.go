@@ -129,10 +129,13 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := models.SaveTokenToCookie(token, w); err != nil {
+		apiError(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(token)
-	// w.WriteHeader(http.StatusOK)
 }
 
 // StartWebServer webserver立ち上げ
