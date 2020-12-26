@@ -106,6 +106,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		apiError(w, "bad request", result)
 		return
 	}
+
 	var user entity.User
 	json.NewDecoder(r.Body).Decode(&user)
 
@@ -131,6 +132,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(token)
+	// w.WriteHeader(http.StatusOK)
 }
 
 // StartWebServer webserver立ち上げ
