@@ -46,7 +46,6 @@ func tokenVerifyMiddleWare(next http.HandlerFunc) http.HandlerFunc {
 				}
 				return []byte(config.Config.JwtSecret), nil
 			})
-			fmt.Println(token)
 
 			if error != nil {
 				apiError(w, error.Error(), http.StatusUnauthorized)
