@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"index-indicator-apis/server/app/entity"
-	"index-indicator-apis/server/mysql"
+	"index-indicator-apis/server/db"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -23,7 +23,7 @@ func CreateUser(user entity.User) (err error) {
 	}
 	user.Password = string(hash)
 
-	db, err := mysql.SQLConnect()
+	db, err := db.SQLConnect()
 	if err != nil {
 		panic(err.Error())
 	}

@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 	"index-indicator-apis/server/app/entity"
-	"index-indicator-apis/server/mysql"
+	"index-indicator-apis/server/db"
 	"time"
 
 	"index-indicator-apis/server/config"
@@ -19,7 +19,7 @@ func CreateNewFgis() error {
 	}
 	fmt.Printf("insert value:%v\n", f.Fgi)
 
-	db, err := mysql.SQLConnect()
+	db, err := db.SQLConnect()
 	if err != nil {
 		panic(err.Error())
 	}
@@ -43,7 +43,7 @@ func CreateNewFgis() error {
 
 // GetFgis api for webserver
 func GetFgis(limit int) []entity.Fgi {
-	db, err := mysql.SQLConnect()
+	db, err := db.SQLConnect()
 	if err != nil {
 		panic(err.Error())
 	}
