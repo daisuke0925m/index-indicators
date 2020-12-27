@@ -24,6 +24,7 @@ services:
       - "8080:8080"
     depends_on:
       - "db"
+      - "redis"
     environment:
       MYSQL_HOST: mysql_container
   nginx:
@@ -52,9 +53,10 @@ services:
       - "3306:3306"
   redis:
     image: "redis:latest"
-    ports:
-      - "6379:6379"
+    container_name: redis_container
     volumes:
       - "./server/data/redis:/data"
+    ports:
+      - "6379:6379"
 volumes:
   db-store:
