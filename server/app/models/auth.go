@@ -47,7 +47,7 @@ func CreateToken(userid int) (*entity.TokenDetails, error) {
 	var err error
 	atClaims := jwt.MapClaims{}
 	atClaims["authorized"] = true
-	atClaims["authorized"] = td.AccessUUID
+	atClaims["access_uuid"] = td.AccessUUID
 	atClaims["user_id"] = userid
 	atClaims["exp"] = td.AtExpires
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
@@ -124,7 +124,7 @@ func TokenValid(r *http.Request) error {
 	return nil
 }
 
-// ExtractTokenMetadata redisからtokenを取得
+// ExtractTokenMetadata  tokenをAccessDetailsで返す
 func ExtractTokenMetadata(r *http.Request) (*entity.AccessDetails, error) {
 	token, err := VerifyToken(r)
 	if err != nil {
@@ -136,7 +136,10 @@ func ExtractTokenMetadata(r *http.Request) (*entity.AccessDetails, error) {
 		if !ok {
 			return nil, err
 		}
-		userID := claims["user_id"].(int)
+		userID, err := strconv.ParseUint(fmt.Sprintf("%.f", claims["user_id"]), 10, 64)
+		if err != nil {
+			return nil, err
+		}
 		return &entity.AccessDetails{
 			AccessUUID: accessUUID,
 			UserID:     userID,
@@ -145,12 +148,13 @@ func ExtractTokenMetadata(r *http.Request) (*entity.AccessDetails, error) {
 	return nil, err
 }
 
-// FetchAuth 取得したtokenを元にredisからuserIDを抽出
+// FetchAuth tokenを元にredisからuserIDを抽出
 func FetchAuth(authD *entity.AccessDetails) (int, error) {
 	userid, err := db.Redis.Get(authD.AccessUUID).Result()
 	if err != nil {
 		return 0, err
 	}
+	// fmt.Println(userid)
 	userID, err := strconv.Atoi(userid)
 	if err != nil {
 		return 0, err

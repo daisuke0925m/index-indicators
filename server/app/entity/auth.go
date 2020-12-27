@@ -13,5 +13,5 @@ type TokenDetails struct {
 // AccessDetails 取得したtokenIDを返す為の構造体
 type AccessDetails struct {
 	AccessUUID string
-	UserID     int
+	UserID     uint64
 }
