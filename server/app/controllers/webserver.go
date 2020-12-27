@@ -6,13 +6,11 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"index-indicator-apis/server/app/entity"
 	"index-indicator-apis/server/app/models"
 	"index-indicator-apis/server/config"
 
-	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -32,36 +30,14 @@ func apiError(w http.ResponseWriter, errMessage string, code int) {
 	w.Write(jsonError)
 }
 
-func tokenVerifyMiddleWare(next http.HandlerFunc) http.HandlerFunc {
+func tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		authHeader := r.Header.Get("Authorization")
-		bearerToken := strings.Split(authHeader, " ")
-
-		if len(bearerToken) == 2 {
-			authToken := bearerToken[1]
-
-			token, error := jwt.Parse(authToken, func(token *jwt.Token) (interface{}, error) {
-				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-					return nil, fmt.Errorf("Error")
-				}
-				return []byte(config.Config.JwtAccess), nil
-			})
-
-			if error != nil {
-				apiError(w, error.Error(), http.StatusUnauthorized)
-				return
-			}
-
-			if token.Valid {
-				next.ServeHTTP(w, r)
-			} else {
-				apiError(w, error.Error(), http.StatusUnauthorized)
-				return
-			}
-		} else {
-			apiError(w, "token is required", http.StatusUnauthorized)
+		err := models.TokenValid(r)
+		if err != nil {
+			apiError(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
+		fn(w, r)
 	})
 }
 
@@ -167,14 +143,14 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(tokens)
 }
 
-func logoutHandler(w http.ResponseWriter, r *http.Request) {
-	token, err := models.ExtractToken(w, r)
-	if err != nil {
-		apiError(w, err.Error(), http.StatusUnauthorized)
-		return
-	}
-	fmt.Println(token)
-}
+// func logoutHandler(w http.ResponseWriter, r *http.Request) {
+// 	token, err := models.ExtractToken(r)
+// 	if err != nil {
+// 		apiError(w, err.Error(), http.StatusUnauthorized)
+// 		return
+// 	}
+// 	fmt.Println(token)
+// }
 
 // StartWebServer webserver立ち上げ
 func StartWebServer() error {
@@ -182,7 +158,7 @@ func StartWebServer() error {
 	http.HandleFunc("/api/fgi", tokenVerifyMiddleWare(apiFgiHandler))
 	http.HandleFunc("/api/signup", signupHandler)
 	http.HandleFunc("/api/login", loginHandler)
-	http.HandleFunc("/api/logout", tokenVerifyMiddleWare(logoutHandler))
+	// http.HandleFunc("/api/logout", tokenVerifyMiddleWare(logoutHandler))
 	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }
