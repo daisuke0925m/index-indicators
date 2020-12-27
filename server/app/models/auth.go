@@ -78,11 +78,11 @@ func CreateAuth(userid int, td *entity.TokenDetails) error {
 	rt := time.Unix(td.RtExpires, 0)
 	now := time.Now()
 
-	errAccess := db.Redis.Set(td.AccessUUID, strconv.Itoa(int(userid)), at.Sub(now)).Err()
+	errAccess := db.Redis.Set(td.AccessUUID, strconv.Itoa(userid), at.Sub(now)).Err()
 	if errAccess != nil {
 		return errAccess
 	}
-	errRefresh := db.Redis.Set(td.RefreshUUID, strconv.Itoa(int(userid)), rt.Sub(now)).Err()
+	errRefresh := db.Redis.Set(td.RefreshUUID, strconv.Itoa(userid), rt.Sub(now)).Err()
 	if errRefresh != nil {
 		return errRefresh
 	}
