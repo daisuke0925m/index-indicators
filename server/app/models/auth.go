@@ -7,6 +7,7 @@ import (
 	"index-indicator-apis/server/db"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -63,15 +64,6 @@ func CreateToken(userid int) (*entity.TokenDetails, error) {
 	return td, nil
 }
 
-// ExtractToken cookieからjwtを取得
-func ExtractToken(w http.ResponseWriter, r *http.Request) (string, error) {
-	cookie, err := r.Cookie("jwt")
-	if err != nil {
-		return "", err
-	}
-	return cookie.Value, nil
-}
-
 // CreateAuth is
 func CreateAuth(userid int, td *entity.TokenDetails) error {
 	at := time.Unix(td.AtExpires, 0)
@@ -87,4 +79,75 @@ func CreateAuth(userid int, td *entity.TokenDetails) error {
 		return errRefresh
 	}
 	return nil
+}
+
+// ExtractToken cookieからjwtを取得
+func ExtractToken(r *http.Request) string {
+	bearToken := r.Header.Get("Authorization")
+	strArr := strings.Split(bearToken, " ")
+	if len(strArr) == 2 {
+		return strArr[1]
+	}
+	return ""
+}
+
+// VerifyToken tokenが正しいか検証
+func VerifyToken(r *http.Request) (*jwt.Token, error) {
+	tokenString := ExtractToken(r)
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(config.Config.JwtAccess), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return token, nil
+}
+
+// TokenValid tokenの有効期限を検証
+func TokenValid(r *http.Request) error {
+	token, err := VerifyToken(r)
+	if err != nil {
+		return err
+	}
+	if _, ok := token.Claims.(jwt.Claims); !ok && !token.Valid {
+		return err
+	}
+	return nil
+}
+
+// ExtractTokenMetadata redisからtokenを取得
+func ExtractTokenMetadata(r *http.Request) (*entity.AccessDetails, error) {
+	token, err := VerifyToken(r)
+	if err != nil {
+		return nil, err
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok && token.Valid {
+		accessUUID, ok := claims["access_uuid"].(string)
+		if !ok {
+			return nil, err
+		}
+		userID := claims["user_id"].(int)
+		return &entity.AccessDetails{
+			AccessUUID: accessUUID,
+			UserID:     userID,
+		}, nil
+	}
+	return nil, err
+}
+
+// FetchAuth 取得したtokenを元にredisからuserIDを抽出
+func FetchAuth(authD *entity.AccessDetails) (int, error) {
+	userid, err := db.Redis.Get(authD.AccessUUID).Result()
+	if err != nil {
+		return 0, err
+	}
+	userID, err := strconv.Atoi(userid)
+	if err != nil {
+		return 0, err
+	}
+	return userID, nil
 }
