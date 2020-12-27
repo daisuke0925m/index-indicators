@@ -14,6 +14,8 @@ import (
 	"github.com/twinj/uuid"
 )
 
+// ---SignUp処理の関数-------------
+
 // FindUser 検索処理
 func FindUser(u entity.User) (user entity.User, err error) {
 	fmt.Println("start find user")
@@ -31,6 +33,8 @@ func FindUser(u entity.User) (user entity.User, err error) {
 
 	return u, nil
 }
+
+// ---Login処理の関数-------------
 
 // CreateToken jwtToken作成
 func CreateToken(userid int) (*entity.TokenDetails, error) {
@@ -64,7 +68,7 @@ func CreateToken(userid int) (*entity.TokenDetails, error) {
 	return td, nil
 }
 
-// CreateAuth is
+// CreateAuth redisにTokenDetailを保存する
 func CreateAuth(userid int, td *entity.TokenDetails) error {
 	at := time.Unix(td.AtExpires, 0)
 	rt := time.Unix(td.RtExpires, 0)
@@ -81,7 +85,9 @@ func CreateAuth(userid int, td *entity.TokenDetails) error {
 	return nil
 }
 
-// ExtractToken cookieからjwtを取得
+// ---認証処理の関数-------------
+
+// ExtractToken Headerからjwtを取得
 func ExtractToken(r *http.Request) string {
 	bearToken := r.Header.Get("Authorization")
 	strArr := strings.Split(bearToken, " ")
