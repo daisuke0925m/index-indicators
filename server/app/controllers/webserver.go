@@ -151,7 +151,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	saveErr := models.CreateAuth(user.ID, token)
+	saveErr := models.CreateAuth(searchedUser.ID, token)
 	if saveErr != nil {
 		apiError(w, err.Error(), http.StatusUnauthorized)
 		return
