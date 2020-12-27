@@ -151,9 +151,20 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	saveErr := models.CreateAuth(user.ID, token)
+	if saveErr != nil {
+		apiError(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	tokens := map[string]string{
+		"access_token":  token.AccessToken,
+		"refresh_token": token.RefreshToken,
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	json.NewEncoder(w).Encode(token)
+	json.NewEncoder(w).Encode(tokens)
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {

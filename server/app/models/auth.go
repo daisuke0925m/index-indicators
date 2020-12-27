@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"index-indicator-apis/server/app/entity"
 	"index-indicator-apis/server/config"
-	"index-indicator-apis/server/mysql"
+	"index-indicator-apis/server/db"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -15,7 +16,7 @@ import (
 // FindUser 検索処理
 func FindUser(u entity.User) (user entity.User, err error) {
 	fmt.Println("start find user")
-	db, err := mysql.SQLConnect()
+	db, err := db.SQLConnect()
 	if err != nil {
 		panic(err.Error())
 	}
@@ -71,19 +72,19 @@ func ExtractToken(w http.ResponseWriter, r *http.Request) (string, error) {
 	return cookie.Value, nil
 }
 
-// var client *redis.Client
+// CreateAuth is
+func CreateAuth(userid int, td *entity.TokenDetails) error {
+	at := time.Unix(td.AtExpires, 0)
+	rt := time.Unix(td.RtExpires, 0)
+	now := time.Now()
 
-// // InitRedis redis起動
-// func InitRedis() {
-// 	dsn := os.Getenv("REDIS_DSN")
-// 	if len(dsn) == 0 {
-// 		dsn = "localhost:6379"
-// 	}
-// 	client = redis.NewClient(&redis.Options{
-// 		Addr: dsn, //redis port
-// 	})
-// 	_, err := client.Ping().Result()
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// }
+	errAccess := db.Redis.Set(td.AccessUUID, strconv.Itoa(int(userid)), at.Sub(now)).Err()
+	if errAccess != nil {
+		return errAccess
+	}
+	errRefresh := db.Redis.Set(td.RefreshUUID, strconv.Itoa(int(userid)), rt.Sub(now)).Err()
+	if errRefresh != nil {
+		return errRefresh
+	}
+	return nil
+}
