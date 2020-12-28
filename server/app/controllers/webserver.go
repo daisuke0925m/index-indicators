@@ -143,14 +143,21 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(tokens)
 }
 
-// func logoutHandler(w http.ResponseWriter, r *http.Request) {
-// 	token, err := models.ExtractToken(r)
-// 	if err != nil {
-// 		apiError(w, err.Error(), http.StatusUnauthorized)
-// 		return
-// 	}
-// 	fmt.Println(token)
-// }
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
+	accessDetails, err := models.ExtractTokenMetadata(r)
+	if err != nil {
+		apiError(w, "not found", http.StatusNotFound)
+		return
+	}
+
+	deleted, delErr := models.DeleteAuth(accessDetails.AccessUUID)
+	if delErr != nil || deleted == 0 {
+		apiError(w, "not found", http.StatusNotFound)
+		return
+	}
+
+	apiError(w, "success", http.StatusOK)
+}
 
 func refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 	if result := checkHTTPMethod("POST", w, r); result != http.StatusOK {
@@ -179,7 +186,7 @@ func StartWebServer() error {
 	http.HandleFunc("/api/signup", signupHandler)
 	http.HandleFunc("/api/login", loginHandler)
 	http.HandleFunc("/api/refresh_token", refreshTokenHandler)
-	// http.HandleFunc("/api/logout", tokenVerifyMiddleWare(logoutHandler))
+	http.HandleFunc("/api/logout", tokenVerifyMiddleWare(logoutHandler))
 	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }
