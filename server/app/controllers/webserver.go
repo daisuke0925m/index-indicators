@@ -144,6 +144,11 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
+	if result := checkHTTPMethod("POST", w, r); result != http.StatusOK {
+		apiError(w, "bad request", result)
+		return
+	}
+
 	accessDetails, err := models.ExtractTokenMetadata(r)
 	if err != nil {
 		apiError(w, "not found", http.StatusNotFound)
