@@ -161,3 +161,71 @@ func FetchAuth(authD *entity.AccessDetails) (int, error) {
 	}
 	return userID, nil
 }
+
+// DeleteAuth Redisのjwtメタデータを削除
+func DeleteAuth(givenUUID string) (int64, error) {
+	deleted, err := db.Redis.Del(givenUUID).Result()
+	if err != nil {
+		return 0, err
+	}
+	return deleted, nil
+}
+
+// RefreshAuth accessTokenが切れたているとき,Tokenを再生成する。
+func RefreshAuth(r *http.Request, refreshToken string) (map[string]string, string) {
+
+	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(config.Config.JwtRefresh), nil
+	})
+
+	// token期限チェック
+	if err != nil {
+		return nil, "unauthorized"
+	}
+
+	// token正否チェック
+	if _, ok := token.Claims.(jwt.Claims); !ok && !token.Valid {
+		return nil, "unauthorized"
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok && token.Valid {
+		refreshUUID, ok := claims["refresh_uuid"].(string)
+		if !ok {
+			return nil, "unauthorized"
+		}
+		userID, err := strconv.Atoi(fmt.Sprintf("%.f", claims["user_id"]))
+		if err != nil {
+			return nil, "unauthorized"
+		}
+
+		deleted, delErr := DeleteAuth(refreshUUID)
+		if delErr != nil || deleted == 0 {
+			return nil, "unauthorized"
+		}
+
+		ts, createErr := CreateToken(userID)
+		if createErr != nil {
+			return nil, "unauthorized"
+		}
+
+		saveErr := CreateAuth(userID, ts)
+		if saveErr != nil {
+			return nil, "unauthorized"
+		}
+
+		tokens := map[string]string{
+			"access_token":  ts.AccessToken,
+			"refresh_token": ts.RefreshToken,
+		}
+
+		return tokens, ""
+	}
+	{
+		return nil, "unauthorized"
+	}
+
+}

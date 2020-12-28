@@ -152,12 +152,33 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 // 	fmt.Println(token)
 // }
 
+func refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
+	if result := checkHTTPMethod("POST", w, r); result != http.StatusOK {
+		apiError(w, "bad request", result)
+		return
+	}
+
+	mapToken := map[string]string{}
+	json.NewDecoder(r.Body).Decode(&mapToken)
+	refreshToken := mapToken["refresh_token"]
+
+	tokens, errMsg := models.RefreshAuth(r, refreshToken)
+	if errMsg != "" {
+		apiError(w, errMsg, http.StatusUnauthorized)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	json.NewEncoder(w).Encode(tokens)
+}
+
 // StartWebServer webserver立ち上げ
 func StartWebServer() error {
 	fmt.Println("connecting...")
 	http.HandleFunc("/api/fgi", tokenVerifyMiddleWare(apiFgiHandler))
 	http.HandleFunc("/api/signup", signupHandler)
 	http.HandleFunc("/api/login", loginHandler)
+	http.HandleFunc("/api/refresh_token", refreshTokenHandler)
 	// http.HandleFunc("/api/logout", tokenVerifyMiddleWare(logoutHandler))
 	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
