@@ -154,7 +154,6 @@ func FetchAuth(authD *entity.AccessDetails) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	// fmt.Println(userid)
 	userID, err := strconv.Atoi(userid)
 	if err != nil {
 		return 0, err

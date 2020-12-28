@@ -32,9 +32,17 @@ func apiError(w http.ResponseWriter, errMessage string, code int) {
 
 func tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := models.TokenValid(r)
+		accessDetails, err := models.ExtractTokenMetadata(r)
+		fmt.Println(err)
 		if err != nil {
-			apiError(w, err.Error(), http.StatusUnauthorized)
+			apiError(w, "unauthorized", http.StatusNotFound)
+			return
+		}
+
+		// Redisからtokenを検索して見つからない場合はunauthorizedを返す。
+		_, authErr := models.FetchAuth(accessDetails)
+		if authErr != nil {
+			apiError(w, "unauthorized", http.StatusUnauthorized)
 			return
 		}
 		fn(w, r)
