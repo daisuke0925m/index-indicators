@@ -33,7 +33,6 @@ func apiError(w http.ResponseWriter, errMessage string, code int) {
 func tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		accessDetails, err := models.ExtractTokenMetadata(r)
-		fmt.Println(err)
 		if err != nil {
 			apiError(w, "unauthorized", http.StatusNotFound)
 			return
