@@ -10,6 +10,7 @@ import (
 	"index-indicator-apis/server/app/entity"
 	"index-indicator-apis/server/app/models"
 	"index-indicator-apis/server/config"
+	"index-indicator-apis/server/db"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -106,6 +107,38 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	apiError(w, "success", http.StatusCreated)
 }
 
+func userDeleteHandler(w http.ResponseWriter, r *http.Request) {
+	if result := checkHTTPMethod("DELETE", w, r); result != http.StatusOK {
+		apiError(w, "bad request", result)
+		return
+	}
+
+	var user entity.User
+	json.NewDecoder(r.Body).Decode(&user)
+
+	searchedUser, err := models.FindUser(user)
+	if err != nil {
+		apiError(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(searchedUser.Password), []byte(user.Password)); err != nil {
+		apiError(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	db, err := db.SQLConnect()
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+	if err := db.Delete(&searchedUser).Error; err != nil {
+		apiError(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	apiError(w, "success", http.StatusOK)
+}
+
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	if result := checkHTTPMethod("POST", w, r); result != http.StatusOK {
 		apiError(w, "bad request", result)
@@ -199,6 +232,7 @@ func StartWebServer() error {
 	http.HandleFunc("/api/login", loginHandler)
 	http.HandleFunc("/api/refresh_token", refreshTokenHandler)
 	http.HandleFunc("/api/logout", tokenVerifyMiddleWare(logoutHandler))
+	http.HandleFunc("/api/user/delete", userDeleteHandler)
 	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }
