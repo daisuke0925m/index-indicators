@@ -113,17 +113,16 @@ func userDeleteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	foundUser, err := models.FindUserByID(r)
+	if err != nil {
+		apiError(w, err.Error(), http.StatusInternalServerError)
+	}
+
 	var user entity.User
 	json.NewDecoder(r.Body).Decode(&user)
 
-	searchedUser, err := models.FindUser(user)
-	if err != nil {
-		apiError(w, err.Error(), http.StatusNotFound)
-		return
-	}
-
-	if err := bcrypt.CompareHashAndPassword([]byte(searchedUser.Password), []byte(user.Password)); err != nil {
-		apiError(w, err.Error(), http.StatusUnauthorized)
+	if err := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(user.Password)); err != nil {
+		apiError(w, "unauthorized", http.StatusUnauthorized)
 		return
 	}
 
@@ -132,7 +131,7 @@ func userDeleteHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err.Error())
 	}
 	defer db.Close()
-	if err := db.Delete(&searchedUser).Error; err != nil {
+	if err := db.Delete(&foundUser).Error; err != nil {
 		apiError(w, err.Error(), http.StatusInternalServerError)
 	}
 
@@ -232,7 +231,7 @@ func StartWebServer() error {
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/refresh_token", refreshTokenHandler)
 	http.HandleFunc("/logout", tokenVerifyMiddleWare(logoutHandler))
-	http.HandleFunc("/user/delete", userDeleteHandler)
+	http.HandleFunc("/users/", userDeleteHandler)
 	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }
