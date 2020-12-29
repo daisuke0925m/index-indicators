@@ -227,12 +227,12 @@ func refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 // StartWebServer webserver立ち上げ
 func StartWebServer() error {
 	fmt.Println("connecting...")
-	http.HandleFunc("/api/fgi", tokenVerifyMiddleWare(apiFgiHandler))
-	http.HandleFunc("/api/signup", signupHandler)
-	http.HandleFunc("/api/login", loginHandler)
-	http.HandleFunc("/api/refresh_token", refreshTokenHandler)
-	http.HandleFunc("/api/logout", tokenVerifyMiddleWare(logoutHandler))
-	http.HandleFunc("/api/user/delete", userDeleteHandler)
+	http.HandleFunc("/fgi", tokenVerifyMiddleWare(apiFgiHandler))
+	http.HandleFunc("/signup", signupHandler)
+	http.HandleFunc("/login", loginHandler)
+	http.HandleFunc("/refresh_token", refreshTokenHandler)
+	http.HandleFunc("/logout", tokenVerifyMiddleWare(logoutHandler))
+	http.HandleFunc("/user/delete", userDeleteHandler)
 	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }
