@@ -138,6 +138,33 @@ func userDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	apiError(w, "success", http.StatusOK)
 }
 
+// func userUpdateHandler(w http.ResponseWriter, r *http.Request) {
+// 	// if result := checkHTTPMethod("PUT", w, r); result != http.StatusOK {
+// 	// 	apiError(w, "bad request", result)
+// 	// 	return
+// 	// }
+
+// 	// foundUser, err := models.FindUserByID(r)
+// 	// if err != nil {
+// 	// 	apiError(w, err.Error(), http.StatusInternalServerError)
+// 	// }
+
+// 	type body struct {
+// 		User struct {
+// 			Password string `json:"password,omitempty"`
+// 		} `json:"user,omitempty"`
+// 		NewUser struct {
+// 			UserName string `json:"user_name,omitempty"`
+// 			Email    string `json:"email,omitempty"`
+// 			Password string `json:"password,omitempty"`
+// 		} `json:"new_user,omitempty"`
+// 	}
+
+// 	var updateUser body
+// 	json.NewDecoder(r.Body).Decode(&updateUser)
+// 	fmt.Println(updateUser.User.Password)
+// }
+
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	if result := checkHTTPMethod("POST", w, r); result != http.StatusOK {
 		apiError(w, "bad request", result)
@@ -232,6 +259,7 @@ func StartWebServer() error {
 	http.HandleFunc("/refresh_token", refreshTokenHandler)
 	http.HandleFunc("/logout", tokenVerifyMiddleWare(logoutHandler))
 	http.HandleFunc("/users/", userDeleteHandler)
+	// http.HandleFunc("/users/", userUpdateHandler)
 	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }
