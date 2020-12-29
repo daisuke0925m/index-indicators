@@ -5,7 +5,13 @@ const Fgi = () => {
 
     useEffect(() => {
         async function fetchData() {
-            const resResult = await fetch('/server/api/fgi/')
+            const resResult = await fetch('/server/api/fgi', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'authorization': 'Bearer xxx', 認証してcookieからjwtを取り出す。
+                }
+            })
             resResult
                 .json()
                 .then((resResult) => setData(resResult))
