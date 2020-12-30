@@ -216,13 +216,16 @@ func StartWebServer() error {
 	http.Handle("/", r)
 
 	fmt.Println("connecting...")
-	r.HandleFunc("/fgi", tokenVerifyMiddleWare(apiFgiHandler)).Methods("GET")
-	r.HandleFunc("/login", loginHandler).Methods("POST")
-	r.HandleFunc("/refresh_token", refreshTokenHandler).Methods("POST")
-	r.HandleFunc("/logout", tokenVerifyMiddleWare(logoutHandler)).Methods("POST")
+	// users
 	r.HandleFunc("/users", signupHandler).Methods("POST")
 	r.HandleFunc("/users/{id:[0-9]+}", userDeleteHandler).Methods("DELETE")
 	// r.HandleFunc("/users/", userUpdateHandler).Methods("GET")
+	// auth
+	r.HandleFunc("/login", loginHandler).Methods("POST")
+	r.HandleFunc("/logout", tokenVerifyMiddleWare(logoutHandler)).Methods("POST")
+	r.HandleFunc("/refresh_token", refreshTokenHandler).Methods("POST")
+	// fgi
+	r.HandleFunc("/fgi", tokenVerifyMiddleWare(apiFgiHandler)).Methods("GET")
 	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }
