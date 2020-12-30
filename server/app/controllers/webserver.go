@@ -12,6 +12,7 @@ import (
 	"index-indicator-apis/server/config"
 	"index-indicator-apis/server/db"
 
+	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -49,19 +50,7 @@ func tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request)) http.Han
 	})
 }
 
-func checkHTTPMethod(method string, w http.ResponseWriter, r *http.Request) int {
-	if r.Method != method {
-		return http.StatusMethodNotAllowed
-	}
-	return http.StatusOK
-}
-
-func apiFgiHandler(w http.ResponseWriter, r *http.Request) {
-	if result := checkHTTPMethod("GET", w, r); result != http.StatusOK {
-		apiError(w, "bad request", result)
-		return
-	}
-
+func fgiHandler(w http.ResponseWriter, r *http.Request) {
 	strLimit := r.URL.Query().Get("limit")
 	limit, err := strconv.Atoi(strLimit)
 	if strLimit == "" || err != nil || limit < 0 || limit > 100 {
@@ -78,11 +67,6 @@ func apiFgiHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func signupHandler(w http.ResponseWriter, r *http.Request) {
-	if result := checkHTTPMethod("POST", w, r); result != http.StatusOK {
-		apiError(w, "bad request", result)
-		return
-	}
-
 	var user entity.User
 	json.NewDecoder(r.Body).Decode(&user)
 
@@ -108,11 +92,6 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func userDeleteHandler(w http.ResponseWriter, r *http.Request) {
-	if result := checkHTTPMethod("DELETE", w, r); result != http.StatusOK {
-		apiError(w, "bad request", result)
-		return
-	}
-
 	foundUser, err := models.FindUserByID(r)
 	if err != nil {
 		apiError(w, err.Error(), http.StatusInternalServerError)
@@ -139,10 +118,6 @@ func userDeleteHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // func userUpdateHandler(w http.ResponseWriter, r *http.Request) {
-// 	// if result := checkHTTPMethod("PUT", w, r); result != http.StatusOK {
-// 	// 	apiError(w, "bad request", result)
-// 	// 	return
-// 	// }
 
 // 	// foundUser, err := models.FindUserByID(r)
 // 	// if err != nil {
@@ -166,11 +141,6 @@ func userDeleteHandler(w http.ResponseWriter, r *http.Request) {
 // }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-	if result := checkHTTPMethod("POST", w, r); result != http.StatusOK {
-		apiError(w, "bad request", result)
-		return
-	}
-
 	var user entity.User
 	json.NewDecoder(r.Body).Decode(&user)
 
@@ -210,11 +180,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
-	if result := checkHTTPMethod("POST", w, r); result != http.StatusOK {
-		apiError(w, "bad request", result)
-		return
-	}
-
 	accessDetails, err := models.ExtractTokenMetadata(r)
 	if err != nil {
 		apiError(w, "not found", http.StatusNotFound)
@@ -231,11 +196,6 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
-	if result := checkHTTPMethod("POST", w, r); result != http.StatusOK {
-		apiError(w, "bad request", result)
-		return
-	}
-
 	mapToken := map[string]string{}
 	json.NewDecoder(r.Body).Decode(&mapToken)
 	refreshToken := mapToken["refresh_token"]
@@ -252,14 +212,20 @@ func refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 
 // StartWebServer webserver立ち上げ
 func StartWebServer() error {
+	r := mux.NewRouter()
+	http.Handle("/", r)
+
 	fmt.Println("connecting...")
-	http.HandleFunc("/fgi", tokenVerifyMiddleWare(apiFgiHandler))
-	http.HandleFunc("/signup", signupHandler)
-	http.HandleFunc("/login", loginHandler)
-	http.HandleFunc("/refresh_token", refreshTokenHandler)
-	http.HandleFunc("/logout", tokenVerifyMiddleWare(logoutHandler))
-	http.HandleFunc("/users/", userDeleteHandler)
-	// http.HandleFunc("/users/", userUpdateHandler)
+	// users
+	r.HandleFunc("/users", signupHandler).Methods("POST")
+	r.HandleFunc("/users/{id:[0-9]+}", userDeleteHandler).Methods("DELETE")
+	// r.HandleFunc("/users/", userUpdateHandler).Methods("GET")
+	// auth
+	r.HandleFunc("/login", loginHandler).Methods("POST")
+	r.HandleFunc("/logout", tokenVerifyMiddleWare(logoutHandler)).Methods("POST")
+	r.HandleFunc("/refresh_token", refreshTokenHandler).Methods("POST")
+	// fgi
+	r.HandleFunc("/fgi", tokenVerifyMiddleWare(fgiHandler)).Methods("GET")
 	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }
