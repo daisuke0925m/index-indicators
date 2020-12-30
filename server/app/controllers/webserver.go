@@ -117,28 +117,56 @@ func userDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	apiError(w, "success", http.StatusOK)
 }
 
-// func userUpdateHandler(w http.ResponseWriter, r *http.Request) {
+func userUpdateHandler(w http.ResponseWriter, r *http.Request) {
+	foundUser, err := models.FindUserByID(r)
+	if err != nil {
+		apiError(w, err.Error(), http.StatusInternalServerError)
+	}
 
-// 	// foundUser, err := models.FindUserByID(r)
-// 	// if err != nil {
-// 	// 	apiError(w, err.Error(), http.StatusInternalServerError)
-// 	// }
+	type body struct {
+		User struct {
+			Password string `json:"password,omitempty"`
+		} `json:"user,omitempty"`
+		NewUser struct {
+			UserName string `json:"user_name,omitempty"`
+			Email    string `json:"email,omitempty"`
+			Password string `json:"password,omitempty"`
+		} `json:"new_user,omitempty"`
+	}
 
-// 	type body struct {
-// 		User struct {
-// 			Password string `json:"password,omitempty"`
-// 		} `json:"user,omitempty"`
-// 		NewUser struct {
-// 			UserName string `json:"user_name,omitempty"`
-// 			Email    string `json:"email,omitempty"`
-// 			Password string `json:"password,omitempty"`
-// 		} `json:"new_user,omitempty"`
-// 	}
+	var updateUser body
+	json.NewDecoder(r.Body).Decode(&updateUser)
 
-// 	var updateUser body
-// 	json.NewDecoder(r.Body).Decode(&updateUser)
-// 	fmt.Println(updateUser.User.Password)
-// }
+	if err := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(updateUser.User.Password)); err != nil {
+		apiError(w, "unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	if updateUser.NewUser.UserName != "" {
+		foundUser.UserName = updateUser.NewUser.UserName
+	}
+	if updateUser.NewUser.Email != "" {
+		foundUser.Email = updateUser.NewUser.Email
+	}
+	if updateUser.NewUser.Password != "" {
+		hash, err := bcrypt.GenerateFromPassword([]byte(updateUser.NewUser.Password), 10)
+		if err != nil {
+			log.Fatal(err)
+		}
+		foundUser.Password = string(hash)
+	}
+
+	db, err := db.SQLConnect()
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+	if err := db.Save(&foundUser).Error; err != nil {
+		apiError(w, "could not update", http.StatusInternalServerError)
+	}
+
+	apiError(w, "success", http.StatusOK)
+}
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	var user entity.User
@@ -219,7 +247,7 @@ func StartWebServer() error {
 	// users
 	r.HandleFunc("/users", signupHandler).Methods("POST")
 	r.HandleFunc("/users/{id:[0-9]+}", userDeleteHandler).Methods("DELETE")
-	// r.HandleFunc("/users/", userUpdateHandler).Methods("GET")
+	r.HandleFunc("/users/{id:[0-9]+}", userUpdateHandler).Methods("PUT")
 	// auth
 	r.HandleFunc("/login", loginHandler).Methods("POST")
 	r.HandleFunc("/logout", tokenVerifyMiddleWare(logoutHandler)).Methods("POST")
