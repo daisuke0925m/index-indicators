@@ -50,7 +50,7 @@ func tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request)) http.Han
 	})
 }
 
-func apiFgiHandler(w http.ResponseWriter, r *http.Request) {
+func fgiHandler(w http.ResponseWriter, r *http.Request) {
 	strLimit := r.URL.Query().Get("limit")
 	limit, err := strconv.Atoi(strLimit)
 	if strLimit == "" || err != nil || limit < 0 || limit > 100 {
@@ -225,7 +225,7 @@ func StartWebServer() error {
 	r.HandleFunc("/logout", tokenVerifyMiddleWare(logoutHandler)).Methods("POST")
 	r.HandleFunc("/refresh_token", refreshTokenHandler).Methods("POST")
 	// fgi
-	r.HandleFunc("/fgi", tokenVerifyMiddleWare(apiFgiHandler)).Methods("GET")
+	r.HandleFunc("/fgi", tokenVerifyMiddleWare(fgiHandler)).Methods("GET")
 	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }
