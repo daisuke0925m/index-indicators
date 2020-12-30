@@ -12,6 +12,7 @@ import (
 	"index-indicator-apis/server/config"
 	"index-indicator-apis/server/db"
 
+	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -252,14 +253,17 @@ func refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 
 // StartWebServer webserver立ち上げ
 func StartWebServer() error {
+	r := mux.NewRouter()
+	http.Handle("/", r)
+
 	fmt.Println("connecting...")
-	http.HandleFunc("/fgi", tokenVerifyMiddleWare(apiFgiHandler))
-	http.HandleFunc("/signup", signupHandler)
-	http.HandleFunc("/login", loginHandler)
-	http.HandleFunc("/refresh_token", refreshTokenHandler)
-	http.HandleFunc("/logout", tokenVerifyMiddleWare(logoutHandler))
-	http.HandleFunc("/users/", userDeleteHandler)
-	// http.HandleFunc("/users/", userUpdateHandler)
+	r.HandleFunc("/fgi", tokenVerifyMiddleWare(apiFgiHandler))
+	r.HandleFunc("/signup", signupHandler)
+	r.HandleFunc("/login", loginHandler)
+	r.HandleFunc("/refresh_token", refreshTokenHandler)
+	r.HandleFunc("/logout", tokenVerifyMiddleWare(logoutHandler))
+	r.HandleFunc("/users/", userDeleteHandler)
+	// r.HandleFunc("/users/", userUpdateHandler)
 	fmt.Printf("connected port :%d\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }
