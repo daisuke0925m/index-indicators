@@ -123,48 +123,7 @@ func userUpdateHandler(w http.ResponseWriter, r *http.Request) {
 		apiError(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	type body struct {
-		User struct {
-			Password string `json:"password,omitempty"`
-		} `json:"user,omitempty"`
-		NewUser struct {
-			UserName string `json:"user_name,omitempty"`
-			Email    string `json:"email,omitempty"`
-			Password string `json:"password,omitempty"`
-		} `json:"new_user,omitempty"`
-	}
-
-	var updateUser body
-	json.NewDecoder(r.Body).Decode(&updateUser)
-
-	if err := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(updateUser.User.Password)); err != nil {
-		apiError(w, "unauthorized", http.StatusUnauthorized)
-		return
-	}
-
-	if updateUser.NewUser.UserName != "" {
-		foundUser.UserName = updateUser.NewUser.UserName
-	}
-	if updateUser.NewUser.Email != "" {
-		foundUser.Email = updateUser.NewUser.Email
-	}
-	if updateUser.NewUser.Password != "" {
-		hash, err := bcrypt.GenerateFromPassword([]byte(updateUser.NewUser.Password), 10)
-		if err != nil {
-			log.Fatal(err)
-		}
-		foundUser.Password = string(hash)
-	}
-
-	db, err := db.SQLConnect()
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
-	if err := db.Save(&foundUser).Error; err != nil {
-		apiError(w, "could not update", http.StatusInternalServerError)
-	}
-
+	models.UpdateUser(foundUser, r)
 	apiError(w, "success", http.StatusOK)
 }
 
