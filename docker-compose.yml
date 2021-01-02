@@ -27,6 +27,7 @@ services:
       - "redis"
     environment:
       MYSQL_HOST: mysql_container
+      REDIS_HOST: redis_container
   nginx:
     image: nginx
     container_name: nginx_container

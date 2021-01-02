@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"index-indicator-apis/server/app/entity"
+	"os"
 
 	// Register for gorm
 	_ "github.com/go-sql-driver/mysql"
@@ -14,7 +15,7 @@ func SQLConnect() (database *gorm.DB, err error) {
 	DBMS := "mysql"
 	USER := "iia"
 	PASS := "iia"
-	PROTOCOL := "tcp(mysql_container:3306)"
+	PROTOCOL := "tcp(" + os.Getenv("MYSQL_HOST") + ":3306)"
 	DBNAME := "index_indicator_apis"
 
 	CONNECT := (USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo")
