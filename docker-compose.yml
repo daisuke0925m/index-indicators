@@ -28,6 +28,7 @@ services:
     environment:
       MYSQL_HOST: mysql_container
       REDIS_HOST: redis_container
+      SRC_ROOT: /usr/src/app/server
   nginx:
     image: nginx
     container_name: nginx_container
