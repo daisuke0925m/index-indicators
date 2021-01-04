@@ -20,7 +20,7 @@ type ConfigList struct {
 var Config ConfigList
 
 func init() {
-	cfg, err := ini.Load(os.Getenv("SRC_ROOT") + "/config.ini")
+	cfg, err := ini.Load(os.Getenv("SRC_ROOT") + "config.ini")
 	if err != nil {
 		log.Printf("Failed to read file: %v", err)
 		os.Exit(1)
