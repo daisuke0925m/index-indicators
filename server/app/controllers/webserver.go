@@ -66,29 +66,31 @@ func fgiHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-func signupHandler(w http.ResponseWriter, r *http.Request) {
-	var user entity.User
-	json.NewDecoder(r.Body).Decode(&user)
+func signupHandler(u models.User) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var user entity.User
+		json.NewDecoder(r.Body).Decode(&user)
 
-	if user.UserName == "" {
-		apiError(w, "UserName is required", http.StatusBadRequest)
-		return
-	}
-	if user.Email == "" {
-		apiError(w, "Email is required", http.StatusBadRequest)
-		return
-	}
-	if user.Password == "" {
-		apiError(w, "Password is required", http.StatusBadRequest)
-		return
-	}
+		if user.UserName == "" {
+			apiError(w, "UserName is required", http.StatusBadRequest)
+			return
+		}
+		if user.Email == "" {
+			apiError(w, "Email is required", http.StatusBadRequest)
+			return
+		}
+		if user.Password == "" {
+			apiError(w, "Password is required", http.StatusBadRequest)
+			return
+		}
 
-	if err := models.CreateUser(user); err != nil {
-		apiError(w, "username or email are duplicated", http.StatusConflict)
-		return
-	}
+		if err := models.CreateUser(user); err != nil {
+			apiError(w, "username or email are duplicated", http.StatusConflict)
+			return
+		}
 
-	apiError(w, "success", http.StatusCreated)
+		apiError(w, "success", http.StatusCreated)
+	}
 }
 
 func userDeleteHandler(w http.ResponseWriter, r *http.Request) {
@@ -199,12 +201,18 @@ func refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 
 // StartWebServer webserver立ち上げ
 func StartWebServer() error {
+	db, err := db.SQLConnect()
+	if err != nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+
 	r := mux.NewRouter()
 	http.Handle("/", r)
 
 	fmt.Println("connecting...")
 	// users
-	r.HandleFunc("/users", signupHandler).Methods("POST")
+	r.HandleFunc("/users", signupHandler(&entity.User{DB: db})).Methods("POST")
 	r.HandleFunc("/users/{id:[0-9]+}", userDeleteHandler).Methods("DELETE")
 	r.HandleFunc("/users/{id:[0-9]+}", userUpdateHandler).Methods("PUT")
 	// auth
