@@ -15,6 +15,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type User interface {
+}
+
 // CreateUser user登録
 func CreateUser(user entity.User) (err error) {
 	fmt.Printf("start signup\n")
