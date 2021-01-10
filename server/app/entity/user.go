@@ -2,10 +2,13 @@ package entity
 
 import (
 	"time"
+
+	"github.com/jinzhu/gorm"
 )
 
 // User user情報
 type User struct {
+	DB        *gorm.DB
 	ID        int       `json:"id,omitempty" gorm:"primaryKey,unique"`
 	UserName  string    `json:"user_name,omitempty" gorm:"unique"`
 	Email     string    `json:"email,omitempty" gorm:"unique"`
