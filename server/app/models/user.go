@@ -12,15 +12,27 @@ import (
 	"index-indicator-apis/server/app/entity"
 	"index-indicator-apis/server/db"
 
+	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
 
-//User interface
-type User interface {
+//UserIn interface
+// type UserIn interface {
+// 	CreateUser() (err error)
+// }
+
+type User struct {
+	DB        *gorm.DB
+	ID        int       `json:"id,omitempty" gorm:"primaryKey,unique"`
+	UserName  string    `json:"user_name,omitempty" gorm:"unique"`
+	Email     string    `json:"email,omitempty" gorm:"unique"`
+	Password  string    `json:"password,omitempty"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
 // CreateUser user登録
-func CreateUser(user entity.User) (err error) {
+func (user User) CreateUser() (err error) {
 	fmt.Printf("start signup\n")
 
 	user.CreatedAt = time.Now()
@@ -31,13 +43,7 @@ func CreateUser(user entity.User) (err error) {
 	}
 	user.Password = string(hash)
 
-	db, err := db.SQLConnect()
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
-
-	if err := db.Create(&user).Error; err != nil {
+	if err := user.DB.Create(&user).Error; err != nil {
 		return err
 	}
 

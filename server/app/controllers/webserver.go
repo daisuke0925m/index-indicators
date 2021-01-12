@@ -66,11 +66,12 @@ func fgiHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-func signupHandler(u models.User) http.HandlerFunc {
+func signupHandler(u *models.User) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var user entity.User
+		var user models.User
 		json.NewDecoder(r.Body).Decode(&user)
 
+		user.DB = u.DB
 		if user.UserName == "" {
 			apiError(w, "UserName is required", http.StatusBadRequest)
 			return
@@ -84,7 +85,7 @@ func signupHandler(u models.User) http.HandlerFunc {
 			return
 		}
 
-		if err := models.CreateUser(user); err != nil {
+		if err := user.CreateUser(); err != nil {
 			apiError(w, "username or email are duplicated", http.StatusConflict)
 			return
 		}
@@ -212,7 +213,7 @@ func StartWebServer() error {
 
 	fmt.Println("connecting...")
 	// users
-	r.HandleFunc("/users", signupHandler(&entity.User{DB: db})).Methods("POST")
+	r.HandleFunc("/users", signupHandler(&models.User{DB: db})).Methods("POST")
 	r.HandleFunc("/users/{id:[0-9]+}", userDeleteHandler).Methods("DELETE")
 	r.HandleFunc("/users/{id:[0-9]+}", userUpdateHandler).Methods("PUT")
 	// auth
