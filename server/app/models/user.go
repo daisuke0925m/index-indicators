@@ -21,6 +21,7 @@ import (
 // 	CreateUser() (err error)
 // }
 
+// User 構造体
 type User struct {
 	DB        *gorm.DB
 	ID        int       `json:"id,omitempty" gorm:"primaryKey,unique"`
