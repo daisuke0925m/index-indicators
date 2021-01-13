@@ -16,10 +16,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-//UserIn interface
-// type UserIn interface {
-// 	CreateUser() (err error)
-// }
+// UserIn interface
+type UserIn interface {
+	CreateUser() (err error)
+}
 
 // User 構造体
 type User struct {
