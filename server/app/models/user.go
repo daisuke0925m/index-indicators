@@ -16,9 +16,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// UserIn interface
-type UserIn interface {
-	CreateUser() (err error)
+// UserService interface
+type UserService interface {
+	CreateUser(name string, email string, pass string) (err error)
 }
 
 // User 構造体
@@ -33,11 +33,15 @@ type User struct {
 }
 
 // CreateUser user登録
-func (user *User) CreateUser() (err error) {
+func (user *User) CreateUser(name string, email string, pass string) (err error) {
 	fmt.Printf("start signup\n")
 
+	user.UserName = name
+	user.Email = email
+	user.Password = pass
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
+
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
 		log.Fatal(err)
@@ -48,6 +52,7 @@ func (user *User) CreateUser() (err error) {
 		return err
 	}
 
+	user = &User{}
 	fmt.Printf("%v\n", user)
 	fmt.Println("finish! created a user")
 	return
