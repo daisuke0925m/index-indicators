@@ -73,6 +73,7 @@ func FindUserByID(r *http.Request) (entity.User, error) {
 	return user, nil
 }
 
+// UpdateUser userアップデート
 func UpdateUser(foundUser entity.User, r *http.Request) (err error) {
 	type body struct {
 		User struct {
