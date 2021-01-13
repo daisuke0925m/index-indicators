@@ -32,7 +32,7 @@ type User struct {
 }
 
 // CreateUser user登録
-func (user User) CreateUser() (err error) {
+func (user *User) CreateUser() (err error) {
 	fmt.Printf("start signup\n")
 
 	user.CreatedAt = time.Now()
