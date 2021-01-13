@@ -94,6 +94,7 @@ func signupHandler(u models.UserService) http.HandlerFunc {
 		}
 
 		apiError(w, "success", http.StatusCreated)
+		return
 	}
 }
 
