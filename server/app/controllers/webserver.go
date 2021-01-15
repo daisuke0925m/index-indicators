@@ -66,14 +66,14 @@ func fgiHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-func signupHandler(u models.UserService) http.HandlerFunc {
+func signupHandler(user models.UserService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var user models.User
-		json.NewDecoder(r.Body).Decode(&user)
+		var u models.User
+		json.NewDecoder(r.Body).Decode(&u)
 
-		name := user.UserName
-		email := user.Email
-		pass := user.Password
+		name := u.UserName
+		email := u.Email
+		pass := u.Password
 
 		if name == "" {
 			apiError(w, "UserName is required", http.StatusBadRequest)
@@ -88,7 +88,7 @@ func signupHandler(u models.UserService) http.HandlerFunc {
 			return
 		}
 
-		if err := u.CreateUser(name, email, pass); err != nil {
+		if err := user.CreateUser(name, email, pass); err != nil {
 			apiError(w, "username or email are duplicated", http.StatusConflict)
 			return
 		}

@@ -33,7 +33,7 @@ type User struct {
 }
 
 // CreateUser user登録
-func (user *User) CreateUser(name string, email string, pass string) (err error) {
+func (user *User) CreateUser(name, email, pass string) (err error) {
 	fmt.Printf("start signup\n")
 
 	user.UserName = name
