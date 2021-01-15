@@ -36,6 +36,7 @@ type User struct {
 func (user *User) CreateUser(name, email, pass string) (err error) {
 	fmt.Printf("start signup\n")
 
+	user.ID = 0 //gorm auto increment
 	user.UserName = name
 	user.Email = email
 	user.Password = pass
