@@ -52,7 +52,6 @@ func (user *User) CreateUser(name, email, pass string) (err error) {
 		return err
 	}
 
-	user = &User{}
 	fmt.Printf("%v\n", user)
 	fmt.Println("finish! created a user")
 	return
