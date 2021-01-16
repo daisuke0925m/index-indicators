@@ -37,11 +37,10 @@ func (user *User) CreateUser(name, email, pass string) (err error) {
 	user.ID = 0 //gorm auto increment
 	user.UserName = name
 	user.Email = email
-	user.Password = pass
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
 
-	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
+	hash, err := bcrypt.GenerateFromPassword([]byte(pass), 10)
 	if err != nil {
 		log.Fatal(err)
 	}
