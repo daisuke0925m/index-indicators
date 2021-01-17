@@ -18,7 +18,9 @@ import (
 
 // UserService interface
 type UserService interface {
+	Fetch(id int) (err error)
 	CreateUser(name string, email string, pass string) (err error)
+	DeleteUser(id int, pass string) (err error)
 }
 
 // User 構造体
@@ -30,6 +32,14 @@ type User struct {
 	Password  string    `json:"password,omitempty"`
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+}
+
+// Fetch user fetch
+func (user *User) Fetch(id int) (err error) {
+	if err := user.DB.First(&user, id).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
 // CreateUser user登録
@@ -51,6 +61,18 @@ func (user *User) CreateUser(name, email, pass string) (err error) {
 	}
 
 	return
+}
+
+func (user *User) DeleteUser(id int, pass string) (err error) {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pass)); err != nil {
+		return err
+	}
+
+	if err := user.DB.Delete(&user).Error; err != nil {
+		return err
+	}
+	user.ID = 0 //gorm auto increment
+	return nil
 }
 
 // FindUserByID idからuserを検索

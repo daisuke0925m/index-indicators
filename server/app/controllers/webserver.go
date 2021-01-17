@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"path"
 	"strconv"
 
 	"index-indicator-apis/server/app/entity"
@@ -98,30 +99,30 @@ func signupHandler(user models.UserService) http.HandlerFunc {
 	}
 }
 
-func userDeleteHandler(w http.ResponseWriter, r *http.Request) {
-	foundUser, err := models.FindUserByID(r)
-	if err != nil {
-		apiError(w, err.Error(), http.StatusInternalServerError)
-	}
+func userDeleteHandler(user models.UserService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var u models.User
+		json.NewDecoder(r.Body).Decode(&u)
 
-	var user entity.User
-	json.NewDecoder(r.Body).Decode(&user)
+		id, err := strconv.Atoi(path.Base(r.URL.Path))
+		if err != nil {
+			apiError(w, "cloud not find user", http.StatusNotFound)
+			return
+		}
+		err = user.Fetch(id)
+		if err != nil {
+			apiError(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(user.Password)); err != nil {
-		apiError(w, "unauthorized", http.StatusUnauthorized)
+		err = user.DeleteUser(id, u.Password)
+		if err != nil {
+			apiError(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		apiError(w, "success", http.StatusOK)
 		return
 	}
-
-	db, err := db.SQLConnect()
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
-	if err := db.Delete(&foundUser).Error; err != nil {
-		apiError(w, err.Error(), http.StatusInternalServerError)
-	}
-
-	apiError(w, "success", http.StatusOK)
 }
 
 func userUpdateHandler(w http.ResponseWriter, r *http.Request) {
@@ -218,7 +219,7 @@ func StartWebServer() error {
 	fmt.Println("connecting...")
 	// users
 	r.HandleFunc("/users", signupHandler(&models.User{DB: db})).Methods("POST")
-	r.HandleFunc("/users/{id:[0-9]+}", userDeleteHandler).Methods("DELETE")
+	r.HandleFunc("/users/{id:[0-9]+}", userDeleteHandler(&models.User{DB: db})).Methods("DELETE")
 	r.HandleFunc("/users/{id:[0-9]+}", userUpdateHandler).Methods("PUT")
 	// auth
 	r.HandleFunc("/login", loginHandler).Methods("POST")
