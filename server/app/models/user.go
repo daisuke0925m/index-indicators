@@ -63,6 +63,7 @@ func (user *User) CreateUser(name, email, pass string) (err error) {
 	return
 }
 
+// DeleteUser user削除
 func (user *User) DeleteUser(id int, pass string) (err error) {
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pass)); err != nil {
 		return err
