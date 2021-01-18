@@ -17,6 +17,10 @@ type FakeUser struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
+func (user *FakeUser) Fetch(id int) (err error) {
+	return err
+}
+
 func (user *FakeUser) CreateUser(name string, email string, pass string) (err error) {
 	user.UserName = name
 	user.Email = email
@@ -24,6 +28,9 @@ func (user *FakeUser) CreateUser(name string, email string, pass string) (err er
 	return
 }
 
+func (user *FakeUser) DeleteUser(id int, pass string) (err error) {
+	return
+}
 func Test_signupHandler(t *testing.T) {
 	mux := http.NewServeMux()
 	user := &FakeUser{}
