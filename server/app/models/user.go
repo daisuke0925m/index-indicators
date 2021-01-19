@@ -10,22 +10,12 @@ import (
 	"time"
 
 	"index-indicator-apis/server/app/entity"
-	"index-indicator-apis/server/db"
 
-	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// UserService interface
-type UserService interface {
-	Fetch(id int) (err error)
-	CreateUser(name string, email string, pass string) (err error)
-	DeleteUser(id int, pass string) (err error)
-}
-
 // User 構造体
 type User struct {
-	DB        *gorm.DB
 	ID        int       `json:"id,omitempty" gorm:"primaryKey,unique"`
 	UserName  string    `json:"user_name,omitempty" gorm:"unique"`
 	Email     string    `json:"email,omitempty" gorm:"unique"`
@@ -35,61 +25,60 @@ type User struct {
 }
 
 // Fetch user fetch
-func (user *User) Fetch(id int) (err error) {
-	if err := user.DB.First(&user, id).Error; err != nil {
+func (m *Models) Fetch(id int) (err error) {
+	var user User
+	if err := m.DB.First(&user, id).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 // CreateUser user登録
-func (user *User) CreateUser(name, email, pass string) (err error) {
-	user.ID = 0 //gorm auto increment
-	user.UserName = name
-	user.Email = email
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
-
+func (m *Models) CreateUser(name, email, pass string) (err error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(pass), 10)
 	if err != nil {
 		log.Fatal(err)
 	}
-	user.Password = string(hash)
+	newUser := &User{
+		UserName:  name,
+		Email:     email,
+		Password:  string(hash),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
 
-	if err := user.DB.Create(&user).Error; err != nil {
+	if err := m.DB.Create(&newUser).Error; err != nil {
 		return err
 	}
 
-	return
+	return nil
 }
 
 // DeleteUser user削除
-func (user *User) DeleteUser(id int, pass string) (err error) {
+func (m *Models) DeleteUser(id int, pass string) (err error) {
+	var user entity.User
+	if err := m.DB.First(&user, id).Error; err != nil {
+		return err
+	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pass)); err != nil {
 		return err
 	}
 
-	if err := user.DB.Delete(&user).Error; err != nil {
+	if err := m.DB.Delete(&user).Error; err != nil {
 		return err
 	}
-	user.ID = 0 //gorm auto increment
 	return nil
 }
 
 // FindUserByID idからuserを検索
-func FindUserByID(r *http.Request) (entity.User, error) {
+func (m *Models) FindUserByID(r *http.Request) (entity.User, error) {
 	var user entity.User
 	id, err := strconv.Atoi(path.Base(r.URL.Path))
 	if err != nil {
 		return entity.User{}, err
 	}
 
-	db, err := db.SQLConnect()
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
-	if err := db.Where("id = ?", id).First(&user).Error; err != nil {
+	if err := m.DB.Where("id = ?", id).First(&user).Error; err != nil {
 		fmt.Println("error!")
 		return user, err
 	}
@@ -97,7 +86,7 @@ func FindUserByID(r *http.Request) (entity.User, error) {
 }
 
 // UpdateUser userアップデート
-func UpdateUser(foundUser entity.User, r *http.Request) (err error) {
+func (m *Models) UpdateUser(foundUser entity.User, r *http.Request) (err error) {
 	type body struct {
 		User struct {
 			Password string `json:"password,omitempty"`
@@ -130,12 +119,7 @@ func UpdateUser(foundUser entity.User, r *http.Request) (err error) {
 		foundUser.Password = string(hash)
 	}
 
-	db, err := db.SQLConnect()
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
-	if err := db.Save(&foundUser).Error; err != nil {
+	if err := m.DB.Save(&foundUser).Error; err != nil {
 		return err
 	}
 
