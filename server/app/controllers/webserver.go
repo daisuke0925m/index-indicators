@@ -10,20 +10,29 @@ import (
 
 	"index-indicator-apis/server/app/entity"
 	"index-indicator-apis/server/app/models"
-	"index-indicator-apis/server/config"
-	"index-indicator-apis/server/db"
 
-	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// JSONError エラー情報を格納
+//App struct
+type App struct {
+	DB entity.DB
+}
+
+//NewApp return *APP
+func NewApp(models *models.Models) *App {
+	return &App{
+		DB: models,
+	}
+}
+
+// JSONError is returned when api return error
 type JSONError struct {
 	Error string `json:"error"`
 	Code  int    `json:"code"`
 }
 
-func apiError(w http.ResponseWriter, errMessage string, code int) {
+func (a *App) apiError(w http.ResponseWriter, errMessage string, code int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	jsonError, err := json.Marshal(JSONError{Error: errMessage, Code: code})
@@ -33,25 +42,25 @@ func apiError(w http.ResponseWriter, errMessage string, code int) {
 	w.Write(jsonError)
 }
 
-func tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
+func (a *App) tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		accessDetails, err := models.ExtractTokenMetadata(r)
 		if err != nil {
-			apiError(w, "unauthorized", http.StatusNotFound)
+			a.apiError(w, "unauthorized", http.StatusNotFound)
 			return
 		}
 
 		// Redisからtokenを検索して見つからない場合はunauthorizedを返す。
 		_, authErr := models.FetchAuth(accessDetails)
 		if authErr != nil {
-			apiError(w, "unauthorized", http.StatusUnauthorized)
+			a.apiError(w, "unauthorized", http.StatusUnauthorized)
 			return
 		}
 		fn(w, r)
 	})
 }
 
-func fgiHandler(w http.ResponseWriter, r *http.Request) {
+func (a *App) fgiHandler(w http.ResponseWriter, r *http.Request) {
 	strLimit := r.URL.Query().Get("limit")
 	limit, err := strconv.Atoi(strLimit)
 	if strLimit == "" || err != nil || limit < 0 || limit > 100 {
@@ -67,100 +76,102 @@ func fgiHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-func signupHandler(user models.UserService) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		var u models.User
-		json.NewDecoder(r.Body).Decode(&u)
+func (a *App) signupHandler(w http.ResponseWriter, r *http.Request) {
+	var u models.User
+	json.NewDecoder(r.Body).Decode(&u)
 
-		name := u.UserName
-		email := u.Email
-		pass := u.Password
+	name := u.UserName
+	email := u.Email
+	pass := u.Password
 
-		if name == "" {
-			apiError(w, "UserName is required", http.StatusBadRequest)
-			return
-		}
-		if email == "" {
-			apiError(w, "Email is required", http.StatusBadRequest)
-			return
-		}
-		if pass == "" {
-			apiError(w, "Password is required", http.StatusBadRequest)
-			return
-		}
-
-		if err := user.CreateUser(name, email, pass); err != nil {
-			apiError(w, "username or email are duplicated", http.StatusConflict)
-			return
-		}
-
-		apiError(w, "success", http.StatusCreated)
+	if name == "" {
+		a.apiError(w, "UserName is required", http.StatusBadRequest)
 		return
 	}
-}
-
-func userDeleteHandler(user models.UserService) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		var u models.User
-		json.NewDecoder(r.Body).Decode(&u)
-
-		id, err := strconv.Atoi(path.Base(r.URL.Path))
-		if err != nil {
-			apiError(w, "cloud not find user", http.StatusNotFound)
-			return
-		}
-		err = user.Fetch(id)
-		if err != nil {
-			apiError(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		err = user.DeleteUser(id, u.Password)
-		if err != nil {
-			apiError(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		apiError(w, "success", http.StatusOK)
+	if email == "" {
+		a.apiError(w, "Email is required", http.StatusBadRequest)
 		return
 	}
+	if pass == "" {
+		a.apiError(w, "Password is required", http.StatusBadRequest)
+		return
+	}
+
+	if err := a.DB.CreateUser(name, email, pass); err != nil {
+		a.apiError(w, "username or email are duplicated", http.StatusConflict)
+		return
+	}
+
+	a.apiError(w, "success", http.StatusCreated)
+	return
 }
 
-func userUpdateHandler(w http.ResponseWriter, r *http.Request) {
-	foundUser, err := models.FindUserByID(r)
+func (a *App) userDeleteHandler(w http.ResponseWriter, r *http.Request) {
+	var u models.User
+	json.NewDecoder(r.Body).Decode(&u)
+
+	id, err := strconv.Atoi(path.Base(r.URL.Path))
 	if err != nil {
-		apiError(w, err.Error(), http.StatusInternalServerError)
+		a.apiError(w, "cloud not find user", http.StatusNotFound)
+		return
 	}
+	// err = a.DB.Fetch(id)
+	// if err != nil {
+	// 	a.apiError(w, err.Error(), http.StatusBadRequest)
+	// 	return
+	// }
 
-	models.UpdateUser(foundUser, r)
-	apiError(w, "success", http.StatusOK)
+	err = a.DB.DeleteUser(id, u.Password)
+	if err != nil {
+		a.apiError(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	a.apiError(w, "success", http.StatusOK)
+	return
 }
 
-func loginHandler(w http.ResponseWriter, r *http.Request) {
+func (a *App) userUpdateHandler(w http.ResponseWriter, r *http.Request) {
+	foundUser, err := a.DB.FindUserByID(r)
+	if err != nil {
+		a.apiError(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	a.DB.UpdateUser(foundUser, r)
+	if err := a.DB.UpdateUser(foundUser, r); err != nil {
+		a.apiError(w, "success", http.StatusOK)
+		return
+	}
+	a.apiError(w, "success", http.StatusOK)
+	return
+}
+
+func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 	var user entity.User
 	json.NewDecoder(r.Body).Decode(&user)
 
 	searchedUser, err := models.FindUser(user)
 	if err != nil {
-		apiError(w, err.Error(), http.StatusNotFound)
+		a.apiError(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
 	fmt.Println("compare the password")
 	if err := bcrypt.CompareHashAndPassword([]byte(searchedUser.Password), []byte(user.Password)); err != nil {
-		apiError(w, err.Error(), http.StatusUnauthorized)
+		a.apiError(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 	fmt.Println("password is be valid")
 
 	token, err := models.CreateToken(searchedUser.ID)
 	if err != nil {
-		apiError(w, err.Error(), http.StatusUnauthorized)
+		a.apiError(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
 	saveErr := models.CreateAuth(searchedUser.ID, token)
 	if saveErr != nil {
-		apiError(w, err.Error(), http.StatusUnauthorized)
+		a.apiError(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
@@ -174,59 +185,34 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(tokens)
 }
 
-func logoutHandler(w http.ResponseWriter, r *http.Request) {
+func (a *App) logoutHandler(w http.ResponseWriter, r *http.Request) {
 	accessDetails, err := models.ExtractTokenMetadata(r)
 	if err != nil {
-		apiError(w, "not found", http.StatusNotFound)
+		a.apiError(w, "not found", http.StatusNotFound)
 		return
 	}
 
 	deleted, delErr := models.DeleteAuth(accessDetails.AccessUUID)
 	if delErr != nil || deleted == 0 {
-		apiError(w, "not found", http.StatusNotFound)
+		a.apiError(w, "not found", http.StatusNotFound)
 		return
 	}
 
-	apiError(w, "success", http.StatusOK)
+	a.apiError(w, "success", http.StatusOK)
 }
 
-func refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
+func (a *App) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
+
 	mapToken := map[string]string{}
 	json.NewDecoder(r.Body).Decode(&mapToken)
 	refreshToken := mapToken["refresh_token"]
 
 	tokens, errMsg := models.RefreshAuth(r, refreshToken)
 	if errMsg != "" {
-		apiError(w, errMsg, http.StatusUnauthorized)
+		a.apiError(w, errMsg, http.StatusUnauthorized)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(tokens)
-}
-
-// StartWebServer webserver立ち上げ
-func StartWebServer() error {
-	db, err := db.SQLConnect()
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
-
-	r := mux.NewRouter()
-	http.Handle("/", r)
-
-	fmt.Println("connecting...")
-	// users
-	r.HandleFunc("/users", signupHandler(&models.User{DB: db})).Methods("POST")
-	r.HandleFunc("/users/{id:[0-9]+}", userDeleteHandler(&models.User{DB: db})).Methods("DELETE")
-	r.HandleFunc("/users/{id:[0-9]+}", userUpdateHandler).Methods("PUT")
-	// auth
-	r.HandleFunc("/login", loginHandler).Methods("POST")
-	r.HandleFunc("/logout", tokenVerifyMiddleWare(logoutHandler)).Methods("POST")
-	r.HandleFunc("/refresh_token", refreshTokenHandler).Methods("POST")
-	// fgi
-	r.HandleFunc("/fgi", tokenVerifyMiddleWare(fgiHandler)).Methods("GET")
-	fmt.Printf("connected port :%d\n", config.Config.Port)
-	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }
