@@ -117,11 +117,6 @@ func (a *App) userDeleteHandler(w http.ResponseWriter, r *http.Request) {
 		a.apiError(w, "cloud not find user", http.StatusNotFound)
 		return
 	}
-	// err = a.DB.Fetch(id)
-	// if err != nil {
-	// 	a.apiError(w, err.Error(), http.StatusBadRequest)
-	// 	return
-	// }
 
 	err = a.DB.DeleteUser(id, u.Password)
 	if err != nil {
