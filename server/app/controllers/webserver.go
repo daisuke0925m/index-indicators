@@ -60,6 +60,7 @@ func (a *App) tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request))
 	})
 }
 
+// ---------usersHandler---------
 func (a *App) fgiHandler(w http.ResponseWriter, r *http.Request) {
 	strLimit := r.URL.Query().Get("limit")
 	limit, err := strconv.Atoi(strLimit)
