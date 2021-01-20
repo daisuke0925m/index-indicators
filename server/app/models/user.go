@@ -14,15 +14,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Fetch user fetch
-func (m *Models) Fetch(id int) (err error) {
-	var user entity.User
-	if err := m.DB.First(&user, id).Error; err != nil {
-		return err
-	}
-	return nil
-}
-
 // CreateUser user登録
 func (m *Models) CreateUser(name, email, pass string) (err error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(pass), 10)
