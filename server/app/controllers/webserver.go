@@ -79,7 +79,7 @@ func (a *App) fgiHandler(w http.ResponseWriter, r *http.Request) {
 
 // ---------usersHandlers---------
 func (a *App) signupHandler(w http.ResponseWriter, r *http.Request) {
-	var u models.User
+	var u entity.User
 	json.NewDecoder(r.Body).Decode(&u)
 
 	name := u.UserName
@@ -109,7 +109,7 @@ func (a *App) signupHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) userDeleteHandler(w http.ResponseWriter, r *http.Request) {
-	var u models.User
+	var u entity.User
 	json.NewDecoder(r.Body).Decode(&u)
 
 	id, err := strconv.Atoi(path.Base(r.URL.Path))

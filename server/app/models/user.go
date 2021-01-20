@@ -14,19 +14,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// User 構造体
-type User struct {
-	ID        int       `json:"id,omitempty" gorm:"primaryKey,unique"`
-	UserName  string    `json:"user_name,omitempty" gorm:"unique"`
-	Email     string    `json:"email,omitempty" gorm:"unique"`
-	Password  string    `json:"password,omitempty"`
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
-}
-
 // Fetch user fetch
 func (m *Models) Fetch(id int) (err error) {
-	var user User
+	var user entity.User
 	if err := m.DB.First(&user, id).Error; err != nil {
 		return err
 	}
@@ -39,7 +29,7 @@ func (m *Models) CreateUser(name, email, pass string) (err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	newUser := &User{
+	newUser := &entity.User{
 		UserName:  name,
 		Email:     email,
 		Password:  string(hash),
