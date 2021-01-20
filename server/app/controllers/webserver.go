@@ -128,7 +128,13 @@ func (a *App) userDeleteHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) userUpdateHandler(w http.ResponseWriter, r *http.Request) {
-	foundUser, err := a.DB.FindUserByID(r)
+	id, err := strconv.Atoi(path.Base(r.URL.Path))
+	if err != nil {
+		a.apiError(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	foundUser, err := a.DB.FindUserByID(id)
 	if err != nil {
 		a.apiError(w, err.Error(), http.StatusInternalServerError)
 		return

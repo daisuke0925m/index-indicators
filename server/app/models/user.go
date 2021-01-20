@@ -2,11 +2,8 @@ package models
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
-	"path"
-	"strconv"
 	"time"
 
 	"index-indicator-apis/server/app/entity"
@@ -52,15 +49,9 @@ func (m *Models) DeleteUser(id int, pass string) (err error) {
 }
 
 // FindUserByID idからuserを検索
-func (m *Models) FindUserByID(r *http.Request) (entity.User, error) {
+func (m *Models) FindUserByID(id int) (entity.User, error) {
 	var user entity.User
-	id, err := strconv.Atoi(path.Base(r.URL.Path))
-	if err != nil {
-		return entity.User{}, err
-	}
-
 	if err := m.DB.Where("id = ?", id).First(&user).Error; err != nil {
-		fmt.Println("error!")
 		return user, err
 	}
 	return user, nil
