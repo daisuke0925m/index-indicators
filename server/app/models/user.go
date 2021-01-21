@@ -1,12 +1,7 @@
 package models
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
-	"net/http"
-	"path"
-	"strconv"
 	"time"
 
 	"index-indicator-apis/server/app/entity"
@@ -14,32 +9,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// User 構造体
-type User struct {
-	ID        int       `json:"id,omitempty" gorm:"primaryKey,unique"`
-	UserName  string    `json:"user_name,omitempty" gorm:"unique"`
-	Email     string    `json:"email,omitempty" gorm:"unique"`
-	Password  string    `json:"password,omitempty"`
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
-}
-
-// Fetch user fetch
-func (m *Models) Fetch(id int) (err error) {
-	var user User
-	if err := m.DB.First(&user, id).Error; err != nil {
-		return err
-	}
-	return nil
-}
-
 // CreateUser user登録
 func (m *Models) CreateUser(name, email, pass string) (err error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(pass), 10)
 	if err != nil {
 		log.Fatal(err)
 	}
-	newUser := &User{
+	newUser := &entity.User{
 		UserName:  name,
 		Email:     email,
 		Password:  string(hash),
@@ -71,57 +47,18 @@ func (m *Models) DeleteUser(id int, pass string) (err error) {
 }
 
 // FindUserByID idからuserを検索
-func (m *Models) FindUserByID(r *http.Request) (entity.User, error) {
+func (m *Models) FindUserByID(id int) (entity.User, error) {
 	var user entity.User
-	id, err := strconv.Atoi(path.Base(r.URL.Path))
-	if err != nil {
-		return entity.User{}, err
-	}
-
 	if err := m.DB.Where("id = ?", id).First(&user).Error; err != nil {
-		fmt.Println("error!")
 		return user, err
 	}
 	return user, nil
 }
 
 // UpdateUser userアップデート
-func (m *Models) UpdateUser(foundUser entity.User, r *http.Request) (err error) {
-	type body struct {
-		User struct {
-			Password string `json:"password,omitempty"`
-		} `json:"user,omitempty"`
-		NewUser struct {
-			UserName string `json:"user_name,omitempty"`
-			Email    string `json:"email,omitempty"`
-			Password string `json:"password,omitempty"`
-		} `json:"new_user,omitempty"`
-	}
-
-	var updateUser body
-	json.NewDecoder(r.Body).Decode(&updateUser)
-
-	if err := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(updateUser.User.Password)); err != nil {
-		return err
-	}
-
-	if updateUser.NewUser.UserName != "" {
-		foundUser.UserName = updateUser.NewUser.UserName
-	}
-	if updateUser.NewUser.Email != "" {
-		foundUser.Email = updateUser.NewUser.Email
-	}
-	if updateUser.NewUser.Password != "" {
-		hash, err := bcrypt.GenerateFromPassword([]byte(updateUser.NewUser.Password), 10)
-		if err != nil {
-			log.Fatal(err)
-		}
-		foundUser.Password = string(hash)
-	}
-
+func (m *Models) UpdateUser(foundUser entity.User) (err error) {
 	if err := m.DB.Save(&foundUser).Error; err != nil {
 		return err
 	}
-
 	return nil
 }
