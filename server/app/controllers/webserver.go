@@ -26,16 +26,16 @@ func NewApp(models *models.Models) *App {
 	}
 }
 
-// JSONError is returned when api return error
-type JSONError struct {
-	Error string `json:"error"`
-	Code  int    `json:"code"`
+// Response is returned when api return error
+type Response struct {
+	Response string `json:"response"`
+	Code     int    `json:"code"`
 }
 
-func (a *App) apiError(w http.ResponseWriter, errMessage string, code int) {
+func (a *App) resposeStatusCode(w http.ResponseWriter, ResMessage string, code int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
-	jsonError, err := json.Marshal(JSONError{Error: errMessage, Code: code})
+	jsonError, err := json.Marshal(Response{Response: ResMessage, Code: code})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,14 +46,14 @@ func (a *App) tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request))
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		accessDetails, err := models.ExtractTokenMetadata(r)
 		if err != nil {
-			a.apiError(w, "unauthorized", http.StatusNotFound)
+			a.resposeStatusCode(w, "unauthorized", http.StatusNotFound)
 			return
 		}
 
 		// Redisからtokenを検索して見つからない場合はunauthorizedを返す。
 		_, authErr := models.FetchAuth(accessDetails)
 		if authErr != nil {
-			a.apiError(w, "unauthorized", http.StatusUnauthorized)
+			a.resposeStatusCode(w, "unauthorized", http.StatusUnauthorized)
 			return
 		}
 		fn(w, r)
@@ -87,24 +87,24 @@ func (a *App) signupHandler(w http.ResponseWriter, r *http.Request) {
 	pass := u.Password
 
 	if name == "" {
-		a.apiError(w, "UserName is required", http.StatusBadRequest)
+		a.resposeStatusCode(w, "UserName is required", http.StatusBadRequest)
 		return
 	}
 	if email == "" {
-		a.apiError(w, "Email is required", http.StatusBadRequest)
+		a.resposeStatusCode(w, "Email is required", http.StatusBadRequest)
 		return
 	}
 	if pass == "" {
-		a.apiError(w, "Password is required", http.StatusBadRequest)
+		a.resposeStatusCode(w, "Password is required", http.StatusBadRequest)
 		return
 	}
 
 	if err := a.DB.CreateUser(name, email, pass); err != nil {
-		a.apiError(w, "username or email are duplicated", http.StatusConflict)
+		a.resposeStatusCode(w, "username or email are duplicated", http.StatusConflict)
 		return
 	}
 
-	a.apiError(w, "success", http.StatusCreated)
+	a.resposeStatusCode(w, "success", http.StatusCreated)
 	return
 }
 
@@ -114,29 +114,29 @@ func (a *App) userDeleteHandler(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(path.Base(r.URL.Path))
 	if err != nil {
-		a.apiError(w, "cloud not find user", http.StatusNotFound)
+		a.resposeStatusCode(w, "cloud not find user", http.StatusNotFound)
 		return
 	}
 
 	err = a.DB.DeleteUser(id, u.Password)
 	if err != nil {
-		a.apiError(w, err.Error(), http.StatusBadRequest)
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	a.apiError(w, "success", http.StatusOK)
+	a.resposeStatusCode(w, "success", http.StatusOK)
 	return
 }
 
 func (a *App) userUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(path.Base(r.URL.Path))
 	if err != nil {
-		a.apiError(w, err.Error(), http.StatusBadRequest)
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	foundUser, err := a.DB.FindUserByID(id)
 	if err != nil {
-		a.apiError(w, err.Error(), http.StatusInternalServerError)
+		a.resposeStatusCode(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -155,7 +155,7 @@ func (a *App) userUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&updateUser)
 
 	if err := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(updateUser.User.Password)); err != nil {
-		a.apiError(w, err.Error(), http.StatusNotAcceptable)
+		a.resposeStatusCode(w, err.Error(), http.StatusNotAcceptable)
 		return
 	}
 	if updateUser.NewUser.UserName != "" {
@@ -167,18 +167,18 @@ func (a *App) userUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	if updateUser.NewUser.Password != "" {
 		hash, err := bcrypt.GenerateFromPassword([]byte(updateUser.NewUser.Password), 10)
 		if err != nil {
-			a.apiError(w, err.Error(), http.StatusBadRequest)
+			a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		foundUser.Password = string(hash)
 	}
 
 	if err := a.DB.UpdateUser(foundUser); err != nil {
-		a.apiError(w, err.Error(), http.StatusBadRequest)
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	a.apiError(w, "success", http.StatusOK)
+	a.resposeStatusCode(w, "success", http.StatusOK)
 	return
 }
 
@@ -189,26 +189,26 @@ func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	searchedUser, err := models.FindUser(user)
 	if err != nil {
-		a.apiError(w, err.Error(), http.StatusNotFound)
+		a.resposeStatusCode(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
 	fmt.Println("compare the password")
 	if err := bcrypt.CompareHashAndPassword([]byte(searchedUser.Password), []byte(user.Password)); err != nil {
-		a.apiError(w, err.Error(), http.StatusUnauthorized)
+		a.resposeStatusCode(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 	fmt.Println("password is be valid")
 
 	token, err := models.CreateToken(searchedUser.ID)
 	if err != nil {
-		a.apiError(w, err.Error(), http.StatusUnauthorized)
+		a.resposeStatusCode(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
 	saveErr := models.CreateAuth(searchedUser.ID, token)
 	if saveErr != nil {
-		a.apiError(w, err.Error(), http.StatusUnauthorized)
+		a.resposeStatusCode(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
@@ -225,17 +225,17 @@ func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 func (a *App) logoutHandler(w http.ResponseWriter, r *http.Request) {
 	accessDetails, err := models.ExtractTokenMetadata(r)
 	if err != nil {
-		a.apiError(w, "not found", http.StatusNotFound)
+		a.resposeStatusCode(w, "not found", http.StatusNotFound)
 		return
 	}
 
 	deleted, delErr := models.DeleteAuth(accessDetails.AccessUUID)
 	if delErr != nil || deleted == 0 {
-		a.apiError(w, "not found", http.StatusNotFound)
+		a.resposeStatusCode(w, "not found", http.StatusNotFound)
 		return
 	}
 
-	a.apiError(w, "success", http.StatusOK)
+	a.resposeStatusCode(w, "success", http.StatusOK)
 }
 
 func (a *App) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
@@ -246,7 +246,7 @@ func (a *App) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 
 	tokens, errMsg := models.RefreshAuth(r, refreshToken)
 	if errMsg != "" {
-		a.apiError(w, errMsg, http.StatusUnauthorized)
+		a.resposeStatusCode(w, errMsg, http.StatusUnauthorized)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
