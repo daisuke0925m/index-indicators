@@ -182,6 +182,7 @@ func (a *App) userUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// ---------authHandlers---------
 func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 	var user entity.User
 	json.NewDecoder(r.Body).Decode(&user)
