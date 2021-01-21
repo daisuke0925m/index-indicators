@@ -80,7 +80,10 @@ func (a *App) fgiHandler(w http.ResponseWriter, r *http.Request) {
 // ---------usersHandlers---------
 func (a *App) signupHandler(w http.ResponseWriter, r *http.Request) {
 	var u entity.User
-	json.NewDecoder(r.Body).Decode(&u)
+	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	name := u.UserName
 	email := u.Email
@@ -110,7 +113,10 @@ func (a *App) signupHandler(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) userDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	var u entity.User
-	json.NewDecoder(r.Body).Decode(&u)
+	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	id, err := strconv.Atoi(path.Base(r.URL.Path))
 	if err != nil {
@@ -152,7 +158,10 @@ func (a *App) userUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var updateUser body
-	json.NewDecoder(r.Body).Decode(&updateUser)
+	if err := json.NewDecoder(r.Body).Decode(&updateUser); err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(updateUser.User.Password)); err != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusNotAcceptable)
