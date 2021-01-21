@@ -26,8 +26,8 @@ func NewApp(models *models.Models) *App {
 	}
 }
 
-// Response is returned when api return error
-type Response struct {
+// JSONResponse is a response mssage
+type JSONResponse struct {
 	Response string `json:"response"`
 	Code     int    `json:"code"`
 }
@@ -35,7 +35,7 @@ type Response struct {
 func (a *App) resposeStatusCode(w http.ResponseWriter, ResMessage string, code int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
-	jsonError, err := json.Marshal(Response{Response: ResMessage, Code: code})
+	jsonError, err := json.Marshal(JSONResponse{Response: ResMessage, Code: code})
 	if err != nil {
 		log.Fatal(err)
 	}
