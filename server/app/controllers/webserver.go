@@ -60,23 +60,6 @@ func (a *App) tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request))
 	})
 }
 
-// ---------fgisHandlers---------
-func (a *App) fgiHandler(w http.ResponseWriter, r *http.Request) {
-	strLimit := r.URL.Query().Get("limit")
-	limit, err := strconv.Atoi(strLimit)
-	if strLimit == "" || err != nil || limit < 0 || limit > 100 {
-		limit = 100
-	}
-	fgi := models.GetFgis(limit)
-	js, err := json.Marshal(fgi)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Write(js)
-}
-
 // ---------usersHandlers---------
 func (a *App) signupHandler(w http.ResponseWriter, r *http.Request) {
 	var u entity.User
@@ -261,4 +244,21 @@ func (a *App) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(tokens)
+}
+
+// ---------fgisHandlers---------
+func (a *App) fgiHandler(w http.ResponseWriter, r *http.Request) {
+	strLimit := r.URL.Query().Get("limit")
+	limit, err := strconv.Atoi(strLimit)
+	if strLimit == "" || err != nil || limit < 0 || limit > 100 {
+		limit = 100
+	}
+	fgi := models.GetFgis(limit)
+	js, err := json.Marshal(fgi)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write(js)
 }
