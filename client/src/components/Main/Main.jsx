@@ -3,6 +3,10 @@ import Fgi from "../Fgi/Fgi";
 import FgiDes from "../Fgi/FgiDes";
 import { Grid } from "@material-ui/core";
 import { CntWrap, SpaceRow } from "../UiKits";
+import axios from 'axios';
+
+axios.defaults.baseURL = 'http://localhost:8080';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 const Main = () => {
 

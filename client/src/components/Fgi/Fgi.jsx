@@ -7,9 +7,7 @@ const Fgi = () => {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await axios.get(`http://localhost:8080/fgi`, {
-                    withCredentials: true
-                })
+                const response = await axios.get('/fgi')
                 setData(response.data)
             } catch (error) {
                 console.log(error)
