@@ -11,6 +11,7 @@ import (
 	"index-indicator-apis/server/app/entity"
 	"index-indicator-apis/server/app/models"
 
+	"github.com/markcheno/go-quote"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -261,4 +262,22 @@ func (a *App) fgiHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Write(js)
+}
+
+// ---------quote---------
+func (a *App) quoteHandler(w http.ResponseWriter, r *http.Request) {
+	symbol := r.URL.Query().Get("symbol")
+	startDay := r.URL.Query().Get("start")
+	endDay := r.URL.Query().Get("end")
+
+	if symbol == "" || startDay == "" || endDay == "" {
+		a.resposeStatusCode(w, "some query are empty", http.StatusUnauthorized)
+		return
+	}
+
+	ticker, _ := quote.NewQuoteFromYahoo(
+		symbol, startDay, endDay, quote.Daily, true)
+
+	json.NewEncoder(w).Encode(ticker)
+
 }
