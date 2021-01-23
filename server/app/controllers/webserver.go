@@ -20,7 +20,7 @@ type App struct {
 }
 
 //NewApp return *APP
-func NewApp(models *models.Models) *App {
+func NewApp(models entity.DB) *App {
 	return &App{
 		DB: models,
 	}
