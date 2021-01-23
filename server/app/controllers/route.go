@@ -15,7 +15,7 @@ func Route(app *App) *mux.Router {
 	r.HandleFunc("/logout", app.tokenVerifyMiddleWare(app.logoutHandler)).Methods("POST")
 	r.HandleFunc("/refresh_token", app.refreshTokenHandler).Methods("POST")
 	// fgi
-	r.HandleFunc("/fgi", app.tokenVerifyMiddleWare(app.fgiHandler)).Methods("GET")
+	r.HandleFunc("/fgi", app.fgiHandler).Methods("GET")
 	// ticker
 	r.HandleFunc("/ticker", app.tickerHandler).Methods("GET")
 	return r
