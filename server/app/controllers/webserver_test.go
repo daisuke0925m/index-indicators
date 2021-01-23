@@ -52,3 +52,32 @@ func Test_signupHandler(t *testing.T) {
 		})
 	}
 }
+
+func Test_userDeleteHandler(t *testing.T) {
+	app := NewApp(&ModelsMock{})
+	mux := http.NewServeMux()
+	mux.HandleFunc("/users/1", app.userDeleteHandler)
+	tests := []struct {
+		name             string
+		id               string
+		argRequestReader io.Reader
+		wantStatusCode   int
+	}{
+		{name: "正常なリクエスト", id: "1", argRequestReader: strings.NewReader(`{"password": "testpass"}`), wantStatusCode: http.StatusOK},
+		{name: "異常系(password)", id: "1", argRequestReader: strings.NewReader(`{"password": ""}`), wantStatusCode: http.StatusBadRequest},
+		{name: "異常系(id)", id: "", argRequestReader: strings.NewReader(`{"password": "testpass"}`), wantStatusCode: http.StatusNotFound},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			writer := httptest.NewRecorder()
+			request, err := http.NewRequest("DELETE", "/users/"+tt.id, tt.argRequestReader)
+			if err != nil {
+				t.Errorf("invalid Request reader %v", err)
+			}
+			mux.ServeHTTP(writer, request)
+			if writer.Code != tt.wantStatusCode {
+				t.Errorf("invalid status code want:%v, got:%v", tt.wantStatusCode, writer.Code)
+			}
+		})
+	}
+}

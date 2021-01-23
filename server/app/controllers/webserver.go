@@ -124,6 +124,11 @@ func (a *App) userDeleteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if u.Password == "" {
+		a.resposeStatusCode(w, "Password is required", http.StatusBadRequest)
+		return
+	}
+
 	err = a.DB.DeleteUser(id, u.Password)
 	if err != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
