@@ -17,6 +17,6 @@ func Route(app *App) *mux.Router {
 	// fgi
 	r.HandleFunc("/fgi", app.tokenVerifyMiddleWare(app.fgiHandler)).Methods("GET")
 	// quote
-	r.HandleFunc("/quote", app.quoteHandler).Methods("GET")
+	r.HandleFunc("/ticker", app.tickerHandler).Methods("GET")
 	return r
 }
