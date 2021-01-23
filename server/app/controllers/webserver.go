@@ -264,7 +264,7 @@ func (a *App) fgiHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-// ---------quote---------
+// ---------ticker---------
 func (a *App) tickerHandler(w http.ResponseWriter, r *http.Request) {
 	symbol := r.URL.Query().Get("symbol")
 	startDay := r.URL.Query().Get("start")
