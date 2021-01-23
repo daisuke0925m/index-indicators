@@ -275,9 +275,11 @@ func (a *App) tickerHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ticker, _ := quote.NewQuoteFromYahoo(
-		symbol, startDay, endDay, quote.Daily, true)
+	ticker, err := quote.NewQuoteFromYahoo(symbol, startDay, endDay, quote.Daily, true)
+	if err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	json.NewEncoder(w).Encode(ticker)
-
 }
