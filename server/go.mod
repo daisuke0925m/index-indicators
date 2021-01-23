@@ -9,6 +9,7 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gorilla/mux v1.8.0
 	github.com/jinzhu/gorm v1.9.16
+	github.com/markcheno/go-quote v0.0.0-20201111135441-45c9eb9ba017
 	github.com/myesui/uuid v1.0.0 // indirect
 	github.com/onsi/ginkgo v1.14.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

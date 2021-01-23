@@ -11,6 +11,7 @@ import (
 	"index-indicator-apis/server/app/entity"
 	"index-indicator-apis/server/app/models"
 
+	"github.com/markcheno/go-quote"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -58,23 +59,6 @@ func (a *App) tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request))
 		}
 		fn(w, r)
 	})
-}
-
-// ---------fgisHandlers---------
-func (a *App) fgiHandler(w http.ResponseWriter, r *http.Request) {
-	strLimit := r.URL.Query().Get("limit")
-	limit, err := strconv.Atoi(strLimit)
-	if strLimit == "" || err != nil || limit < 0 || limit > 100 {
-		limit = 100
-	}
-	fgi := models.GetFgis(limit)
-	js, err := json.Marshal(fgi)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Write(js)
 }
 
 // ---------usersHandlers---------
@@ -261,4 +245,41 @@ func (a *App) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(tokens)
+}
+
+// ---------fgisHandlers---------
+func (a *App) fgiHandler(w http.ResponseWriter, r *http.Request) {
+	strLimit := r.URL.Query().Get("limit")
+	limit, err := strconv.Atoi(strLimit)
+	if strLimit == "" || err != nil || limit < 0 || limit > 100 {
+		limit = 100
+	}
+	fgi := models.GetFgis(limit)
+	js, err := json.Marshal(fgi)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Write(js)
+}
+
+// ---------ticker---------
+func (a *App) tickerHandler(w http.ResponseWriter, r *http.Request) {
+	symbol := r.URL.Query().Get("symbol")
+	startDay := r.URL.Query().Get("start")
+	endDay := r.URL.Query().Get("end")
+
+	if symbol == "" || startDay == "" || endDay == "" {
+		a.resposeStatusCode(w, "some query are empty", http.StatusUnauthorized)
+		return
+	}
+
+	ticker, err := quote.NewQuoteFromYahoo(symbol, startDay, endDay, quote.Daily, true)
+	if err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(w).Encode(ticker)
 }
