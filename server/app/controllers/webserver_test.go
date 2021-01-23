@@ -179,6 +179,21 @@ func Test_userUpdateHandler(t *testing.T) {
 			}`),
 			wantStatusCode: http.StatusNotAcceptable,
 		},
+		{
+			name: "異常系(id)",
+			id:   "2",
+			argRequestReader: strings.NewReader(`{
+				"user": {
+					"password": "testpass"
+				},
+				"new_user": {
+					"user_name": "newuser",
+					"email": "new@test",
+					"password": "newpass"
+				}
+			}`),
+			wantStatusCode: http.StatusNotFound,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
