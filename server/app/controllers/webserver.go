@@ -21,7 +21,7 @@ type App struct {
 }
 
 //NewApp return *APP
-func NewApp(models *models.Models) *App {
+func NewApp(models entity.DB) *App {
 	return &App{
 		DB: models,
 	}
@@ -105,6 +105,11 @@ func (a *App) userDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(path.Base(r.URL.Path))
 	if err != nil {
 		a.resposeStatusCode(w, "cloud not find user", http.StatusNotFound)
+		return
+	}
+
+	if u.Password == "" {
+		a.resposeStatusCode(w, "Password is required", http.StatusBadRequest)
 		return
 	}
 
