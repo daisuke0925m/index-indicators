@@ -2,53 +2,53 @@ package controllers
 
 import (
 	"index-indicator-apis/server/app/entity"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 )
 
+// ModelsMock test用のmock
 type ModelsMock struct{}
 
-func NewAppMock(models *ModelsMock) *App {
-	return &App{
-		DB: models,
-	}
-}
-
-func (a *ModelsMock) CreateUser(name, email, pass string) (err error) {
+func (m *ModelsMock) CreateUser(name string, email string, pass string) (err error) {
 	return nil
 }
-
-func (a *ModelsMock) FindUserByID(id int) (user entity.User, err error) {
-	return entity.User{
-		ID:       1,
-		UserName: "testuser",
-		Email:    "test@co.jp",
-		Password: "testpass",
-	}, nil
+func (m *ModelsMock) FindUserByID(id int) (entity.User, error) {
+	return entity.User{}, nil
 }
-
-func (a *ModelsMock) UpdateUser(foundUser entity.User) (err error) {
+func (m *ModelsMock) UpdateUser(foundUser entity.User) (err error) {
 	return nil
 }
-
-func (a *ModelsMock) DeleteUser(id int, pass string) (err error) {
+func (m *ModelsMock) DeleteUser(id int, pass string) (err error) {
 	return nil
 }
-
-func TestApp_signupHandler(t *testing.T) {
-	var models ModelsMock
-	app := NewAppMock(&models)
+func Test_signupHandler(t *testing.T) {
+	app := NewApp(&ModelsMock{})
 	mux := http.NewServeMux()
 	mux.HandleFunc("/users", app.signupHandler)
-
-	writer := httptest.NewRecorder()
-	json := strings.NewReader(`{"user_name":"testuser","email":"test@test","password": "testpass"}`)
-	request, _ := http.NewRequest("POST", "/users", json)
-	mux.ServeHTTP(writer, request)
-
-	if writer.Code != 201 {
-		t.Errorf("Response code is %v", writer.Code)
+	tests := []struct {
+		name             string
+		argRequestReader io.Reader
+		wantStatusCode   int
+	}{
+		{name: "正常なリクエスト", argRequestReader: strings.NewReader(`{"user_name":"testuser","email":"test@test","password": "testpass"}`), wantStatusCode: http.StatusCreated},
+		{name: "異常系(user_name)", argRequestReader: strings.NewReader(`{"user_name": "","email":"test@test","password": "testpass"}`), wantStatusCode: http.StatusBadRequest},
+		{name: "異常系(email)", argRequestReader: strings.NewReader(`{"user_name": "testuser","email":"","password": "testpass"}`), wantStatusCode: http.StatusBadRequest},
+		{name: "異常系(password)", argRequestReader: strings.NewReader(`{"user_name": "testuser","email":"test@test","password": ""}`), wantStatusCode: http.StatusBadRequest},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			writer := httptest.NewRecorder()
+			request, err := http.NewRequest("POST", "/users", tt.argRequestReader)
+			if err != nil {
+				t.Errorf("invalid Request reader %v", err)
+			}
+			mux.ServeHTTP(writer, request)
+			if writer.Code != tt.wantStatusCode {
+				t.Errorf("invalid status code want:%v, got:%v", tt.wantStatusCode, writer.Code)
+			}
+		})
 	}
 }
