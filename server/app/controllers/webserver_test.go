@@ -3,10 +3,13 @@ package controllers
 import (
 	"index-indicator-apis/server/app/entity"
 	"io"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // ModelsMock test用のmock
@@ -16,7 +19,16 @@ func (m *ModelsMock) CreateUser(name string, email string, pass string) (err err
 	return nil
 }
 func (m *ModelsMock) FindUserByID(id int) (entity.User, error) {
-	return entity.User{}, nil
+	hash, err := bcrypt.GenerateFromPassword([]byte("testpass"), 10)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return entity.User{
+		ID:       1,
+		UserName: "testuser",
+		Email:    "test@test",
+		Password: string(hash),
+	}, nil
 }
 func (m *ModelsMock) UpdateUser(foundUser entity.User) (err error) {
 	return nil
@@ -71,6 +83,107 @@ func Test_userDeleteHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			writer := httptest.NewRecorder()
 			request, err := http.NewRequest("DELETE", "/users/"+tt.id, tt.argRequestReader)
+			if err != nil {
+				t.Errorf("invalid Request reader %v", err)
+			}
+			mux.ServeHTTP(writer, request)
+			if writer.Code != tt.wantStatusCode {
+				t.Errorf("invalid status code want:%v, got:%v", tt.wantStatusCode, writer.Code)
+			}
+		})
+	}
+}
+
+func Test_userUpdateHandler(t *testing.T) {
+	app := NewApp(&ModelsMock{})
+	mux := http.NewServeMux()
+	mux.HandleFunc("/users/1", app.userUpdateHandler)
+	tests := []struct {
+		name             string
+		id               string
+		argRequestReader io.Reader
+		wantStatusCode   int
+	}{
+		{
+			name: "正常なリクエスト",
+			id:   "1",
+			argRequestReader: strings.NewReader(`{
+				"user": {
+					"password": "testpass"
+				},
+				"new_user": {
+					"user_name": "newuser",
+					"email": "test@test",
+					"password": "newpass"
+				}
+			}`),
+			wantStatusCode: http.StatusOK,
+		},
+		{
+			name: "正常なリクエスト(new user_name)",
+			id:   "1",
+			argRequestReader: strings.NewReader(`{
+				"user": {
+					"password": "testpass"
+				},
+				"new_user": {
+					"user_name": "",
+					"email": "new@test",
+					"password": "newpass"
+				}
+			}`),
+			wantStatusCode: http.StatusOK,
+		},
+		{
+			name: "正常なリクエスト(new email)",
+			id:   "1",
+			argRequestReader: strings.NewReader(`{
+				"user": {
+					"password": "testpass"
+				},
+				"new_user": {
+					"user_name": "newuser",
+					"email": "",
+					"password": "newpass"
+				}
+			}`),
+			wantStatusCode: http.StatusOK,
+		},
+		{
+			name: "正常なリクエスト(new password)",
+			id:   "1",
+			argRequestReader: strings.NewReader(`{
+				"user": {
+					"password": "testpass"
+				},
+				"new_user": {
+					"user_name": "newuser",
+					"email": "new@test",
+					"password": ""
+				}
+			}`),
+			wantStatusCode: http.StatusOK,
+		},
+		{
+			name: "異常系(password)",
+			id:   "1",
+			argRequestReader: strings.NewReader(`{
+				"user": {
+					"password": "testpassss"
+				},
+				"new_user": {
+					"user_name": "newuser",
+					"email": "new@test",
+					"password": "newpass"
+				}
+			}`),
+			wantStatusCode: http.StatusNotAcceptable,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			writer := httptest.NewRecorder()
+			request, err := http.NewRequest("PUT", "/users/"+tt.id, tt.argRequestReader)
 			if err != nil {
 				t.Errorf("invalid Request reader %v", err)
 			}
