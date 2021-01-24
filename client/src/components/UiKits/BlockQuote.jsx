@@ -1,8 +1,9 @@
-import React from "react";
+import React from 'react';
 import FormatQuoteIcon from '@material-ui/icons/FormatQuote';
 import { makeStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     blockquote: {
         position: 'relative',
         padding: '35px 15px 10px 15px',
@@ -15,21 +16,22 @@ const useStyles = makeStyles((theme) => ({
     },
     iconRoot: {
         transform: 'scale(-1, -1)',
-    }
+    },
 }));
 
 const BlockQuote = (props) => {
-    const classes = useStyles()
+    const classes = useStyles();
+
+    BlockQuote.propTypes = {
+        children: PropTypes.element,
+    };
 
     return (
         <div className={classes.blockquote}>
-            <FormatQuoteIcon
-                className={classes.iconRoot}
-                color='primary'
-            />
+            <FormatQuoteIcon className={classes.iconRoot} color="primary" />
             {props.children}
         </div>
-    )
+    );
 };
 
-export default BlockQuote
+export default BlockQuote;

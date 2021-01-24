@@ -8,7 +8,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import Title from '../../assets/img/IndexIndicators.png'
+import Title from '../../assets/img/IndexIndicators.png';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -43,8 +43,8 @@ const Header = () => {
                     <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" className={classes.title} color='primary'>
-                        <img src={Title} alt='title img' />
+                    <Typography variant="h6" className={classes.title} color="primary">
+                        <img src={Title} alt="title img" />
                     </Typography>
                     <div>
                         <IconButton
@@ -79,6 +79,6 @@ const Header = () => {
             </AppBar>
         </div>
     );
-}
+};
 
-export default Header
+export default Header;

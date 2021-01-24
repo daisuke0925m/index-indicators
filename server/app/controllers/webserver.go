@@ -35,12 +35,20 @@ type JSONResponse struct {
 
 func (a *App) resposeStatusCode(w http.ResponseWriter, ResMessage string, code int) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.WriteHeader(code)
 	jsonError, err := json.Marshal(JSONResponse{Response: ResMessage, Code: code})
 	if err != nil {
 		log.Fatal(err)
 	}
 	w.Write(jsonError)
+}
+
+func (a *App) serveHTTPHeaders(w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 }
 
 func (a *App) tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
@@ -215,8 +223,7 @@ func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 		"refresh_token": token.RefreshToken,
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	a.serveHTTPHeaders(w)
 	json.NewEncoder(w).Encode(tokens)
 }
 
@@ -247,8 +254,8 @@ func (a *App) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 		a.resposeStatusCode(w, errMsg, http.StatusUnauthorized)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	a.serveHTTPHeaders(w)
 	json.NewEncoder(w).Encode(tokens)
 }
 
@@ -264,8 +271,8 @@ func (a *App) fgiHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	a.serveHTTPHeaders(w)
 	w.Write(js)
 }
 
@@ -286,5 +293,6 @@ func (a *App) tickerHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	a.serveHTTPHeaders(w)
 	json.NewEncoder(w).Encode(ticker)
 }

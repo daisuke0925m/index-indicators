@@ -1,9 +1,12 @@
-import React from "react";
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const SpaceRow = (props) => {
-    return (
-        <div style={{ margin: props.height }} />
-    )
+    SpaceRow.propTypes = {
+        height: PropTypes.number,
+    };
+
+    return <div style={{ margin: props.height }} />;
 };
 
-export default SpaceRow
+export default SpaceRow;

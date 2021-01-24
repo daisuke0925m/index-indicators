@@ -1,8 +1,8 @@
-import React from 'react'
+import React from 'react';
 import { ThemeProvider } from '@material-ui/core/styles';
-import './style/index.css'
-import Main from './components/Main/Main'
-import Header from './components/Header/Header'
+import './style/index.css';
+import Main from './components/Main/Main';
+import Header from './components/Header/Header';
 import { createMuiTheme } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
@@ -13,9 +13,7 @@ const theme = createMuiTheme({
     },
 });
 
-
 const App = () => {
-
     return (
         <ThemeProvider theme={theme}>
             <div>
@@ -24,6 +22,6 @@ const App = () => {
             </div>
         </ThemeProvider>
     );
-}
+};
 
 export default App;

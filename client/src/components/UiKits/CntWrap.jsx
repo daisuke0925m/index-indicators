@@ -1,14 +1,15 @@
-import React from "react";
+import React from 'react';
 import CheckIcon from '@material-ui/icons/Check';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import SpaceRow from "./SpaceRow";
+import PropTypes from 'prop-types';
+import SpaceRow from './SpaceRow';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     root: {
         backgroundColor: '#E7E7E7',
         borderRadius: 18,
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     },
     secondPaper: {
         padding: 10,
-        borderColor: '#707070'
+        borderColor: '#707070',
     },
     accordionRoot: {
         width: '100%',
@@ -33,8 +34,15 @@ const useStyles = makeStyles((theme) => ({
 const CntWrap = (props) => {
     const classes = useStyles();
 
+    CntWrap.propTypes = {
+        accordionHead: PropTypes.string,
+        children: PropTypes.element,
+        description: PropTypes.element,
+        title: PropTypes.string,
+    };
+
     return (
-        <Paper elevation={0} classes={{ root: classes.root }} >
+        <Paper elevation={0} classes={{ root: classes.root }}>
             <div className={classes.title}>
                 <CheckIcon style={{ fontSize: 18 }} />
                 {props.title}
@@ -45,20 +53,14 @@ const CntWrap = (props) => {
             <SpaceRow height={20} />
             <div className={classes.accordionRoot}>
                 <Accordion>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                    >
-                        <h5 style={{ margin: 0 }}>
-                            {props.accordionHead}
-                        </h5>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <h5 style={{ margin: 0 }}>{props.accordionHead}</h5>
                     </AccordionSummary>
-                    <AccordionDetails>
-                        {props.description}
-                    </AccordionDetails>
+                    <AccordionDetails>{props.description}</AccordionDetails>
                 </Accordion>
             </div>
         </Paper>
-    )
+    );
 };
 
-export default CntWrap
+export default CntWrap;
