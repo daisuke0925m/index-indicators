@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import FgiChart from './FgiChart';
+import FgiTable from './FgiTable';
 
 const Fgi = () => {
     const [fgis, setFgis] = useState([]);
@@ -29,7 +30,18 @@ const Fgi = () => {
         fetchFgis();
     }, []);
 
-    return <div>{fgis.length ? <FgiChart nowValues={nowValues} dates={dates} /> : 'loading'}</div>;
+    return (
+        <div>
+            {fgis.length ? (
+                <div>
+                    <FgiChart nowValues={nowValues} dates={dates} />
+                    <FgiTable fgis={fgis} />
+                </div>
+            ) : (
+                'loading'
+            )}
+        </div>
+    );
 };
 
 export default Fgi;
