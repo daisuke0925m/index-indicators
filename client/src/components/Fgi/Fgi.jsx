@@ -1,23 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { dateParse } from '../Functions/functions';
+import FgiChart from './FgiChart';
+import FgiTable from './FgiTable';
 
 const Fgi = () => {
-    const [data, setData] = useState([]);
+    const [fgis, setFgis] = useState([]);
+    const dates = fgis
+        .map((f) => {
+            const fmtDate = dateParse(f.created_at);
+            return fmtDate;
+        })
+        .reverse();
+
+    const nowValues = fgis.map((f) => f.now_value);
 
     useEffect(() => {
-        async function fetchData() {
+        async function fetchFgis() {
             try {
-                const response = await axios.get('/fgi');
-                setData(response.data);
+                const response = await axios.get('/fgi?limit=30');
+                setFgis(response.data);
             } catch (error) {
                 console.log(error);
-                setData([]);
+                setFgis([]);
             }
         }
-        fetchData();
+        fetchFgis();
     }, []);
 
-    return <div>{data.length ? data.map((d, i) => <div key={i}>{d.now_value}</div>) : 'loading'}</div>;
+    return (
+        <div>
+            {fgis.length ? (
+                <div>
+                    <FgiChart nowValues={nowValues} dates={dates} />
+                    <FgiTable fgis={fgis} />
+                </div>
+            ) : (
+                'loading'
+            )}
+        </div>
+    );
 };
 
 export default Fgi;
