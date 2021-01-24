@@ -91,7 +91,6 @@ const useStyles2 = makeStyles({
 });
 
 export default function FgiTable(props) {
-    //
     const fgis = props.fgis;
     FgiTable.propTypes = {
         fgis: PropTypes.arrayOf(
@@ -112,12 +111,9 @@ export default function FgiTable(props) {
         ),
     };
 
-    //
     const classes = useStyles2();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(1);
-
-    // const emptyRows = rowsPerPage - Math.min(rowsPerPage, fgis.length - page * rowsPerPage);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
