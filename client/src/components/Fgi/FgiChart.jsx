@@ -13,6 +13,9 @@ const FgiChart = (props) => {
         title: {
             text: 'FGI',
         },
+        legend: {
+            enabled: false,
+        },
         yAxis: {
             title: {
                 text: null,
@@ -23,6 +26,9 @@ const FgiChart = (props) => {
             max: 100,
         },
         xAxis: {
+            title: {
+                text: null,
+            },
             categories: props.dates,
             type: 'datetime',
             gridLineColor: '#A0A0A0',
