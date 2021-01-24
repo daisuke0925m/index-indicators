@@ -2,19 +2,19 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const Fgi = () => {
-    const [fgi, setFgi] = useState([]);
+    const [fgi, setFgis] = useState([]);
 
     useEffect(() => {
-        async function fetchFgi() {
+        async function fetchFgis() {
             try {
                 const response = await axios.get('/fgi');
-                setFgi(response.fgi);
+                setFgis(response.data);
             } catch (error) {
                 console.log(error);
-                setFgi([]);
+                setFgis([]);
             }
         }
-        fetchFgi();
+        fetchFgis();
     }, []);
 
     return <div>{fgi.length ? fgi.map((d, i) => <div key={i}>{d.now_value}</div>) : 'loading'}</div>;
