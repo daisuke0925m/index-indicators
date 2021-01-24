@@ -7,8 +7,15 @@
         "eslint:recommended",
         "plugin:prettier/recommended"
     ],
+    "parser": "babel-eslint",
     "parserOptions": {
-        "sourceType": "module"
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "experimentalObjectRestSpread": true
+        }
     },
     "rules": {}
 }
