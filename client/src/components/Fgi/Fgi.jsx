@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { dateParse } from '../Functions/functions';
 import FgiChart from './FgiChart';
 import FgiTable from './FgiTable';
 
@@ -7,10 +8,7 @@ const Fgi = () => {
     const [fgis, setFgis] = useState([]);
     const dates = fgis
         .map((f) => {
-            const date = new Date(f.created_at);
-            const day = date.getDate();
-            const month = date.getMonth() + 1;
-            const fmtDate = month + '/' + day;
+            const fmtDate = dateParse(f.created_at);
             return fmtDate;
         })
         .reverse();

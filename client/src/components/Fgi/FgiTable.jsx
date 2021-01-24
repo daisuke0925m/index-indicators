@@ -1,4 +1,5 @@
 import React from 'react';
+import { dateParse } from '../Functions/functions';
 import PropTypes from 'prop-types';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -131,7 +132,7 @@ export default function FgiTable(props) {
                     (row) => (
                         <TableBody key={row.id}>
                             <TableRow>
-                                <TableCell colSpan={3}>{row.created_at}</TableCell>
+                                <TableCell colSpan={3}>{dateParse(row.created_at)}</TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell component="th" scope="row">
