@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import SimpleChart from '../UiKits/SimpleChart';
 
 const Fgi = () => {
     const [fgi, setFgis] = useState([]);
@@ -17,7 +18,7 @@ const Fgi = () => {
         fetchFgis();
     }, []);
 
-    return <div>{fgi.length ? fgi.map((d, i) => <div key={i}>{d.now_value}</div>) : 'loading'}</div>;
+    return <div>{fgi.length ? <SimpleChart /> : 'loading'}</div>;
 };
 
 export default Fgi;
