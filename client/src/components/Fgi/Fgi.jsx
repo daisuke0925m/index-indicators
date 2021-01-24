@@ -10,7 +10,6 @@ const Fgi = () => {
             const day = date.getDate();
             const month = date.getMonth() + 1;
             const fmtDate = month + '/' + day;
-            console.log(day);
             return fmtDate;
         })
         .reverse();
