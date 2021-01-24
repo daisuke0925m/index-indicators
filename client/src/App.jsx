@@ -6,22 +6,22 @@ import Header from './components/Header/Header';
 import { createMuiTheme } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#447B64',
+    palette: {
+        primary: {
+            main: '#447B64',
+        },
     },
-  },
 });
 
 const App = () => {
-  return (
-    <ThemeProvider theme={theme}>
-      <div>
-        <Header />
-        <Main />
-      </div>
-    </ThemeProvider>
-  );
+    return (
+        <ThemeProvider theme={theme}>
+            <div>
+                <Header />
+                <Main />
+            </div>
+        </ThemeProvider>
+    );
 };
 
 export default App;
