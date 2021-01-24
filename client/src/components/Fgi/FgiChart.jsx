@@ -29,14 +29,16 @@ const FgiChart = (props) => {
             gridLineDashStyle: 'ShortDash',
         },
         plotOptions: {
-            column: {
-                colorByPoint: true,
-            },
+            pointWidth: 0,
         },
         series: [
             {
                 type: 'area',
                 data: props.nowValues,
+                lineWidth: 0,
+                marker: {
+                    enabled: false,
+                },
                 fillColor: {
                     linearGradient: {
                         y1: 1,
