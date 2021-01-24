@@ -1,5 +1,5 @@
 import React from 'react';
-import { dateParse } from '../Functions/functions';
+import { checkColor, dateParse } from '../Functions/functions';
 import PropTypes from 'prop-types';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -138,25 +138,33 @@ export default function FgiTable(props) {
                                 <TableCell component="th" scope="row">
                                     Last day
                                 </TableCell>
-                                <TableCell align="right">{row.now_value}</TableCell>
+                                <TableCell align="right" style={{ color: checkColor(row.now_value) }}>
+                                    {row.now_value}
+                                </TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell component="th" scope="row">
                                     1 Week Ago
                                 </TableCell>
-                                <TableCell align="right">{row.one_w_value}</TableCell>
+                                <TableCell align="right" style={{ color: checkColor(row.one_w_value) }}>
+                                    {row.one_w_value}
+                                </TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell component="th" scope="row">
                                     1 Month Ago
                                 </TableCell>
-                                <TableCell align="right">{row.one_m_value}</TableCell>
+                                <TableCell align="right" style={{ color: checkColor(row.one_m_value) }}>
+                                    {row.one_m_value}
+                                </TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell component="th" scope="row">
                                     1 Year Ago
                                 </TableCell>
-                                <TableCell align="right">{row.one_y_value}</TableCell>
+                                <TableCell align="right" style={{ color: checkColor(row.one_y_value) }}>
+                                    {row.one_y_value}
+                                </TableCell>
                             </TableRow>
                         </TableBody>
                     )
