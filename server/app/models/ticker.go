@@ -53,7 +53,10 @@ func SaveTickers() (err error) {
 
 		dataLength := len(tickerData.Open)
 		for i := 0; i < dataLength; i++ {
-			createTickerRow(symbol, tickerData.Date[i], tickerData.Open[i], tickerData.High[i], tickerData.Low[i], tickerData.Close[i], tickerData.Volume[i])
+			err := createTickerRow(symbol, tickerData.Date[i], tickerData.Open[i], tickerData.High[i], tickerData.Low[i], tickerData.Close[i], tickerData.Volume[i])
+			if err != nil {
+				return err
+			}
 		}
 	}
 
