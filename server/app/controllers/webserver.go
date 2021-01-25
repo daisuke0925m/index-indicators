@@ -265,14 +265,18 @@ func (a *App) fgiHandler(w http.ResponseWriter, r *http.Request) {
 	if strLimit == "" || err != nil || limit < 0 || limit > 100 {
 		limit = 100
 	}
-	fgi := models.GetFgis(limit)
-	js, err := json.Marshal(fgi)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	fgis := models.GetFgis(limit)
+
+	type body struct {
+		Daily []entity.Fgi `json:"fgis,omitempty"`
+	}
+
+	fgisBody := body{
+		Daily: fgis,
 	}
 
 	a.serveHTTPHeaders(w)
-	w.Write(js)
+	json.NewEncoder(w).Encode(fgisBody)
 }
 
 // ---------ticker---------
@@ -295,6 +299,14 @@ func (a *App) tickerHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	type body struct {
+		Daily []entity.Ticker `json:"tickers,omitempty"`
+	}
+
+	tickerBody := body{
+		Daily: tickers,
+	}
+
 	a.serveHTTPHeaders(w)
-	json.NewEncoder(w).Encode(tickers)
+	json.NewEncoder(w).Encode(tickerBody)
 }
