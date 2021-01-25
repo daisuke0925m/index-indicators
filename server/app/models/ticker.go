@@ -86,12 +86,9 @@ func deleteLastRecord(symbol string, date time.Time) error {
 
 // SaveTickers save tickers data
 func SaveTickers() (err error) {
-	// symbols := []string{"spxl"}
 	symbols := []string{"spxl", "^skew", "tlt", "gld", "gldm", "spy"}
 	today := time.Now()
-	twoYAgo := today.AddDate(0, 0, -7)
-	// d := today.AddDate(0, 0, -3)
-	// twoYAgo := today.AddDate(-2, 0, 0)
+	twoYAgo := today.AddDate(-2, 0, 0)
 
 	for _, symbol := range symbols {
 		// save 2years data
