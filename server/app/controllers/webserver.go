@@ -11,7 +11,6 @@ import (
 	"index-indicator-apis/server/app/entity"
 	"index-indicator-apis/server/app/models"
 
-	"github.com/markcheno/go-quote"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -279,15 +278,13 @@ func (a *App) fgiHandler(w http.ResponseWriter, r *http.Request) {
 // ---------ticker---------
 func (a *App) tickerHandler(w http.ResponseWriter, r *http.Request) {
 	symbol := r.URL.Query().Get("symbol")
-	startDay := r.URL.Query().Get("start")
-	endDay := r.URL.Query().Get("end")
 
-	if symbol == "" || startDay == "" || endDay == "" {
-		a.resposeStatusCode(w, "some query are empty", http.StatusUnauthorized)
+	if symbol == "" {
+		a.resposeStatusCode(w, "symbol is required", http.StatusUnauthorized)
 		return
 	}
 
-	ticker, err := quote.NewQuoteFromYahoo(symbol, startDay, endDay, quote.Daily, true)
+	ticker, err := models.GetTickerAll(symbol)
 	if err != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
 		return

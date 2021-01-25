@@ -139,3 +139,19 @@ func SaveTickers() (err error) {
 
 	return nil
 }
+
+// GetTickerAll get 2years ticker data
+func GetTickerAll(symbol string) ([]entity.Ticker, error) {
+	var tickers []entity.Ticker
+	db, err := db.SQLConnect()
+	if err != nil {
+		return tickers, err
+	}
+	defer db.Close()
+
+	if err := db.Where("symbol = ?", symbol).Find(&tickers).Error; err != nil {
+		return tickers, err
+	}
+
+	return tickers, nil
+}
