@@ -8,7 +8,6 @@ import (
 
 // StreamIngestionData api保存を定期実行
 func StreamIngestionData() {
-	models.SaveTickers()
 	c := cron.New()
 
 	// 平日23:30 TODO米国平日の市場取引時間
