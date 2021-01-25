@@ -284,12 +284,17 @@ func (a *App) tickerHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ticker, err := models.GetTickerAll(symbol)
+	tickers, err := models.GetTickerAll(symbol)
 	if err != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
+	if len(tickers) == 0 {
+		a.resposeStatusCode(w, "There is no brand you are looking for", http.StatusNoContent)
+		return
+	}
+
 	a.serveHTTPHeaders(w)
-	json.NewEncoder(w).Encode(ticker)
+	json.NewEncoder(w).Encode(tickers)
 }
