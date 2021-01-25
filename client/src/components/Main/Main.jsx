@@ -4,6 +4,7 @@ import FgiDes from '../Fgi/FgiDes';
 import { Grid } from '@material-ui/core';
 import { CntWrap, SpaceRow } from '../UiKits';
 import axios from 'axios';
+import Skew from '../Skew/Skew';
 
 axios.defaults.baseURL = 'http://localhost:8080';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -19,6 +20,12 @@ const Main = () => {
                     accordionHead={'What is the Fear & Greed Index?'}
                 >
                     <Fgi />
+                </CntWrap>
+            </Grid>
+            <Grid item xs={12} sm={8}>
+                <SpaceRow height={30} />
+                <CntWrap title={'SKEW'} description={<br />} accordionHead={''}>
+                    <Skew />
                 </CntWrap>
             </Grid>
         </Grid>

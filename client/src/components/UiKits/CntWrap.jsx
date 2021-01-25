@@ -51,14 +51,16 @@ const CntWrap = (props) => {
                 {props.children}
             </Paper>
             <SpaceRow height={20} />
-            <div className={classes.accordionRoot}>
-                <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <h5 style={{ margin: 0 }}>{props.accordionHead}</h5>
-                    </AccordionSummary>
-                    <AccordionDetails>{props.description}</AccordionDetails>
-                </Accordion>
-            </div>
+            {props.accordionHead && (
+                <div className={classes.accordionRoot}>
+                    <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <h5 style={{ margin: 0 }}>{props.accordionHead}</h5>
+                        </AccordionSummary>
+                        <AccordionDetails>{props.description}</AccordionDetails>
+                    </Accordion>
+                </div>
+            )}
         </Paper>
     );
 };
