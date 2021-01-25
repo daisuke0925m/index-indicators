@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"index-indicator-apis/server/app/entity"
 	"index-indicator-apis/server/db"
 	"time"
@@ -39,34 +38,34 @@ func createTickerRow(symbol string, date time.Time, open, high, low, close, volu
 	return nil
 }
 
-func checkSymbolExist(symbol string) bool {
+func checkSymbolExist(symbol string) (bool, error) {
 	db, err := db.SQLConnect()
 	if err != nil {
-		return false
+		return false, err
 	}
 	defer db.Close()
 
 	var ticker entity.Ticker
 	if err := db.Where("symbol = ?", symbol).First(&ticker).Error; err != nil {
-		return false
+		return false, nil
 	}
 
-	return true
+	return true, nil
 }
 
-func checkLatestRecord(symbol string, date time.Time) bool {
+func checkLatestRecord(symbol string, date time.Time) (bool, error) {
 	db, err := db.SQLConnect()
 	if err != nil {
-		return false
+		return false, err
 	}
 	defer db.Close()
 
 	var ticker entity.Ticker
 	if err := db.Where("symbol = ? AND date = ?", symbol, date).First(&ticker).Error; err != nil {
-		return false
+		return false, nil
 	}
 
-	return true
+	return true, nil
 }
 
 func deleteLastRecord(symbol string, date time.Time) error {
@@ -99,14 +98,22 @@ func SaveTickers() (err error) {
 
 		dataLength := len(tickerData.Open)
 		len := dataLength - 1
-		fmt.Println(tickerData)
+
+		flag, err := checkSymbolExist(symbol)
+		if err != nil {
+			return err
+		}
 
 		// elseの場合のみ全ての結果をinsertする
-		if checkSymbolExist(symbol) {
+		if flag {
 			lastRecordDate := tickerData.Date[len]
 
+			checkFlag, err := checkLatestRecord(symbol, lastRecordDate)
+			if err != nil {
+				return err
+			}
 			// dbにある最新のdateと取得したdateが一致した場合は処理を抜ける
-			if !checkLatestRecord(symbol, lastRecordDate) {
+			if !checkFlag {
 				// 一致しなかった場合は一番古い日付のレコードを削除し最新のレコードをinsert
 				err := deleteLastRecord(symbol, tickerData.Date[0])
 				if err != nil {
