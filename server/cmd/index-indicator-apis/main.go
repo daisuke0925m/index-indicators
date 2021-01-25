@@ -24,8 +24,6 @@ func run() error {
 	app := controllers.NewApp(models)
 	r := controllers.Route(app)
 	http.Handle("/", r)
-	fmt.Println("connecting...")
-	// users
 	fmt.Printf("connected port :%d|\n", config.Config.Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
 }

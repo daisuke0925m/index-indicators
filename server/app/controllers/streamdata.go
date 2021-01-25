@@ -13,6 +13,7 @@ func StreamIngestionData() {
 	// 平日23:30 TODO米国平日の市場取引時間
 	c.AddFunc("30 23 * * 1-5", func() {
 		models.CreateNewFgis()
+		models.SaveTickers()
 	})
 	c.Start()
 
