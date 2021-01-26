@@ -268,11 +268,11 @@ func (a *App) fgiHandler(w http.ResponseWriter, r *http.Request) {
 	fgis := models.GetFgis(limit)
 
 	type body struct {
-		Daily []entity.Fgi `json:"fgis,omitempty"`
+		Fgis []entity.Fgi `json:"fgis,omitempty"`
 	}
 
 	fgisBody := body{
-		Daily: fgis,
+		Fgis: fgis,
 	}
 
 	a.serveHTTPHeaders(w)
@@ -300,7 +300,7 @@ func (a *App) tickerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type body struct {
-		Daily []entity.Ticker `json:"tickers,omitempty"`
+		Daily []entity.Ticker `json:"daily,omitempty"`
 	}
 
 	tickerBody := body{
