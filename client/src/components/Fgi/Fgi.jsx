@@ -19,7 +19,7 @@ const Fgi = () => {
         async function fetchFgis() {
             try {
                 const response = await axios.get('/fgi?limit=30');
-                setFgis(response.data);
+                setFgis(response.data.fgis);
             } catch (error) {
                 console.log(error);
                 setFgis([]);
