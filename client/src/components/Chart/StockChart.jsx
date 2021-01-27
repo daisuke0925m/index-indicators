@@ -5,27 +5,33 @@ import PropTypes from 'prop-types';
 
 const StockChart = (props) => {
     StockChart.propTypes = {
-        daily: PropTypes.arrayOf(
-            PropTypes.shape({
-                id: PropTypes.number,
-                symbol: PropTypes.string,
-                date: PropTypes.string,
-                open: PropTypes.number,
-                high: PropTypes.number,
-                low: PropTypes.number,
-                close: PropTypes.number,
-                volume: PropTypes.number,
-                created_at: PropTypes.string,
-            })
+        chartAry: PropTypes.arrayOf(
+            PropTypes.arrayOf(
+                PropTypes.shape({
+                    id: PropTypes.number,
+                    symbol: PropTypes.string,
+                    date: PropTypes.string,
+                    open: PropTypes.number,
+                    high: PropTypes.number,
+                    low: PropTypes.number,
+                    close: PropTypes.number,
+                    volume: PropTypes.number,
+                    created_at: PropTypes.string,
+                })
+            )
         ),
         title: PropTypes.string,
     };
 
-    const data = props.daily.map((d) => {
-        return [Date.parse(d.date), d.close];
-    });
-    const symbol = props.daily[0].symbol;
     const title = props.title;
+    const series = props.chartAry.map((ary) => {
+        const data = ary.map((d) => {
+            return [Date.parse(d.date), d.close];
+        });
+        const symbol = ary[0].symbol;
+
+        return { name: symbol, data: data };
+    });
 
     const options = {
         chart: {
@@ -79,12 +85,7 @@ const StockChart = (props) => {
                 lineWidth: 1,
             },
         },
-        series: [
-            {
-                name: symbol,
-                data: data,
-            },
-        ],
+        series: series,
     };
 
     return <HighchartsReact highcharts={Highcharts} constructorType={'stockChart'} options={options} />;
