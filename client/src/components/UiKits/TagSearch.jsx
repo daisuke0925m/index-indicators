@@ -19,9 +19,9 @@ export default function Tags() {
         <Autocomplete
             multiple
             id="tags-outlined"
-            options={top100Films}
+            options={tickers}
             getOptionLabel={(option) => option.symbol}
-            defaultValue={[top100Films[0]]}
+            defaultValue={[tickers[0]]}
             filterSelectedOptions
             renderInput={(params) => (
                 <TextField {...params} variant="outlined" label="Search Tickers" placeholder="Add" />
@@ -30,7 +30,7 @@ export default function Tags() {
     );
 }
 
-const top100Films = [
+const tickers = [
     { symbol: 'spy' },
     { symbol: 'spxl' },
     { symbol: '^skew' },
