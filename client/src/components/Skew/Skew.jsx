@@ -1,21 +1,27 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import StockChart from '../Chart/StockChart';
-import { selectDailyData } from '../../redux/tickers/selectors';
-import { getAllDailyData } from '../../redux/tickers/operations';
-import { useDispatch, useSelector } from 'react-redux';
 
-const Skew = () => {
-    const dispatch = useDispatch();
-    const selector = useSelector((state) => state);
-    const dailyData = selectDailyData(selector);
+const Comparison = () => {
+    const [chartAry, setChartAry] = useState([]);
 
     useEffect(() => {
-        dispatch(getAllDailyData('^skew'));
+        async function fetchTickers() {
+            try {
+                const response = await axios.get(`/ticker?symbol=^skew`);
+                const data = response.data;
+                setChartAry([...chartAry, [...data.daily]]);
+            } catch (error) {
+                console.log(error);
+                setChartAry([]);
+            }
+        }
+        fetchTickers();
     }, []);
 
     return (
-        <section>{dailyData.daily.length ? <StockChart daily={dailyData.daily} title={'SKEW'} /> : 'loading'}</section>
+        <section>{chartAry.length ? <StockChart chartAry={chartAry} title={'Compare Chart '} /> : 'loading'}</section>
     );
 };
 
-export default Skew;
+export default Comparison;
