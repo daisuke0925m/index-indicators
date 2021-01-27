@@ -13,8 +13,11 @@ const Skew = () => {
         dispatch(getAllDailyData('^skew'));
     }, []);
 
-    console.log(dailyData);
-    return <StockChart />;
+    return (
+        <section>
+            <StockChart daily={dailyData.daily} title={true} />
+        </section>
+    );
 };
 
 export default Skew;
