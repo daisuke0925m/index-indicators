@@ -28,9 +28,10 @@ const Comparison = () => {
     };
 
     const reduceTicker = () => {
-        const len = chartAry.length;
-        chartAry.splice(len - 1, 1);
-        setChartAry(chartAry);
+        const newChartAry = [...chartAry];
+        const len = newChartAry.length;
+        newChartAry.splice(len - 1, 1);
+        setChartAry(newChartAry);
     };
 
     console.log(chartAry);
