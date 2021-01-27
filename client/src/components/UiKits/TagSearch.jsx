@@ -12,7 +12,16 @@ import TextField from '@material-ui/core/TextField';
 //     },
 // }));
 
-export default function Tags() {
+const tickers = [
+    { symbol: 'spy' },
+    { symbol: 'spxl' },
+    { symbol: '^skew' },
+    { symbol: 'tlt' },
+    { symbol: 'gld' },
+    { symbol: 'gldm' },
+];
+
+const TagSearch = () => {
     // const classes = useStyles();
 
     return (
@@ -28,13 +37,6 @@ export default function Tags() {
             )}
         />
     );
-}
+};
 
-const tickers = [
-    { symbol: 'spy' },
-    { symbol: 'spxl' },
-    { symbol: '^skew' },
-    { symbol: 'tlt' },
-    { symbol: 'gld' },
-    { symbol: 'gldm' },
-];
+export default TagSearch;
