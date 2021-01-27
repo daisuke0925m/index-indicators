@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import StockChart from '../Chart/StockChart';
+import { TagSearch } from '../UiKits';
 
 const Comparison = () => {
     const [chartAry, setChartAry] = useState([]);
@@ -39,6 +40,7 @@ const Comparison = () => {
 
     return (
         <section>
+            <TagSearch />
             <button onClick={() => addTicker()}>追加ボタン</button>
             <button onClick={() => reduceTicker()}>削除ボタン</button>
             {chartAry.length ? <StockChart chartAry={chartAry} title={'Compare Chart '} /> : 'loading'}
