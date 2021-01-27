@@ -18,15 +18,19 @@ const StockChart = (props) => {
                 created_at: PropTypes.string,
             })
         ),
-        title: PropTypes.bool,
+        title: PropTypes.string,
     };
 
     const data = props.daily.map((d) => {
         return [Date.parse(d.date), d.close];
     });
     const symbol = props.daily[0].symbol;
+    const title = props.title;
 
     const options = {
+        chart: {
+            spacingRight: 0,
+        },
         rangeSelector: {
             buttons: [
                 {
@@ -64,14 +68,21 @@ const StockChart = (props) => {
         xAxis: {
             type: 'datetime',
         },
+        yAxis: {
+            offset: 25,
+        },
         title: {
-            text: props.title ? symbol : null,
+            text: title ? title : null,
+        },
+        plotOptions: {
+            series: {
+                lineWidth: 1,
+            },
         },
         series: [
             {
                 name: symbol,
                 data: data,
-                shadow: true,
             },
         ],
     };

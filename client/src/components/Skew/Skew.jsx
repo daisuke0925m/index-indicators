@@ -14,9 +14,7 @@ const Skew = () => {
     }, []);
 
     return (
-        <section>
-            <StockChart daily={dailyData.daily} title={true} />
-        </section>
+        <section>{dailyData.daily.length ? <StockChart daily={dailyData.daily} title={'SKEW'} /> : 'loading'}</section>
     );
 };
 
