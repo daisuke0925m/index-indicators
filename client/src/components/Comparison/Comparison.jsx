@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import StockChart from '../Chart/StockChart';
-import { selectDailyData } from '../../redux/tickers/selectors';
-import { getAllDailyData } from '../../redux/tickers/operations';
-import { useDispatch, useSelector } from 'react-redux';
 
 const Comparison = () => {
-    const [chartAry, setChartAry] = useState([[{ symbol: '', date: '', close: 0 }]]);
-    const dispatch = useDispatch();
-    const selector = useSelector((state) => state);
-    const dailyData = selectDailyData(selector);
+    const [chartAry, setChartAry] = useState([]);
+
+    const fetchTickers = (symbol) => {
+        async function fetchTickers() {
+            try {
+                const response = await axios.get(`/ticker?symbol=${symbol}`);
+                const data = response.data;
+                setChartAry([...chartAry, [...data.daily]]);
+            } catch (error) {
+                console.log(error);
+                setChartAry([]);
+            }
+        }
+        fetchTickers();
+    };
 
     useEffect(() => {
-        dispatch(getAllDailyData('spy'));
-        setChartAry([[...dailyData.daily]]);
+        fetchTickers('spy');
     }, []);
 
     const addTicker = () => {
-        dispatch(getAllDailyData('spxl'));
-        setChartAry([...chartAry, [...dailyData.daily]]);
+        fetchTickers('tlt');
     };
 
     const reduceTicker = () => {
