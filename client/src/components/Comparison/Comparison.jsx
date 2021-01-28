@@ -6,6 +6,7 @@ import { TagSearch } from '../UiKits';
 const Comparison = () => {
     const [chartAry, setChartAry] = useState([]);
     const [keyword, setKeyword] = useState([]);
+    // const [keywordStore, setKeywordStore] = useState([]);
 
     const fetchTickers = (symbol) => {
         async function fetchTickers() {
@@ -14,7 +15,6 @@ const Comparison = () => {
                 const data = response.data;
                 setChartAry([...chartAry, [...data.daily]]);
             } catch (error) {
-                console.log(error);
                 setChartAry([]);
             }
         }
@@ -23,12 +23,14 @@ const Comparison = () => {
 
     // keywordが追加された時は配列の一番最後のsymbolを返す
     // keywordが削除された時は削除されたkeywordのindexを探してChartAryから該当する配列を削除する
-    const checkSymbols = (symbols) => {
+    const addSymbols = (symbols) => {
         return symbols[symbols.length - 1];
     };
 
     useEffect(() => {
-        fetchTickers(checkSymbols(keyword));
+        if (keyword.length > chartAry.length) {
+            fetchTickers(addSymbols(keyword));
+        }
     }, [keyword]);
 
     return (
