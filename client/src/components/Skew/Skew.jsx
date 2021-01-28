@@ -20,7 +20,13 @@ const Comparison = () => {
     }, []);
 
     return (
-        <section>{chartAry.length ? <StockChart chartAry={chartAry} title={'Compare Chart '} /> : 'loading'}</section>
+        <section>
+            {chartAry.length ? (
+                <StockChart chartAry={chartAry} title={'Compare Chart '} chartColor={'blue'} />
+            ) : (
+                'loading'
+            )}
+        </section>
     );
 };
 

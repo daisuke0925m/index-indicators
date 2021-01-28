@@ -21,15 +21,16 @@ const StockChart = (props) => {
             )
         ),
         title: PropTypes.string,
+        chartColor: PropTypes.string,
     };
 
+    const chartColor = props.chartColor;
     const title = props.title;
     const series = props.chartAry.map((ary) => {
         const data = ary.map((d) => {
             return [Date.parse(d.date), d.close];
         });
         const symbol = ary[0].symbol;
-
         return { name: symbol, data: data };
     });
 
@@ -83,6 +84,7 @@ const StockChart = (props) => {
         plotOptions: {
             series: {
                 lineWidth: 1,
+                color: chartColor && chartColor,
             },
         },
         series: series,
