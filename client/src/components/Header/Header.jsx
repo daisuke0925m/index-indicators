@@ -67,8 +67,7 @@ const Header = () => {
                             open={open}
                             onClose={handleClose}
                         >
-                            <MenuItem onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem onClick={handleClose}>My account</MenuItem>
+                            <MenuItem onClick={handleClose}>Login/Logout</MenuItem>
                         </Menu>
                     </div>
                 </Toolbar>
