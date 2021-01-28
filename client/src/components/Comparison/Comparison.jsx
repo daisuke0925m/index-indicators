@@ -5,6 +5,7 @@ import { TagSearch } from '../UiKits';
 
 const Comparison = () => {
     const [chartAry, setChartAry] = useState([]);
+    const [keyword, setKeyword] = useState([]);
 
     const fetchTickers = (symbol) => {
         async function fetchTickers() {
@@ -20,29 +21,19 @@ const Comparison = () => {
         fetchTickers();
     };
 
+    // keywordが追加された時は配列の一番最後のsymbolを返す
+    // keywordが削除された時は削除されたkeywordのindexを探してChartAryから該当する配列を削除する
+    const checkSymbols = (symbols) => {
+        return symbols[symbols.length - 1];
+    };
+
     useEffect(() => {
-        fetchTickers('spy');
-    }, []);
-
-    const addTicker = () => {
-        fetchTickers('tlt');
-    };
-
-    const reduceTicker = () => {
-        const newChartAry = [...chartAry];
-        const len = newChartAry.length;
-        newChartAry.splice(len - 1, 1);
-        setChartAry(newChartAry);
-    };
-
-    console.log(chartAry);
-    console.log(chartAry.length);
+        fetchTickers(checkSymbols(keyword));
+    }, [keyword]);
 
     return (
         <section>
-            <TagSearch />
-            <button onClick={() => addTicker()}>追加ボタン</button>
-            <button onClick={() => reduceTicker()}>削除ボタン</button>
+            <TagSearch setKeyword={setKeyword} />
             {chartAry.length ? <StockChart chartAry={chartAry} title={'Compare Chart '} /> : 'loading'}
         </section>
     );
