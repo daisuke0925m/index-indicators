@@ -22,14 +22,28 @@ const Comparison = () => {
     };
 
     // keywordが追加された時は配列の一番最後のsymbolを返す
-    // keywordが削除された時は削除されたkeywordのindexを探してChartAryから該当する配列を削除する
-    const addSymbols = (symbols) => {
+    const addingSymbol = (symbols) => {
         return symbols[symbols.length - 1];
+    };
+
+    // keywordが削除された時は削除されたkeywordのindexを探してChartAryから該当する配列を削除する
+    const reduceTicker = () => {
+        for (let i = 0; i < chartAry.length; i++) {
+            const reducedKW = keyword[i];
+            const reducingSymbol = chartAry[i][0].symbol;
+            if (reducedKW !== reducingSymbol) {
+                const newChartAry = [...chartAry];
+                newChartAry.splice(i - 1, 1);
+                setChartAry(newChartAry);
+            }
+        }
     };
 
     useEffect(() => {
         if (keyword.length > chartAry.length) {
-            fetchTickers(addSymbols(keyword));
+            fetchTickers(addingSymbol(keyword));
+        } else {
+            reduceTicker();
         }
     }, [keyword]);
 
