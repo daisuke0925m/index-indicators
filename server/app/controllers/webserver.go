@@ -48,6 +48,7 @@ func (a *App) serveHTTPHeaders(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 }
 
 func (a *App) tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
@@ -189,6 +190,11 @@ func (a *App) userUpdateHandler(w http.ResponseWriter, r *http.Request) {
 
 // ---------authHandlers---------
 func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "OPTIONS" {
+		a.serveHTTPHeaders(w)
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 	var user entity.User
 	json.NewDecoder(r.Body).Decode(&user)
 
