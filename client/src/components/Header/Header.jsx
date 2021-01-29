@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
+import { AppBar, Button } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
@@ -8,6 +8,9 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Title from '../../assets/img/Index_logo.svg';
+import { useDispatch, useSelector } from 'react-redux';
+import { getSignedIn } from '../../redux/users/selectors';
+import { signIn } from '../../redux/users/operations';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,6 +29,11 @@ const Header = () => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+
+    const dispatch = useDispatch();
+    const selector = useSelector((state) => state);
+    const isSignedIn = getSignedIn(selector);
+    console.log(isSignedIn);
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -67,7 +75,9 @@ const Header = () => {
                             open={open}
                             onClose={handleClose}
                         >
-                            <MenuItem onClick={handleClose}>Login/Logout</MenuItem>
+                            <MenuItem onClick={handleClose}>
+                                <Button onClick={() => dispatch(signIn('gorilla2@test', 'gorilla'))}>SignIn</Button>
+                            </MenuItem>
                         </Menu>
                     </div>
                 </Toolbar>
