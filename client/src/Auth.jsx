@@ -1,20 +1,15 @@
-// import { useEffect } from 'react';
-// import { useDispatch, useSelector } from "react-redux";
-// import { getSignedIn } from "./redux/users/selectors";
-// import { listenAuthState } from "./redux/users/operations";
+import { useSelector } from 'react-redux';
+import { getSignedIn } from './redux/users/selectors';
+import PropTypes from 'prop-types';
 
-const Auth = ({ children }) => {
-    // const dispatch = useDispatch();
-    // const selector = useSelector((state) => state);
-    // const isSignedIn = getSignedIn(selector)
+const Auth = (props) => {
+    Auth.propTypes = {
+        children: PropTypes.element,
+    };
+    const selector = useSelector((state) => state);
+    const isSignedIn = getSignedIn(selector);
 
-    // useEffect(() => {
-    //     if (!isSignedIn) {
-    //         dispatch(listenAuthState())
-    //     }
-    // }, [isSignedIn, dispatch]);
-
-    return children;
+    return <div>{isSignedIn ? props.children : 'Sign in required'}</div>;
 };
 
 export default Auth;

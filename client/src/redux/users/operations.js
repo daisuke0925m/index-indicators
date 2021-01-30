@@ -1,21 +1,14 @@
-import { signInAction } from './actions';
 import axios from 'axios';
 
 export const signIn = (email, password) => {
+    // TODOバリデーション
     if (email && password) {
-        return async (dispatch) => {
+        return async () => {
             try {
-                const response = await axios.post('/login', {
+                await axios.post('/login', {
                     email: email,
                     password: password,
                 });
-                const data = response.data;
-                console.log(data);
-                dispatch(
-                    signInAction({
-                        isSignedIn: true,
-                    })
-                );
             } catch (error) {
                 console.log(error);
             }
