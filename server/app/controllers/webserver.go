@@ -228,6 +228,21 @@ func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 		"refresh_token": token.RefreshToken,
 	}
 
+	accessCookie := &http.Cookie{
+		Name:     "at",
+		Value:    token.AccessToken,
+		HttpOnly: true,
+		// Secure:   true,TODO
+	}
+	http.SetCookie(w, accessCookie)
+	refreshCookie := &http.Cookie{
+		Name:     "rt",
+		Value:    token.AccessToken,
+		HttpOnly: true,
+		// Secure:   true,TODO
+	}
+	http.SetCookie(w, refreshCookie)
+
 	a.serveHTTPHeaders(w)
 	json.NewEncoder(w).Encode(tokens)
 }
@@ -259,6 +274,21 @@ func (a *App) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 		a.resposeStatusCode(w, errMsg, http.StatusUnauthorized)
 		return
 	}
+
+	accessCookie := &http.Cookie{
+		Name:     "at",
+		Value:    tokens["access_token"],
+		HttpOnly: true,
+		// Secure:   true,TODO
+	}
+	http.SetCookie(w, accessCookie)
+	refreshCookie := &http.Cookie{
+		Name:     "rt",
+		Value:    tokens["refresh_token"],
+		HttpOnly: true,
+		// Secure:   true,TODO
+	}
+	http.SetCookie(w, refreshCookie)
 
 	a.serveHTTPHeaders(w)
 	json.NewEncoder(w).Encode(tokens)
