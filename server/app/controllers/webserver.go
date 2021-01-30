@@ -223,10 +223,10 @@ func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokens := map[string]string{
-		"access_token":  token.AccessToken,
-		"refresh_token": token.RefreshToken,
-	}
+	// tokens := map[string]string{
+	// 	"access_token":  token.AccessToken,
+	// 	"refresh_token": token.RefreshToken,
+	// }
 
 	accessCookie := &http.Cookie{
 		Name:     "at",
@@ -241,10 +241,10 @@ func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 		// Secure:   true,TODO
 	}
-	http.SetCookie(w, refreshCookie)
 
 	a.serveHTTPHeaders(w)
-	json.NewEncoder(w).Encode(tokens)
+	http.SetCookie(w, refreshCookie)
+	// json.NewEncoder(w).Encode(tokens)
 }
 
 func (a *App) logoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -288,10 +288,11 @@ func (a *App) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 		// Secure:   true,TODO
 	}
-	http.SetCookie(w, refreshCookie)
 
 	a.serveHTTPHeaders(w)
-	json.NewEncoder(w).Encode(tokens)
+	http.SetCookie(w, refreshCookie)
+
+	// json.NewEncoder(w).Encode(tokens)
 }
 
 // ---------fgisHandlers---------
