@@ -8,6 +8,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 
 axios.defaults.baseURL = 'http://localhost:8080';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
+axios.defaults.withCredentials = true;
 
 const theme = createMuiTheme({
     palette: {
