@@ -2,23 +2,27 @@ import { signInAction } from './actions';
 import axios from 'axios';
 
 export const signIn = (email, password) => {
-    return async (dispatch) => {
-        try {
-            const response = await axios.post('/login', {
-                email: email,
-                password: password,
-            });
-            const data = response.data;
-            console.log(data);
-            dispatch(
-                signInAction({
-                    isSignedIn: true,
-                })
-            );
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    if (email && password) {
+        return async (dispatch) => {
+            try {
+                const response = await axios.post('/login', {
+                    email: email,
+                    password: password,
+                });
+                const data = response.data;
+                console.log(data);
+                dispatch(
+                    signInAction({
+                        isSignedIn: true,
+                    })
+                );
+            } catch (error) {
+                console.log(error);
+            }
+        };
+    } else {
+        return;
+    }
 };
 
 // export const signOut = (accessToken) => {
