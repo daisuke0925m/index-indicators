@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import httpClient from '../../axios';
 import StockChart from '../Chart/StockChart';
 import { TagSearch } from '../UiKits';
 
@@ -11,7 +11,7 @@ const Comparison = () => {
     const fetchTickers = (symbol) => {
         async function fetchTickers() {
             try {
-                const response = await axios.get(`/ticker?symbol=${symbol}`);
+                const response = await httpClient.get(`/ticker?symbol=${symbol}`);
                 const data = response.data;
                 setChartAry([...chartAry, [...data.daily]]);
             } catch (error) {

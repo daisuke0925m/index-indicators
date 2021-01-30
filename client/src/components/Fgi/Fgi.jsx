@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { dateParse } from '../Functions/functions';
 import FgiChart from './FgiChart';
 import FgiTable from './FgiTable';
+import httpClient from '../../axios';
 
 const Fgi = () => {
     const [fgis, setFgis] = useState([]);
@@ -18,7 +18,7 @@ const Fgi = () => {
     useEffect(() => {
         async function fetchFgis() {
             try {
-                const response = await axios.get('/fgi?limit=30');
+                const response = await httpClient.get('/fgi?limit=30');
                 setFgis(response.data.fgis);
             } catch (error) {
                 console.log(error);

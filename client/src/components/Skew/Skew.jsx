@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import httpClient from '../../axios';
 import StockChart from '../Chart/StockChart';
 
 const Comparison = () => {
@@ -8,7 +8,7 @@ const Comparison = () => {
     useEffect(() => {
         async function fetchTickers() {
             try {
-                const response = await axios.get(`/ticker?symbol=^skew`);
+                const response = await httpClient.get(`/ticker?symbol=^skew`);
                 const data = response.data;
                 setChartAry([...chartAry, [...data.daily]]);
             } catch (error) {
@@ -20,7 +20,13 @@ const Comparison = () => {
     }, []);
 
     return (
-        <section>{chartAry.length ? <StockChart chartAry={chartAry} title={'Compare Chart '} /> : 'loading'}</section>
+        <section>
+            {chartAry.length ? (
+                <StockChart chartAry={chartAry} title={'Compare Chart '} chartColor={'blue'} />
+            ) : (
+                'loading'
+            )}
+        </section>
     );
 };
 

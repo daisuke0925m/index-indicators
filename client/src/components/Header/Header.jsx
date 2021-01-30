@@ -1,13 +1,15 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import { useDispatch, useSelector } from 'react-redux';
+import { getSignedIn } from '../../redux/users/selectors';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import { AppBar, Button } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import { makeStyles } from '@material-ui/core/styles';
+import { signIn, signOut } from '../../redux/users/operations';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import Title from '../../assets/img/Index_logo.svg';
 
 const useStyles = makeStyles((theme) => ({
@@ -25,6 +27,11 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = () => {
     const classes = useStyles();
+
+    const dispatch = useDispatch();
+    const selector = useSelector((state) => state);
+    const isSignedIn = getSignedIn(selector);
+
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
@@ -40,9 +47,6 @@ const Header = () => {
         <div className={classes.root}>
             <AppBar position="static" color="default">
                 <Toolbar>
-                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                        <MenuIcon />
-                    </IconButton>
                     <Typography variant="h6" className={classes.title} color="primary">
                         <img src={Title} alt="title img" />
                     </Typography>
@@ -52,7 +56,7 @@ const Header = () => {
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
                             onClick={handleMenu}
-                            color="inherit"
+                            color="primary"
                         >
                             <AccountCircle />
                         </IconButton>
@@ -71,8 +75,15 @@ const Header = () => {
                             open={open}
                             onClose={handleClose}
                         >
-                            <MenuItem onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem onClick={handleClose}>My account</MenuItem>
+                            <MenuItem onClick={handleClose}>
+                                {!isSignedIn ? (
+                                    <Button onClick={() => dispatch(signIn('gorilla2@test', 'gorilla'))}>
+                                        Sign In
+                                    </Button>
+                                ) : (
+                                    <Button onClick={() => dispatch(signOut())}>Sign Out</Button>
+                                )}
+                            </MenuItem>
                         </Menu>
                     </div>
                 </Toolbar>

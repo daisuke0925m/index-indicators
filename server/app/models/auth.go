@@ -7,7 +7,6 @@ import (
 	"index-indicator-apis/server/db"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -87,14 +86,14 @@ func CreateAuth(userid int, td *entity.TokenDetails) error {
 
 // ---認証処理の関数-------------
 
-// ExtractToken Headerからjwtを取得
+// ExtractToken Cookieからjwtを取得
 func ExtractToken(r *http.Request) string {
-	bearToken := r.Header.Get("Authorization")
-	strArr := strings.Split(bearToken, " ")
-	if len(strArr) == 2 {
-		return strArr[1]
+	cookieAt, err := r.Cookie("at")
+	if err != nil {
+		return ""
 	}
-	return ""
+	accessToken := cookieAt.Value
+	return accessToken
 }
 
 // VerifyToken tokenが正しいか検証

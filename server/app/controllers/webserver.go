@@ -48,6 +48,7 @@ func (a *App) serveHTTPHeaders(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 }
 
 func (a *App) tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
@@ -189,6 +190,11 @@ func (a *App) userUpdateHandler(w http.ResponseWriter, r *http.Request) {
 
 // ---------authHandlers---------
 func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "OPTIONS" {
+		a.serveHTTPHeaders(w)
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 	var user entity.User
 	json.NewDecoder(r.Body).Decode(&user)
 
@@ -217,13 +223,22 @@ func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokens := map[string]string{
-		"access_token":  token.AccessToken,
-		"refresh_token": token.RefreshToken,
+	accessCookie := &http.Cookie{
+		Name:     "at",
+		Value:    token.AccessToken,
+		HttpOnly: true,
+		// Secure:   true,TODO
+	}
+	http.SetCookie(w, accessCookie)
+	refreshCookie := &http.Cookie{
+		Name:     "rt",
+		Value:    token.RefreshToken,
+		HttpOnly: true,
+		// Secure:   true,TODO
 	}
 
 	a.serveHTTPHeaders(w)
-	json.NewEncoder(w).Encode(tokens)
+	http.SetCookie(w, refreshCookie)
 }
 
 func (a *App) logoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -243,10 +258,11 @@ func (a *App) logoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
-
-	mapToken := map[string]string{}
-	json.NewDecoder(r.Body).Decode(&mapToken)
-	refreshToken := mapToken["refresh_token"]
+	cookieRt, err := r.Cookie("rt")
+	if err != nil {
+		a.resposeStatusCode(w, "can't read cookie", http.StatusBadRequest)
+	}
+	refreshToken := cookieRt.Value
 
 	tokens, errMsg := models.RefreshAuth(r, refreshToken)
 	if errMsg != "" {
@@ -254,8 +270,22 @@ func (a *App) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	accessCookie := &http.Cookie{
+		Name:     "at",
+		Value:    tokens["access_token"],
+		HttpOnly: true,
+		// Secure:   true,TODO
+	}
+	http.SetCookie(w, accessCookie)
+	refreshCookie := &http.Cookie{
+		Name:     "rt",
+		Value:    tokens["refresh_token"],
+		HttpOnly: true,
+		// Secure:   true,TODO
+	}
+
 	a.serveHTTPHeaders(w)
-	json.NewEncoder(w).Encode(tokens)
+	http.SetCookie(w, refreshCookie)
 }
 
 // ---------fgisHandlers---------
