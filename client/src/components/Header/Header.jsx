@@ -83,9 +83,11 @@ const Header = () => {
                                     <span onClick={() => dispatch(signOut())}>Sign Out</span>
                                 )}
                             </MenuItem>
-                            <MenuItem onClick={handleClose}>
-                                {!isSignedIn ? <SignUpModalForm text={'Sign Up'} /> : null}
-                            </MenuItem>
+                            {!isSignedIn && (
+                                <MenuItem onClick={handleClose}>
+                                    <SignUpModalForm text={'Sign Up'} />
+                                </MenuItem>
+                            )}
                         </Menu>
                     </div>
                 </Toolbar>
