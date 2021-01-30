@@ -6,8 +6,8 @@ import Fade from '@material-ui/core/Fade';
 import PropTypes from 'prop-types';
 import TextInput from './TextInput';
 import { Button } from '@material-ui/core';
-// import { useDispatch } from 'react-redux';
-// import { signIn } from '../../redux/users/operations';
+import { useDispatch } from 'react-redux';
+import { signIn } from '../../redux/users/operations';
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -28,7 +28,7 @@ const TransitionsModal = (props) => {
         text: PropTypes.string,
     };
     const classes = useStyles();
-    // const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
@@ -96,7 +96,7 @@ const TransitionsModal = (props) => {
                                 value={pass}
                                 type={'text'}
                             />
-                            <Button color="primary" variant={'outlined'}>
+                            <Button color="primary" variant={'outlined'} onClick={() => dispatch(signIn(email, pass))}>
                                 Sign In
                             </Button>
                         </div>

@@ -3,6 +3,18 @@ import { signInAction, signOutAction } from './actions';
 
 export const signIn = (email, password) => {
     // TODOバリデーション
+    if (email === "" || password === "") {
+        alert("必須項目が未入力です")
+        return async (dispatch) => {
+            try {
+                await dispatch(
+                    signOutAction()
+                );
+            } catch (error) {
+                console.error(error);
+            }
+        };
+    }
     if (email && password) {
         return async (dispatch) => {
             try {
