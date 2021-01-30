@@ -4,7 +4,7 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import PropTypes from 'prop-types';
-import TextInput from './TextInput';
+import { TextInput } from '../UiKits';
 import { Button } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { signIn } from '../../redux/users/operations';
@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const TransitionsModal = (props) => {
-    TransitionsModal.propTypes = {
+const SignInModalForm = (props) => {
+    SignInModalForm.propTypes = {
         text: PropTypes.string,
     };
     const classes = useStyles();
@@ -107,4 +107,4 @@ const TransitionsModal = (props) => {
     );
 };
 
-export default TransitionsModal;
+export default SignInModalForm;

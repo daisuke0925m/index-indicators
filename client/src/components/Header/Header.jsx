@@ -11,7 +11,7 @@ import { signOut } from '../../redux/users/operations';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Title from '../../assets/img/Index_logo.svg';
-import { TransitionModal } from '../UiKits';
+import { SignInModalForm, SignUpModalForm } from '../Users/index';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -78,10 +78,13 @@ const Header = () => {
                         >
                             <MenuItem onClick={handleClose}>
                                 {!isSignedIn ? (
-                                    <TransitionModal text={'Sign in'} />
+                                    <SignInModalForm text={'Sign In'} />
                                 ) : (
                                     <span onClick={() => dispatch(signOut())}>Sign Out</span>
                                 )}
+                            </MenuItem>
+                            <MenuItem onClick={handleClose}>
+                                {!isSignedIn ? <SignUpModalForm text={'Sign Up'} /> : null}
                             </MenuItem>
                         </Menu>
                     </div>
