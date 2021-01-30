@@ -1,21 +1,42 @@
+import { signInAction } from './actions';
 import axios from 'axios';
 
 export const signIn = (email, password) => {
     // TODOバリデーション
     if (email && password) {
-        return async () => {
+        return async (dispatch) => {
             try {
                 await axios.post('/login', {
                     email: email,
                     password: password,
                 });
+                dispatch(
+                    signInAction({
+                        isSignedIn: true,
+                    })
+                );
             } catch (error) {
-                console.log(error);
+                console.error(error);
             }
         };
     } else {
         return;
     }
+};
+
+export const listenAuthState = () => {
+    return async (dispatch) => {
+        try {
+            await axios.post('/refresh_token');
+            dispatch(
+                signInAction({
+                    isSignedIn: true,
+                })
+            );
+        } catch (error) {
+            console.error(error);
+        }
+    };
 };
 
 // export const signOut = (accessToken) => {

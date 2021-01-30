@@ -1,16 +1,15 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Button } from '@material-ui/core';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
+import { useDispatch } from 'react-redux';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import { AppBar, Button } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import Title from '../../assets/img/Index_logo.svg';
-import { useDispatch, useSelector } from 'react-redux';
-import { getSignedIn } from '../../redux/users/selectors';
+import { makeStyles } from '@material-ui/core/styles';
 import { signIn } from '../../redux/users/operations';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Title from '../../assets/img/Index_logo.svg';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,14 +25,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Header = () => {
+    const dispatch = useDispatch();
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
-
-    const dispatch = useDispatch();
-    const selector = useSelector((state) => state);
-    const isSignedIn = getSignedIn(selector);
-    console.log(isSignedIn);
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
