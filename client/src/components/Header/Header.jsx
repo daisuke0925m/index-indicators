@@ -80,7 +80,7 @@ const Header = () => {
                                 {!isSignedIn ? (
                                     <TransitionModal text={'Sign in'} />
                                 ) : (
-                                    <p onClick={() => dispatch(signOut())}>Sign Out</p>
+                                    <span onClick={() => dispatch(signOut())}>Sign Out</span>
                                 )}
                             </MenuItem>
                         </Menu>
