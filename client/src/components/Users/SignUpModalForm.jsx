@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { TextInput } from '../UiKits';
 import { Button } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { signIn } from '../../redux/users/operations';
+import { signUp } from '../../redux/users/operations';
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -32,6 +32,8 @@ const SignInModalForm = (props) => {
     const [open, setOpen] = useState(false);
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
+    const [conformPass, setConformPass] = useState('');
+    const [userName, setUserName] = useState('');
 
     const inputEmail = useCallback(
         (event) => {
@@ -45,6 +47,20 @@ const SignInModalForm = (props) => {
             setPass(event.target.value);
         },
         [setPass]
+    );
+
+    const inputConformPass = useCallback(
+        (event) => {
+            setConformPass(event.target.value);
+        },
+        [setPass]
+    );
+
+    const inputUserName = useCallback(
+        (event) => {
+            setUserName(event.target.value);
+        },
+        [setUserName]
     );
 
     const handleOpen = () => {
@@ -78,10 +94,20 @@ const SignInModalForm = (props) => {
                         <div id="transition-modal-description" style={{ textAlign: 'center' }}>
                             <TextInput
                                 fullWidth={true}
+                                label={'User Name'}
+                                multiline={false}
+                                onChange={inputUserName}
+                                required={true}
+                                rows={1}
+                                value={userName}
+                                type={'text'}
+                            />
+                            <TextInput
+                                fullWidth={true}
                                 label={'Email'}
                                 multiline={false}
                                 onChange={inputEmail}
-                                required={false}
+                                required={true}
                                 rows={1}
                                 value={email}
                                 type={'text'}
@@ -91,13 +117,27 @@ const SignInModalForm = (props) => {
                                 label={'Password'}
                                 multiline={false}
                                 onChange={inputPass}
-                                required={false}
+                                required={true}
                                 rows={1}
                                 value={pass}
                                 type={'text'}
                             />
-                            <Button color="primary" variant={'outlined'} onClick={() => dispatch(signIn(email, pass))}>
-                                Sign In
+                            <TextInput
+                                fullWidth={true}
+                                label={'Conform Password'}
+                                multiline={false}
+                                onChange={inputConformPass}
+                                required={true}
+                                rows={1}
+                                value={conformPass}
+                                type={'text'}
+                            />
+                            <Button
+                                color="primary"
+                                variant={'outlined'}
+                                onClick={() => dispatch(signUp(userName, email, pass, conformPass))}
+                            >
+                                Sign Up
                             </Button>
                         </div>
                     </div>
