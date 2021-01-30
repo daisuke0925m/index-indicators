@@ -1,4 +1,5 @@
 import httpClient from '../../axios';
+import { modalOpenAction } from '../uiState/actions';
 import { signInAction, signOutAction } from './actions';
 
 export const signIn = (email, password) => {
@@ -67,12 +68,12 @@ export const signUp = (username, email, password, confirmPassword) => {
     return async (dispatch) => {
         if (username === '' || email === '' || password === '' || confirmPassword === '') {
             alert('必須項目が未入力です');
-            dispatch(signOutAction());
+            return dispatch(signOutAction());
         }
 
         if (password !== confirmPassword) {
             alert('パスワードが一致しません。もう一度お試しください。');
-            dispatch(signOutAction());
+            return dispatch(signOutAction());
         }
 
         try {
@@ -81,9 +82,13 @@ export const signUp = (username, email, password, confirmPassword) => {
                 email: email,
                 password: password,
             });
-            dispatch(signOutAction());
+            return dispatch(
+                modalOpenAction({
+                    isModalOpen: true,
+                })
+            );
         } catch {
-            dispatch(signOutAction());
+            return dispatch(signOutAction());
         }
     };
 };

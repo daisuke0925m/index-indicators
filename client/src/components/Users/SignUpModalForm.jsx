@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -6,8 +6,10 @@ import Fade from '@material-ui/core/Fade';
 import PropTypes from 'prop-types';
 import { TextInput } from '../UiKits';
 import { Button } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { signUp } from '../../redux/users/operations';
+import { getIsModalOpen } from '../../redux/uiState/selectors';
+import { modalCloseAction } from '../../redux/uiState/actions';
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -34,6 +36,9 @@ const SignInModalForm = (props) => {
     const [pass, setPass] = useState('');
     const [conformPass, setConformPass] = useState('');
     const [userName, setUserName] = useState('');
+
+    const selector = useSelector((state) => state);
+    const isModalOpen = getIsModalOpen(selector);
 
     const inputEmail = useCallback(
         (event) => {
@@ -70,6 +75,13 @@ const SignInModalForm = (props) => {
     const handleClose = () => {
         setOpen(false);
     };
+
+    useEffect(() => {
+        if (isModalOpen) {
+            setOpen(false);
+            dispatch(modalCloseAction());
+        }
+    }, [isModalOpen]);
 
     return (
         <div>

@@ -3,6 +3,9 @@ const initialState = {
         isSignedIn: false,
         username: '',
     },
+    uiState: {
+        isModalOpen: false,
+    },
 };
 
 export default initialState;

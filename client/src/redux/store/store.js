@@ -4,6 +4,7 @@ import { connectRouter, routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
 // reducers
 import { UsersReducer } from '../users/reducers';
+import { UiStateReducer } from '../uiState/reducers';
 
 export default function createStore(history) {
     const logger = createLogger({
@@ -15,6 +16,7 @@ export default function createStore(history) {
         combineReducers({
             router: connectRouter(history),
             users: UsersReducer,
+            uiState: UiStateReducer,
         }),
         applyMiddleware(logger, routerMiddleware(history), thunk)
     );
