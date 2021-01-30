@@ -6,7 +6,7 @@ const Auth = (props) => {
     Auth.propTypes = {
         children: PropTypes.element,
     };
-    console.log(props);
+
     const selector = useSelector((state) => state);
     const isSignedIn = getSignedIn(selector);
 
