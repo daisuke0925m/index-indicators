@@ -28,10 +28,8 @@ const App = () => {
     console.log(isSignedIn);
 
     useEffect(() => {
-        if (!isSignedIn) {
-            dispatch(listenAuthState());
-        }
-    }, [isSignedIn, dispatch]);
+        dispatch(listenAuthState());
+    }, []);
 
     return (
         <ThemeProvider theme={theme}>
