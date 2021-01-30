@@ -27,8 +27,8 @@ const Main = () => {
                 </CntWrap>
             </Grid>
             <Grid item xs={12} sm={8}>
+                <SpaceRow height={30} />
                 <Auth>
-                    <SpaceRow height={30} />
                     <CntWrap title={'Comparison'} description={<br />} accordionHead={''}>
                         <Comparison />
                     </CntWrap>
