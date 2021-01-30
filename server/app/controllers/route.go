@@ -7,7 +7,7 @@ import (
 // Route return API routing
 func Route(app *App) *mux.Router {
 	r := mux.NewRouter()
-	r.HandleFunc("/users", app.signupHandler).Methods("POST")
+	r.HandleFunc("/users", app.signupHandler).Methods("POST", "OPTIONS")
 	r.HandleFunc("/users/{id:[0-9]+}", app.userDeleteHandler).Methods("DELETE")
 	r.HandleFunc("/users/{id:[0-9]+}", app.userUpdateHandler).Methods("PUT")
 	// auth

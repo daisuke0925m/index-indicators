@@ -71,6 +71,11 @@ func (a *App) tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request))
 
 // ---------usersHandlers---------
 func (a *App) signupHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "OPTIONS" {
+		a.serveHTTPHeaders(w)
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 	var u entity.User
 	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
