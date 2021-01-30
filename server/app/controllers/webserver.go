@@ -223,11 +223,6 @@ func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// tokens := map[string]string{
-	// 	"access_token":  token.AccessToken,
-	// 	"refresh_token": token.RefreshToken,
-	// }
-
 	accessCookie := &http.Cookie{
 		Name:     "at",
 		Value:    token.AccessToken,
@@ -237,14 +232,13 @@ func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, accessCookie)
 	refreshCookie := &http.Cookie{
 		Name:     "rt",
-		Value:    token.AccessToken,
+		Value:    token.RefreshToken,
 		HttpOnly: true,
 		// Secure:   true,TODO
 	}
 
 	a.serveHTTPHeaders(w)
 	http.SetCookie(w, refreshCookie)
-	// json.NewEncoder(w).Encode(tokens)
 }
 
 func (a *App) logoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -264,10 +258,11 @@ func (a *App) logoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
-
-	mapToken := map[string]string{}
-	json.NewDecoder(r.Body).Decode(&mapToken)
-	refreshToken := mapToken["refresh_token"]
+	cookieRt, err := r.Cookie("rt")
+	if err != nil {
+		a.resposeStatusCode(w, "can't read cookie", http.StatusBadRequest)
+	}
+	refreshToken := cookieRt.Value
 
 	tokens, errMsg := models.RefreshAuth(r, refreshToken)
 	if errMsg != "" {
@@ -291,8 +286,6 @@ func (a *App) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 
 	a.serveHTTPHeaders(w)
 	http.SetCookie(w, refreshCookie)
-
-	// json.NewEncoder(w).Encode(tokens)
 }
 
 // ---------fgisHandlers---------
