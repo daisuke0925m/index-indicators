@@ -1,4 +1,4 @@
-import { signInAction } from './actions';
+import { signInAction, signOutAction } from './actions';
 import axios from 'axios';
 
 export const signIn = (email, password) => {
@@ -39,21 +39,16 @@ export const listenAuthState = () => {
     };
 };
 
-// export const signOut = (accessToken) => {
-//     return async (dispatch) => {
-//         try {
-//             const response = await axios.post('/logout', {
-//                 headers: {
-//                     'authorization': `Bearer ${accessToken}`,
-//                 }
-//             });
-//             const data = response.data
-//             dispatch(signOutAction());
-//         } catch (error) {
-//             console.log(error);
-//         }
-//     }
-// }
+export const signOut = () => {
+    return async (dispatch) => {
+        try {
+            await axios.post('/logout');
+            dispatch(signOutAction());
+        } catch (error) {
+            console.log(error);
+        }
+    };
+};
 
 // export const signUp = (username, email, password, confirmPassword) => {
 //     return async (dispatch) => {
