@@ -1,12 +1,12 @@
+import httpClient from '../../axios';
 import { signInAction, signOutAction } from './actions';
-import axios from 'axios';
 
 export const signIn = (email, password) => {
     // TODOバリデーション
     if (email && password) {
         return async (dispatch) => {
             try {
-                await axios.post('/login', {
+                await httpClient.post('/login', {
                     email: email,
                     password: password,
                 });
@@ -27,7 +27,7 @@ export const signIn = (email, password) => {
 export const listenAuthState = () => {
     return async (dispatch) => {
         try {
-            await axios.post('/refresh_token');
+            await httpClient.post('/refresh_token');
             dispatch(
                 signInAction({
                     isSignedIn: true,
@@ -42,7 +42,7 @@ export const listenAuthState = () => {
 export const signOut = () => {
     return async (dispatch) => {
         try {
-            await axios.post('/logout');
+            await httpClient.post('/logout');
             dispatch(signOutAction());
         } catch (error) {
             console.log(error);

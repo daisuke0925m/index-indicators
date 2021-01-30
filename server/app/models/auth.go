@@ -86,7 +86,7 @@ func CreateAuth(userid int, td *entity.TokenDetails) error {
 
 // ---認証処理の関数-------------
 
-// ExtractToken Headerからjwtを取得
+// ExtractToken Cookieからjwtを取得
 func ExtractToken(r *http.Request) string {
 	cookieAt, err := r.Cookie("at")
 	if err != nil {
