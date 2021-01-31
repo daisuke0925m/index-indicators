@@ -2,15 +2,16 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSignedIn } from '../../redux/users/selectors';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import { AppBar, Button } from '@material-ui/core';
+import { AppBar } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { makeStyles } from '@material-ui/core/styles';
-import { signIn, signOut } from '../../redux/users/operations';
+import { signOut } from '../../redux/users/operations';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Title from '../../assets/img/Index_logo.svg';
+import { SignInModalForm, SignUpModalForm } from '../Users/index';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -77,13 +78,16 @@ const Header = () => {
                         >
                             <MenuItem onClick={handleClose}>
                                 {!isSignedIn ? (
-                                    <Button onClick={() => dispatch(signIn('gorilla2@test', 'gorilla'))}>
-                                        Sign In
-                                    </Button>
+                                    <SignInModalForm text={'Sign In'} />
                                 ) : (
-                                    <Button onClick={() => dispatch(signOut())}>Sign Out</Button>
+                                    <span onClick={() => dispatch(signOut())}>Sign Out</span>
                                 )}
                             </MenuItem>
+                            {!isSignedIn && (
+                                <MenuItem onClick={handleClose}>
+                                    <SignUpModalForm text={'Sign Up'} />
+                                </MenuItem>
+                            )}
                         </Menu>
                     </div>
                 </Toolbar>
