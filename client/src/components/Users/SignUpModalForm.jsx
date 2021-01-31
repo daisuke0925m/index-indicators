@@ -25,8 +25,8 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const SignInModalForm = (props) => {
-    SignInModalForm.propTypes = {
+const SignUpModalForm = (props) => {
+    SignUpModalForm.propTypes = {
         text: PropTypes.string,
     };
     const classes = useStyles();
@@ -159,4 +159,4 @@ const SignInModalForm = (props) => {
     );
 };
 
-export default SignInModalForm;
+export default SignUpModalForm;
