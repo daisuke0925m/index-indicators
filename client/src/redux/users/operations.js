@@ -3,7 +3,6 @@ import { alertOpenAction, modalOpenAction } from '../uiState/actions';
 import { signInAction, signOutAction } from './actions';
 
 export const signIn = (email, password) => {
-    // TODOバリデーション
     if (email === '' || password === '') {
         return async (dispatch) => {
             try {
