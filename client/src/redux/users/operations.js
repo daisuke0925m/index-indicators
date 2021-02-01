@@ -99,7 +99,7 @@ export const signOut = () => {
                     alert: {
                         isOpen: true,
                         type: 'success',
-                        message: 'signed out',
+                        message: 'ログアウトしました。',
                     },
                 })
             );
