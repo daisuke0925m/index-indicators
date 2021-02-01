@@ -1,3 +1,4 @@
+import axios from 'axios';
 import httpClient from '../../axios';
 import { alertOpenAction } from '../uiState/actions';
 import { signInAction, signOutAction } from './actions';
@@ -64,14 +65,26 @@ export const signIn = (email, password) => {
 export const listenAuthState = () => {
     return async (dispatch) => {
         try {
-            await httpClient.post('/refresh_token');
+            await axios.post('/refresh_token');
             dispatch(
                 signInAction({
                     isSignedIn: true,
                 })
             );
+            return;
         } catch (error) {
-            console.error(error);
+            if (error.response.status == 404) {
+                dispatch(
+                    alertOpenAction({
+                        alert: {
+                            isOpen: true,
+                            type: 'info',
+                            message: '全ての機能を試すにはログインしてください。',
+                        },
+                    })
+                );
+            }
+            return;
         }
     };
 };

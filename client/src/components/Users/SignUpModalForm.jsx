@@ -76,7 +76,7 @@ const SignUpModalForm = (props) => {
     };
 
     useEffect(() => {
-        if (alertState) {
+        if (alertState.isOpen == true) {
             setOpen(false);
         }
     }, [alertState]);

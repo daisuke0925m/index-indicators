@@ -9,7 +9,7 @@ export const alertOpenAction = (uiState) => {
 export const ALERT_CLOSE = 'ALERT_CLOSE';
 export const alertCloseAction = (uiState) => {
     return {
-        type: 'MODAL_CLOSE',
+        type: 'ALERT_CLOSE',
         payload: uiState,
     };
 };
