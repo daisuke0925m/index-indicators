@@ -53,16 +53,21 @@ func (a *App) serveHTTPHeaders(w http.ResponseWriter) {
 
 func (a *App) tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "OPTIONS" {
+			a.serveHTTPHeaders(w)
+			w.WriteHeader(http.StatusOK)
+			return
+		}
 		accessDetails, err := models.ExtractTokenMetadata(r)
 		if err != nil {
-			a.resposeStatusCode(w, "unauthorized", http.StatusNotFound)
+			a.resposeStatusCode(w, "token is invalid", http.StatusUnauthorized)
 			return
 		}
 
 		// Redisからtokenを検索して見つからない場合はunauthorizedを返す。
 		_, authErr := models.FetchAuth(accessDetails)
 		if authErr != nil {
-			a.resposeStatusCode(w, "unauthorized", http.StatusUnauthorized)
+			a.resposeStatusCode(w, "token is not found", http.StatusNotFound)
 			return
 		}
 		fn(w, r)

@@ -62,10 +62,18 @@ export const signIn = (email, password) => {
     }
 };
 
+const httpClientSingle = axios.create({
+    baseURL: 'http://localhost:8080',
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
 export const listenAuthState = () => {
     return async (dispatch) => {
         try {
-            await axios.post('/refresh_token');
+            await httpClientSingle.post('http://localhost:8080/refresh_token');
             dispatch(
                 signInAction({
                     isSignedIn: true,
