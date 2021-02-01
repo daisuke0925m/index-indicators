@@ -24,7 +24,7 @@ export default function CustomizedSnackbar() {
     const dispatch = useDispatch();
     const selector = useSelector((state) => state);
     const alertState = getAlertState(selector);
-    console.log(alertState);
+    console.log('check me', alertState);
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;

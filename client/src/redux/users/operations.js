@@ -1,5 +1,5 @@
 import httpClient from '../../axios';
-import { alertOpenAction, modalOpenAction } from '../uiState/actions';
+import { alertOpenAction } from '../uiState/actions';
 import { signInAction, signOutAction } from './actions';
 
 export const signIn = (email, password) => {
@@ -130,38 +130,30 @@ export const signUp = (username, email, password, confirmPassword) => {
                 email: email,
                 password: password,
             });
-            dispatch(
-                modalOpenAction({
-                    isModalOpen: true,
-                })
-            );
-            dispatch(
-                alertOpenAction({
-                    alert: {
-                        isOpen: true,
-                        type: 'success',
-                        message: 'signed out',
+            await dispatch(
+                alertOpenAction(
+                    {
+                        alert: {
+                            isOpen: true,
+                            type: 'success',
+                            message: 'Created User! Please Sign In .',
+                        },
                     },
-                })
+                    console.log('1')
+                )
             );
-            // dispatch(alertOpenAction({
-            //     alert: {
-            //         isOpen: true,
-            //         type: 'success',
-            //         message: 'Created User! Please Sign In .',
-            //     },
-            // }))
-            return;
         } catch (error) {
-            // if (error.response.status == 409) {
-            //     dispatch(alertOpenAction({
-            //         alert: {
-            //             isOpen: true,
-            //             type: 'error',
-            //             message: 'User already exists . Conflict User Name or Email .',
-            //         },
-            //     }))
-            // }
+            if (error.response.status == 409) {
+                dispatch(
+                    alertOpenAction({
+                        alert: {
+                            isOpen: true,
+                            type: 'error',
+                            message: 'User already exists . Conflict User Name or Email .',
+                        },
+                    })
+                );
+            }
             return;
         }
     };
