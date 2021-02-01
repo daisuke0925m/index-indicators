@@ -11,6 +11,14 @@ export const UiStateReducer = (state = initialState.uiState, action) => {
             return {
                 ...action.payload,
             };
+        case Actions.ALERT_OPEN:
+            return {
+                ...action.payload,
+            };
+        case Actions.ALERT_CLOSE:
+            return {
+                ...action.payload,
+            };
         default:
             return state;
     }

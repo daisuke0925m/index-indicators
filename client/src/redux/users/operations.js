@@ -1,5 +1,5 @@
 import httpClient from '../../axios';
-import { modalOpenAction } from '../uiState/actions';
+import { alertOpenAction, modalOpenAction } from '../uiState/actions';
 import { signInAction, signOutAction } from './actions';
 
 export const signIn = (email, password) => {
@@ -24,6 +24,15 @@ export const signIn = (email, password) => {
                 dispatch(
                     signInAction({
                         isSignedIn: true,
+                    })
+                );
+                dispatch(
+                    alertOpenAction({
+                        alert: {
+                            isOpen: true,
+                            type: 'success',
+                            message: 'signed in',
+                        },
                     })
                 );
             } catch (error) {
@@ -58,6 +67,15 @@ export const signOut = () => {
         try {
             await httpClient.post('/logout');
             dispatch(signOutAction());
+            dispatch(
+                alertOpenAction({
+                    alert: {
+                        isOpen: true,
+                        type: 'success',
+                        message: 'signed out',
+                    },
+                })
+            );
         } catch (error) {
             console.log(error);
         }

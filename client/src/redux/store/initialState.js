@@ -5,6 +5,11 @@ const initialState = {
     },
     uiState: {
         isModalOpen: false,
+        alert: {
+            isOpen: false,
+            type: 'success',
+            message: 'error',
+        },
     },
 };
 

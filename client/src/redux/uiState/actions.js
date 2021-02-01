@@ -15,3 +15,25 @@ export const modalCloseAction = () => {
         },
     };
 };
+
+export const ALERT_OPEN = 'ALERT_OPEN';
+export const alertOpenAction = (uiState) => {
+    return {
+        type: 'ALERT_OPEN',
+        payload: uiState,
+    };
+};
+
+export const ALERT_CLOSE = 'ALERT_CLOSE';
+export const alertCloseAction = () => {
+    return {
+        type: 'MODAL_CLOSE',
+        payload: {
+            alert: {
+                isOpen: false,
+                type: 'success',
+                message: '',
+            },
+        },
+    };
+};
