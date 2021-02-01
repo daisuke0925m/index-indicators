@@ -25,15 +25,9 @@ export const alertOpenAction = (uiState) => {
 };
 
 export const ALERT_CLOSE = 'ALERT_CLOSE';
-export const alertCloseAction = () => {
+export const alertCloseAction = (uiState) => {
     return {
         type: 'MODAL_CLOSE',
-        payload: {
-            alert: {
-                isOpen: false,
-                type: 'success',
-                message: '',
-            },
-        },
+        payload: uiState,
     };
 };

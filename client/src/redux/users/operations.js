@@ -5,10 +5,18 @@ import { signInAction, signOutAction } from './actions';
 export const signIn = (email, password) => {
     // TODOバリデーション
     if (email === '' || password === '') {
-        alert('必須項目が未入力です');
         return async (dispatch) => {
             try {
                 await dispatch(signOutAction());
+                await dispatch(
+                    alertOpenAction({
+                        alert: {
+                            isOpen: true,
+                            type: 'error',
+                            message: 'Please Fill all forms!',
+                        },
+                    })
+                );
             } catch (error) {
                 console.error(error);
             }
@@ -36,7 +44,17 @@ export const signIn = (email, password) => {
                     })
                 );
             } catch (error) {
-                console.error(error);
+                if (error.response.status == 404) {
+                    dispatch(
+                        alertOpenAction({
+                            alert: {
+                                isOpen: true,
+                                type: 'error',
+                                message: 'User not found',
+                            },
+                        })
+                    );
+                }
             }
         };
     } else {
@@ -54,10 +72,7 @@ export const listenAuthState = () => {
                 })
             );
         } catch (error) {
-            if (error.response.status == 401) {
-                console.log('done');
-                // TODOエラーハンドリング
-            }
+            console.error(error);
         }
     };
 };
@@ -77,7 +92,7 @@ export const signOut = () => {
                 })
             );
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 };
@@ -85,13 +100,29 @@ export const signOut = () => {
 export const signUp = (username, email, password, confirmPassword) => {
     return async (dispatch) => {
         if (username === '' || email === '' || password === '' || confirmPassword === '') {
-            alert('必須項目が未入力です');
-            return dispatch(signOutAction());
+            dispatch(
+                alertOpenAction({
+                    alert: {
+                        isOpen: true,
+                        type: 'error',
+                        message: 'Please fill all forms!',
+                    },
+                })
+            );
+            return;
         }
 
         if (password !== confirmPassword) {
-            alert('パスワードが一致しません。もう一度お試しください。');
-            return dispatch(signOutAction());
+            dispatch(
+                alertOpenAction({
+                    alert: {
+                        isOpen: true,
+                        type: 'error',
+                        message: 'Password is not matched',
+                    },
+                })
+            );
+            return;
         }
 
         try {
@@ -100,13 +131,39 @@ export const signUp = (username, email, password, confirmPassword) => {
                 email: email,
                 password: password,
             });
-            return dispatch(
+            dispatch(
                 modalOpenAction({
                     isModalOpen: true,
                 })
             );
-        } catch {
-            return dispatch(signOutAction());
+            dispatch(
+                alertOpenAction({
+                    alert: {
+                        isOpen: true,
+                        type: 'success',
+                        message: 'signed out',
+                    },
+                })
+            );
+            // dispatch(alertOpenAction({
+            //     alert: {
+            //         isOpen: true,
+            //         type: 'success',
+            //         message: 'Created User! Please Sign In .',
+            //     },
+            // }))
+            return;
+        } catch (error) {
+            // if (error.response.status == 409) {
+            //     dispatch(alertOpenAction({
+            //         alert: {
+            //             isOpen: true,
+            //             type: 'error',
+            //             message: 'User already exists . Conflict User Name or Email .',
+            //         },
+            //     }))
+            // }
+            return;
         }
     };
 };

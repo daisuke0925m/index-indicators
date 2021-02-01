@@ -24,12 +24,20 @@ export default function CustomizedSnackbar() {
     const dispatch = useDispatch();
     const selector = useSelector((state) => state);
     const alertState = getAlertState(selector);
-
+    console.log(alertState);
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
-        dispatch(alertCloseAction());
+        dispatch(
+            alertCloseAction({
+                alert: {
+                    isOpen: false,
+                    type: alertState.type,
+                    message: '',
+                },
+            })
+        );
     };
 
     return (
