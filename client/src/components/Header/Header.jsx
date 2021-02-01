@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSignedIn } from '../../redux/users/selectors';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import { AppBar } from '@material-ui/core';
+import { AppBar, Button } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -52,43 +52,47 @@ const Header = () => {
                         <img src={Title} alt="title img" />
                     </Typography>
                     <div>
-                        <IconButton
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleMenu}
-                            color="primary"
-                        >
-                            <AccountCircle />
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorEl}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={open}
-                            onClose={handleClose}
-                        >
-                            <MenuItem onClick={handleClose}>
-                                {!isSignedIn ? (
+                        {isSignedIn ? (
+                            <>
+                                <IconButton
+                                    aria-label="account of current user"
+                                    aria-controls="menu-appbar"
+                                    aria-haspopup="true"
+                                    onClick={handleMenu}
+                                    color="primary"
+                                >
+                                    <AccountCircle />
+                                </IconButton>
+                                <Menu
+                                    id="menu-appbar"
+                                    anchorEl={anchorEl}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    open={open}
+                                    onClose={handleClose}
+                                >
+                                    <MenuItem onClick={handleClose}>
+                                        <span onClick={() => dispatch(signOut())}>Sign Out</span>
+                                    </MenuItem>
+                                </Menu>
+                            </>
+                        ) : (
+                            <div style={{ display: 'flex' }}>
+                                <Button>
                                     <SignInModalForm text={'Sign In'} />
-                                ) : (
-                                    <span onClick={() => dispatch(signOut())}>Sign Out</span>
-                                )}
-                            </MenuItem>
-                            {!isSignedIn && (
-                                <MenuItem onClick={handleClose}>
+                                </Button>
+                                <Button variant="contained" color="primary" style={{ marginLeft: 10 }}>
                                     <SignUpModalForm text={'Sign Up'} />
-                                </MenuItem>
-                            )}
-                        </Menu>
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </Toolbar>
             </AppBar>
