@@ -73,7 +73,7 @@ const httpClientSingle = axios.create({
 export const listenAuthState = () => {
     return async (dispatch) => {
         try {
-            await httpClientSingle.post('http://localhost:8080/refresh_token');
+            await httpClientSingle.post('/refresh_token');
             dispatch(
                 signInAction({
                     isSignedIn: true,
