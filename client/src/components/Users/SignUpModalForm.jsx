@@ -3,13 +3,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import { getAlertState } from '../../redux/uiState/selectors';
 import PropTypes from 'prop-types';
 import { TextInput } from '../UiKits';
 import { Button } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { signUp } from '../../redux/users/operations';
-import { getIsModalOpen } from '../../redux/uiState/selectors';
-import { modalCloseAction } from '../../redux/uiState/actions';
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -38,7 +37,7 @@ const SignUpModalForm = (props) => {
     const [userName, setUserName] = useState('');
 
     const selector = useSelector((state) => state);
-    const isModalOpen = getIsModalOpen(selector);
+    const alertState = getAlertState(selector);
 
     const inputEmail = useCallback(
         (event) => {
@@ -77,11 +76,10 @@ const SignUpModalForm = (props) => {
     };
 
     useEffect(() => {
-        if (isModalOpen) {
+        if (alertState.isOpen == true) {
             setOpen(false);
-            dispatch(modalCloseAction());
         }
-    }, [isModalOpen]);
+    }, [alertState]);
 
     return (
         <div>

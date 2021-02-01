@@ -1,14 +1,22 @@
+import axios from 'axios';
 import httpClient from '../../axios';
-import { modalOpenAction } from '../uiState/actions';
+import { alertOpenAction } from '../uiState/actions';
 import { signInAction, signOutAction } from './actions';
 
 export const signIn = (email, password) => {
-    // TODOバリデーション
     if (email === '' || password === '') {
-        alert('必須項目が未入力です');
         return async (dispatch) => {
             try {
-                await dispatch(signOutAction());
+                await dispatch(
+                    alertOpenAction({
+                        alert: {
+                            isOpen: true,
+                            type: 'error',
+                            message: '全てのフォームに記入してください。',
+                        },
+                    })
+                );
+                return;
             } catch (error) {
                 console.error(error);
             }
@@ -21,13 +29,32 @@ export const signIn = (email, password) => {
                     email: email,
                     password: password,
                 });
-                dispatch(
+                await dispatch(
                     signInAction({
                         isSignedIn: true,
                     })
                 );
+                await dispatch(
+                    alertOpenAction({
+                        alert: {
+                            isOpen: true,
+                            type: 'success',
+                            message: 'ログインしました。',
+                        },
+                    })
+                );
             } catch (error) {
-                console.error(error);
+                if (error.response.status == 404) {
+                    dispatch(
+                        alertOpenAction({
+                            alert: {
+                                isOpen: true,
+                                type: 'error',
+                                message: 'ユーザーが見つかりません。',
+                            },
+                        })
+                    );
+                }
             }
         };
     } else {
@@ -35,20 +62,37 @@ export const signIn = (email, password) => {
     }
 };
 
+const httpClientSingle = axios.create({
+    baseURL: 'http://localhost:8080',
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
 export const listenAuthState = () => {
     return async (dispatch) => {
         try {
-            await httpClient.post('/refresh_token');
+            await httpClientSingle.post('/refresh_token');
             dispatch(
                 signInAction({
                     isSignedIn: true,
                 })
             );
+            return;
         } catch (error) {
-            if (error.response.status == 401) {
-                console.log('done');
-                // TODOエラーハンドリング
+            if (error.response.status == 404) {
+                dispatch(
+                    alertOpenAction({
+                        alert: {
+                            isOpen: true,
+                            type: 'info',
+                            message: '全ての機能を試すにはログインしてください。',
+                        },
+                    })
+                );
             }
+            return;
         }
     };
 };
@@ -58,8 +102,17 @@ export const signOut = () => {
         try {
             await httpClient.post('/logout');
             dispatch(signOutAction());
+            dispatch(
+                alertOpenAction({
+                    alert: {
+                        isOpen: true,
+                        type: 'success',
+                        message: 'ログアウトしました。',
+                    },
+                })
+            );
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 };
@@ -67,13 +120,29 @@ export const signOut = () => {
 export const signUp = (username, email, password, confirmPassword) => {
     return async (dispatch) => {
         if (username === '' || email === '' || password === '' || confirmPassword === '') {
-            alert('必須項目が未入力です');
-            return dispatch(signOutAction());
+            dispatch(
+                alertOpenAction({
+                    alert: {
+                        isOpen: true,
+                        type: 'error',
+                        message: '全てのフォームに記入してください!',
+                    },
+                })
+            );
+            return;
         }
 
         if (password !== confirmPassword) {
-            alert('パスワードが一致しません。もう一度お試しください。');
-            return dispatch(signOutAction());
+            dispatch(
+                alertOpenAction({
+                    alert: {
+                        isOpen: true,
+                        type: 'error',
+                        message: 'パスワードが一致しません！',
+                    },
+                })
+            );
+            return;
         }
 
         try {
@@ -82,13 +151,31 @@ export const signUp = (username, email, password, confirmPassword) => {
                 email: email,
                 password: password,
             });
-            return dispatch(
-                modalOpenAction({
-                    isModalOpen: true,
-                })
+            await dispatch(
+                alertOpenAction(
+                    {
+                        alert: {
+                            isOpen: true,
+                            type: 'success',
+                            message: 'ユーザーを作成しました。 ログインして下さい。',
+                        },
+                    },
+                    console.log('1')
+                )
             );
-        } catch {
-            return dispatch(signOutAction());
+        } catch (error) {
+            if (error.response.status == 409) {
+                dispatch(
+                    alertOpenAction({
+                        alert: {
+                            isOpen: true,
+                            type: 'error',
+                            message: 'ユーザーネームまたは、Eメールはすでに使用されております。',
+                        },
+                    })
+                );
+            }
+            return;
         }
     };
 };

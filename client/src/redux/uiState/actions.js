@@ -1,17 +1,15 @@
-export const MODAL_OPEN = 'MODAL_OPEN';
-export const modalOpenAction = (uiState) => {
+export const ALERT_OPEN = 'ALERT_OPEN';
+export const alertOpenAction = (uiState) => {
     return {
-        type: 'MODAL_OPEN',
+        type: 'ALERT_OPEN',
         payload: uiState,
     };
 };
 
-export const MODAL_CLOSE = 'MODAL_CLOSE';
-export const modalCloseAction = () => {
+export const ALERT_CLOSE = 'ALERT_CLOSE';
+export const alertCloseAction = (uiState) => {
     return {
-        type: 'MODAL_CLOSE',
-        payload: {
-            isModalOpen: false,
-        },
+        type: 'ALERT_CLOSE',
+        payload: uiState,
     };
 };

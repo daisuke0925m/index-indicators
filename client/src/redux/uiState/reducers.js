@@ -3,11 +3,11 @@ import initialState from '../store/initialState';
 
 export const UiStateReducer = (state = initialState.uiState, action) => {
     switch (action.type) {
-        case Actions.MODAL_OPEN:
+        case Actions.ALERT_OPEN:
             return {
                 ...action.payload,
             };
-        case Actions.MODAL_CLOSE:
+        case Actions.ALERT_CLOSE:
             return {
                 ...action.payload,
             };

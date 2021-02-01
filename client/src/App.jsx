@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './style/index.css';
+import { CustomizedSnackbar } from './components/UiKits';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { getSignedIn } from './redux/users/selectors';
 import Header from './components/Header/Header';
@@ -20,19 +21,17 @@ const App = () => {
     const dispatch = useDispatch();
     const selector = useSelector((state) => state);
     const isSignedIn = getSignedIn(selector);
-    console.log(isSignedIn);
+    console.log('isSignedIn', isSignedIn);
 
     useEffect(() => {
-        // ログイン処理
         dispatch(listenAuthState());
     }, []);
 
     return (
         <ThemeProvider theme={theme}>
-            <div>
-                <Header />
-                <Main />
-            </div>
+            <CustomizedSnackbar />
+            <Header />
+            <Main />
         </ThemeProvider>
     );
 };
