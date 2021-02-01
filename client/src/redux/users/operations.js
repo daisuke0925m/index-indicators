@@ -7,16 +7,16 @@ export const signIn = (email, password) => {
     if (email === '' || password === '') {
         return async (dispatch) => {
             try {
-                await dispatch(signOutAction());
                 await dispatch(
                     alertOpenAction({
                         alert: {
                             isOpen: true,
                             type: 'error',
-                            message: 'Please Fill all forms!',
+                            message: '全てのフォームに記入してください。',
                         },
                     })
                 );
+                return;
             } catch (error) {
                 console.error(error);
             }
@@ -29,17 +29,17 @@ export const signIn = (email, password) => {
                     email: email,
                     password: password,
                 });
-                dispatch(
+                await dispatch(
                     signInAction({
                         isSignedIn: true,
                     })
                 );
-                dispatch(
+                await dispatch(
                     alertOpenAction({
                         alert: {
                             isOpen: true,
                             type: 'success',
-                            message: 'signed in',
+                            message: 'ログインしました。',
                         },
                     })
                 );
@@ -50,7 +50,7 @@ export const signIn = (email, password) => {
                             alert: {
                                 isOpen: true,
                                 type: 'error',
-                                message: 'User not found',
+                                message: 'ユーザーが見つかりません。',
                             },
                         })
                     );
@@ -117,7 +117,7 @@ export const signUp = (username, email, password, confirmPassword) => {
                     alert: {
                         isOpen: true,
                         type: 'error',
-                        message: 'Please fill all forms!',
+                        message: '全てのフォームに記入してください!',
                     },
                 })
             );
@@ -130,7 +130,7 @@ export const signUp = (username, email, password, confirmPassword) => {
                     alert: {
                         isOpen: true,
                         type: 'error',
-                        message: 'Password is not matched',
+                        message: 'パスワードが一致しません！',
                     },
                 })
             );
@@ -149,7 +149,7 @@ export const signUp = (username, email, password, confirmPassword) => {
                         alert: {
                             isOpen: true,
                             type: 'success',
-                            message: 'Created User! Please Sign In .',
+                            message: 'ユーザーを作成しました。 ログインして下さい。',
                         },
                     },
                     console.log('1')
@@ -162,7 +162,7 @@ export const signUp = (username, email, password, confirmPassword) => {
                         alert: {
                             isOpen: true,
                             type: 'error',
-                            message: 'User already exists . Conflict User Name or Email .',
+                            message: 'ユーザーネームまたは、Eメールはすでに使用されております。',
                         },
                     })
                 );

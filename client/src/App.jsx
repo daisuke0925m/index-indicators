@@ -21,10 +21,9 @@ const App = () => {
     const dispatch = useDispatch();
     const selector = useSelector((state) => state);
     const isSignedIn = getSignedIn(selector);
-    console.log(isSignedIn);
+    console.log('isSignedIn', isSignedIn);
 
     useEffect(() => {
-        // ログイン処理
         dispatch(listenAuthState());
     }, []);
 

@@ -10,7 +10,7 @@ const Auth = (props) => {
     const selector = useSelector((state) => state);
     const isSignedIn = getSignedIn(selector);
 
-    return <div>{isSignedIn ? props.children : 'Sign in required'}</div>;
+    return <div>{isSignedIn ? props.children : 'ログインしているーザーのみ使用できます。'}</div>;
 };
 
 export default Auth;
