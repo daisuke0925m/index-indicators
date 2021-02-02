@@ -8,7 +8,7 @@ import (
 func Route(app *App) *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/users", app.signupHandler).Methods("POST", "OPTIONS")
-	r.HandleFunc("/users/{id:[0-9]+}", app.userDeleteHandler).Methods("DELETE")
+	r.HandleFunc("/users/{id:[0-9]+}", app.userDeleteHandler).Methods("DELETE", "OPTIONS")
 	r.HandleFunc("/users/{id:[0-9]+}", app.userUpdateHandler).Methods("PUT")
 	// auth
 	r.HandleFunc("/login", app.loginHandler).Methods("POST", "OPTIONS")

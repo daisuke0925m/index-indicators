@@ -11,7 +11,7 @@ import { signOut } from '../../redux/users/operations';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Title from '../../assets/img/Index_logo.svg';
-import { SignInModalForm, SignUpModalForm } from '../Users/index';
+import { SignInModalForm, SignUpModalForm, DeleteUserModalForm } from '../Users/index';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -80,6 +80,9 @@ const Header = () => {
                                 >
                                     <MenuItem onClick={handleClose}>
                                         <span onClick={() => dispatch(signOut())}>Sign Out</span>
+                                    </MenuItem>
+                                    <MenuItem onClick={handleClose}>
+                                        <DeleteUserModalForm text={'Delete User'} />
                                     </MenuItem>
                                 </Menu>
                             </>

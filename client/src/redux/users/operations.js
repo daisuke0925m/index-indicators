@@ -180,6 +180,66 @@ export const signUp = (username, email, password, confirmPassword) => {
     };
 };
 
+export const deleteUser = (password, id) => {
+    if (password === '') {
+        return async (dispatch) => {
+            try {
+                await dispatch(
+                    alertOpenAction({
+                        alert: {
+                            isOpen: true,
+                            type: 'error',
+                            message: 'パスワードを記入して下さい。',
+                        },
+                    })
+                );
+                return;
+            } catch (error) {
+                console.error(error);
+                return;
+            }
+        };
+    }
+    if (password) {
+        console.log(password);
+        return async (dispatch) => {
+            try {
+                await httpClient.delete(`/users/${id}`, {
+                    data: { password: password },
+                });
+                dispatch(
+                    signInAction({
+                        isSignedIn: false,
+                    })
+                );
+                dispatch(
+                    alertOpenAction({
+                        alert: {
+                            isOpen: true,
+                            type: 'warning',
+                            message: 'ユーザーを削除しました。',
+                        },
+                    })
+                );
+            } catch (error) {
+                if (error.response.status == 404) {
+                    dispatch(
+                        alertOpenAction({
+                            alert: {
+                                isOpen: true,
+                                type: 'error',
+                                message: 'パスワードが一致しません。 もう一度お試し下さい。',
+                            },
+                        })
+                    );
+                }
+            }
+        };
+    } else {
+        return;
+    }
+};
+
 // export const resetPassword = (email) => {
 //     return async (dispatch) => {
 //         if (email === "") {
