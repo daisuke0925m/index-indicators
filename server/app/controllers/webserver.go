@@ -79,6 +79,40 @@ func (a *App) tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request))
 }
 
 // ---------usersHandlers---------
+func (a *App) userGetHandler(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(path.Base(r.URL.Path))
+	if err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	foundUser, err := a.DB.FindUserByID(id)
+	if err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	type user struct {
+		ID       int    `json:"id,omitempty"`
+		UserName string `json:"user_name,omitempty"`
+		Email    string `json:"email,omitempty"`
+	}
+
+	body := &user{
+		ID:       foundUser.ID,
+		UserName: foundUser.UserName,
+		Email:    foundUser.Email,
+	}
+
+	a.serveHTTPHeaders(w)
+	js, err := json.Marshal(body)
+	if err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusInternalServerError)
+	}
+	w.Write(js)
+	return
+}
+
 func (a *App) signupHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
 		a.serveHTTPHeaders(w)
