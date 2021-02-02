@@ -37,6 +37,8 @@ func (a *App) resposeStatusCode(w http.ResponseWriter, ResMessage string, code i
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 	w.WriteHeader(code)
 	jsonError, err := json.Marshal(JSONResponse{Response: ResMessage, Code: code})
 	if err != nil {
