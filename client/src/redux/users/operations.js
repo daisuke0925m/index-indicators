@@ -81,7 +81,7 @@ export const listenAuthState = () => {
             );
             return;
         } catch (error) {
-            if (error.response.status == 404) {
+            if (error.response.status == 404 || error.response.status == 401) {
                 dispatch(
                     alertOpenAction({
                         alert: {
@@ -222,7 +222,7 @@ export const deleteUser = (password, id) => {
                     })
                 );
             } catch (error) {
-                if (error.response.status == 404) {
+                if (error.response.status == 404 || error.response.status == 400) {
                     dispatch(
                         alertOpenAction({
                             alert: {

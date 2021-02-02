@@ -78,7 +78,7 @@ const DeleteUserModalForm = (props) => {
                                 value={pass}
                                 type={'text'}
                             />
-                            <Button color="primary" variant={'outlined'} onClick={() => dispatch(deleteUser(pass, 7))}>
+                            <Button color="primary" variant={'outlined'} onClick={() => dispatch(deleteUser(pass, 8))}>
                                 Delete User
                             </Button>
                         </div>
