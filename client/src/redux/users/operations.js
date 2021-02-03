@@ -19,6 +19,7 @@ export const signIn = (email, password) => {
                 return;
             } catch (error) {
                 console.error(error);
+                return;
             }
         };
     }
@@ -46,6 +47,7 @@ export const signIn = (email, password) => {
                         },
                     })
                 );
+                return;
             } catch (error) {
                 if (error.response.status == 404) {
                     dispatch(
@@ -58,10 +60,9 @@ export const signIn = (email, password) => {
                         })
                     );
                 }
+                return;
             }
         };
-    } else {
-        return;
     }
 };
 
@@ -76,13 +77,23 @@ const httpClientSingle = axios.create({
 export const listenAuthState = () => {
     return async (dispatch) => {
         try {
-            await httpClientSingle.post('/refresh_token');
-            dispatch(
-                signInAction({
-                    isSignedIn: true,
-                })
-            );
-            return;
+            const res = await httpClientSingle.post('/refresh_token');
+            const id = res.data.id;
+            try {
+                const res = await httpClient.get(`/users/${id}`);
+                const data = res.data;
+                dispatch(
+                    signInAction({
+                        isSignedIn: true,
+                        userID: data.id,
+                        userName: data.userName,
+                    })
+                );
+                return;
+            } catch (error) {
+                console.error(error);
+                return;
+            }
         } catch (error) {
             if (error.response.status == 404 || error.response.status == 401) {
                 dispatch(
