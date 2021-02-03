@@ -379,6 +379,19 @@ func (a *App) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, refreshCookie)
 
 	a.serveHTTPHeaders(w)
+
+	type resBody struct {
+		ID int `json:"id,omitempty"`
+	}
+
+	id, err := strconv.Atoi(tokens["user_id"])
+	body := &resBody{id}
+
+	js, err := json.Marshal(body)
+	if err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusInternalServerError)
+	}
+	w.Write(js)
 }
 
 // ---------fgisHandlers---------
