@@ -271,26 +271,26 @@ func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 	var user entity.User
 	json.NewDecoder(r.Body).Decode(&user)
 
-	searchedUser, err := models.FindUser(user)
+	foundUser, err := models.FindUser(user)
 	if err != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusNotFound)
 		return
 	}
 
 	fmt.Println("compare the password")
-	if err := bcrypt.CompareHashAndPassword([]byte(searchedUser.Password), []byte(user.Password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(user.Password)); err != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 	fmt.Println("password is be valid")
 
-	token, err := models.CreateToken(searchedUser.ID)
+	token, err := models.CreateToken(foundUser.ID)
 	if err != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
-	saveErr := models.CreateAuth(searchedUser.ID, token)
+	saveErr := models.CreateAuth(foundUser.ID, token)
 	if saveErr != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusUnauthorized)
 		return
@@ -312,6 +312,25 @@ func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	a.serveHTTPHeaders(w)
 	http.SetCookie(w, refreshCookie)
+
+	type resBody struct {
+		ID       int    `json:"id,omitempty"`
+		UserName string `json:"user_name,omitempty"`
+		Email    string `json:"email,omitempty"`
+	}
+
+	body := &resBody{
+		ID:       foundUser.ID,
+		UserName: foundUser.UserName,
+		Email:    foundUser.Email,
+	}
+
+	js, err := json.Marshal(body)
+	if err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusInternalServerError)
+	}
+	w.Write(js)
+	return
 }
 
 func (a *App) logoutHandler(w http.ResponseWriter, r *http.Request) {
