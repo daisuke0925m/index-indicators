@@ -25,16 +25,19 @@ export const signIn = (email, password) => {
     if (email && password) {
         return async (dispatch) => {
             try {
-                await httpClient.post('/login', {
+                const res = await httpClient.post('/login', {
                     email: email,
                     password: password,
                 });
-                await dispatch(
+                const data = res.data;
+                dispatch(
                     signInAction({
                         isSignedIn: true,
+                        userID: data.id,
+                        userName: data.userName,
                     })
                 );
-                await dispatch(
+                dispatch(
                     alertOpenAction({
                         alert: {
                             isOpen: true,
