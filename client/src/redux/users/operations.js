@@ -221,11 +221,7 @@ export const deleteUser = (password, id) => {
                 await httpClient.delete(`/users/${id}`, {
                     data: { password: password },
                 });
-                dispatch(
-                    signInAction({
-                        isSignedIn: false,
-                    })
-                );
+                dispatch(signOutAction());
                 dispatch(
                     alertOpenAction({
                         alert: {
