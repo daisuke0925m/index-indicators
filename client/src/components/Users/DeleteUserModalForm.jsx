@@ -3,11 +3,12 @@ import { Button } from '@material-ui/core';
 import Backdrop from '@material-ui/core/Backdrop';
 import { deleteUser } from '../../redux/users/operations';
 import Fade from '@material-ui/core/Fade';
+import { getUserID } from '../../redux/users/selectors';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import PropTypes from 'prop-types';
 import { TextInput } from '../UiKits';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -31,6 +32,8 @@ const DeleteUserModalForm = (props) => {
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const [pass, setPass] = useState('');
+    const selector = useSelector((state) => state);
+    const userID = getUserID(selector);
 
     const inputPass = useCallback(
         (event) => {
@@ -78,7 +81,11 @@ const DeleteUserModalForm = (props) => {
                                 value={pass}
                                 type={'text'}
                             />
-                            <Button color="primary" variant={'outlined'} onClick={() => dispatch(deleteUser(pass, 8))}>
+                            <Button
+                                color="primary"
+                                variant={'outlined'}
+                                onClick={() => dispatch(deleteUser(pass, userID))}
+                            >
                                 Delete User
                             </Button>
                         </div>

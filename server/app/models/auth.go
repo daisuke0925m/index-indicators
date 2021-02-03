@@ -218,6 +218,7 @@ func RefreshAuth(r *http.Request, refreshToken string) (map[string]string, strin
 		tokens := map[string]string{
 			"access_token":  ts.AccessToken,
 			"refresh_token": ts.RefreshToken,
+			"user_id":       strconv.Itoa(userID),
 		}
 
 		return tokens, ""
