@@ -11,7 +11,7 @@ import (
 )
 
 func run() error {
-	db.AutoMigrate()
+	models.AutoMigrate()
 	db.InitRedis()
 	go controllers.StreamIngestionData() //TODO
 
