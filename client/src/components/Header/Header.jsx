@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getSignedIn } from '../../redux/users/selectors';
+import { getSignedIn, getUserName } from '../../redux/users/selectors';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import { AppBar, Button } from '@material-ui/core';
+import { AppBar, Button, Divider } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -11,7 +11,7 @@ import { signOut } from '../../redux/users/operations';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Title from '../../assets/img/Index_logo.svg';
-import { SignInModalForm, SignUpModalForm, DeleteUserModalForm } from '../Users/index';
+import { SignInModalForm, SignUpModalForm, DeleteUserModalForm, UpdateModalForm } from '../Users/index';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -32,6 +32,7 @@ const Header = () => {
     const dispatch = useDispatch();
     const selector = useSelector((state) => state);
     const isSignedIn = getSignedIn(selector);
+    const userName = getUserName(selector);
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -78,8 +79,13 @@ const Header = () => {
                                     open={open}
                                     onClose={handleClose}
                                 >
+                                    <MenuItem disabled>{userName}</MenuItem>
+                                    <Divider />
                                     <MenuItem onClick={handleClose}>
                                         <span onClick={() => dispatch(signOut())}>Sign Out</span>
+                                    </MenuItem>
+                                    <MenuItem onClick={handleClose}>
+                                        <UpdateModalForm text={'Update User'} />
                                     </MenuItem>
                                     <MenuItem onClick={handleClose}>
                                         <DeleteUserModalForm text={'Delete User'} />
