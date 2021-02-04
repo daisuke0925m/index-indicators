@@ -130,7 +130,7 @@ const SignUpModalForm = (props) => {
                                 required={true}
                                 rows={1}
                                 value={pass}
-                                type={'text'}
+                                type={'password'}
                             />
                             <TextInput
                                 fullWidth={true}
@@ -140,7 +140,7 @@ const SignUpModalForm = (props) => {
                                 required={true}
                                 rows={1}
                                 value={conformPass}
-                                type={'text'}
+                                type={'password'}
                             />
                             <Button
                                 color="primary"

@@ -94,7 +94,7 @@ const SignInModalForm = (props) => {
                                 required={false}
                                 rows={1}
                                 value={pass}
-                                type={'text'}
+                                type={'password'}
                             />
                             <Button color="primary" variant={'outlined'} onClick={() => dispatch(signIn(email, pass))}>
                                 Sign In

@@ -79,7 +79,7 @@ const DeleteUserModalForm = (props) => {
                                 required={false}
                                 rows={1}
                                 value={pass}
-                                type={'text'}
+                                type={'password'}
                             />
                             <Button
                                 color="primary"
