@@ -43,6 +43,6 @@ func AutoMigrate() {
 		panic(err.Error())
 	}
 	defer db.Close()
-	db.AutoMigrate(&entity.Fgi{}, &entity.User{}, &entity.Ticker{})
+	db.AutoMigrate(&entity.Fgi{}, &entity.Like{}, &entity.Ticker{}, &entity.User{})
 	fmt.Println("finish migrate!")
 }
