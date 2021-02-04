@@ -35,7 +35,7 @@ export const signIn = (email, password) => {
                     signInAction({
                         isSignedIn: true,
                         userID: data.id,
-                        userName: data.userName,
+                        userName: data.user_name,
                     })
                 );
                 dispatch(
@@ -86,7 +86,7 @@ export const listenAuthState = () => {
                     signInAction({
                         isSignedIn: true,
                         userID: data.id,
-                        userName: data.userName,
+                        userName: data.user_name,
                     })
                 );
                 return;
@@ -166,16 +166,13 @@ export const signUp = (username, email, password, confirmPassword) => {
                 password: password,
             });
             await dispatch(
-                alertOpenAction(
-                    {
-                        alert: {
-                            isOpen: true,
-                            type: 'success',
-                            message: 'ユーザーを作成しました。 ログインして下さい。',
-                        },
+                alertOpenAction({
+                    alert: {
+                        isOpen: true,
+                        type: 'success',
+                        message: 'ユーザーを作成しました。 ログインして下さい。',
                     },
-                    console.log('1')
-                )
+                })
             );
         } catch (error) {
             if (error.response.status == 409) {
@@ -215,7 +212,6 @@ export const deleteUser = (password, id) => {
         };
     }
     if (password) {
-        console.log(password);
         return async (dispatch) => {
             try {
                 await httpClient.delete(`/users/${id}`, {
@@ -245,24 +241,79 @@ export const deleteUser = (password, id) => {
                 }
             }
         };
-    } else {
-        return;
     }
 };
 
-// export const resetPassword = (email) => {
-//     return async (dispatch) => {
-//         if (email === "") {
-//             alert("必須項目が未入力です。")
-//             return false
-//         } else {
-//             auth.sendPasswordResetEmail(email)
-//                 .then(() => {
-//                     alert('入力されたアドレスにパスワードリセット用のメールを送りました。')
-//                     dispatch(push('/signin'))
-//                 }).catch(() => {
-//                     alert('パスワードリセットに失敗しました。')
-//                 })
-//         }
-//     }
-// }
+export const updateUser = (newName, newEmail, newPass, pass, id) => {
+    if (newName == '' && newEmail == '' && newPass == '') {
+        return async (dispatch) => {
+            dispatch(
+                alertOpenAction({
+                    alert: {
+                        isOpen: true,
+                        type: 'error',
+                        message: '送信できませんでした。少なくとも1つの項目は変更して下さい。',
+                    },
+                })
+            );
+            return;
+        };
+    }
+
+    if (pass) {
+        return async (dispatch) => {
+            try {
+                await httpClient.put(`/users/${id}`, {
+                    user: {
+                        password: pass,
+                    },
+                    new_user: {
+                        user_name: newName,
+                        email: newEmail,
+                        password: newPass,
+                    },
+                });
+                // dispatch(signOut());
+                dispatch(
+                    alertOpenAction({
+                        alert: {
+                            isOpen: true,
+                            type: 'success',
+                            message:
+                                `${newName.length ? 'ユーザー名 ' : ''}` +
+                                `${newEmail.length ? 'Email ' : ''}` +
+                                `${newPass.length ? 'パスワード ' : ''}` +
+                                'の変更に成功しました。',
+                        },
+                    })
+                );
+                dispatch(listenAuthState());
+            } catch (error) {
+                if (error.response.status == 404 || error.response.status == 400) {
+                    dispatch(
+                        alertOpenAction({
+                            alert: {
+                                isOpen: true,
+                                type: 'error',
+                                message: 'パスワードが一致しません。 もう一度お試し下さい。',
+                            },
+                        })
+                    );
+                }
+            }
+        };
+    } else {
+        return async (dispatch) => {
+            dispatch(
+                alertOpenAction({
+                    alert: {
+                        isOpen: true,
+                        type: 'error',
+                        message: 'パスワードを記入してください。',
+                    },
+                })
+            );
+            return;
+        };
+    }
+};
