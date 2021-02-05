@@ -1,11 +1,12 @@
 import React from 'react';
+import Auth from '../../Auth';
+import Comparison from '../Comparison/Comparison';
+import { CntWrap, SpaceRow } from '../UiKits';
 import Fgi from '../Fgi/Fgi';
 import FgiDes from '../Fgi/FgiDes';
 import { Grid } from '@material-ui/core';
-import { CntWrap, SpaceRow, SwitchButton } from '../UiKits';
+import LikeSwitch from '../Likes/LikeSwitch';
 import Skew from '../Skew/Skew';
-import Comparison from '../Comparison/Comparison';
-import Auth from '../../Auth';
 
 const Main = () => {
     return (
@@ -18,7 +19,7 @@ const Main = () => {
                     accordionHead={'What is the Fear & Greed Index?'}
                 >
                     <div>
-                        <SwitchButton />
+                        <LikeSwitch />
                         <Fgi />
                     </div>
                 </CntWrap>
@@ -26,7 +27,10 @@ const Main = () => {
             <Grid item xs={12} sm={8}>
                 <SpaceRow height={30} />
                 <CntWrap title={'SKEW'} description={<br />} accordionHead={''}>
-                    <Skew />
+                    <div>
+                        <LikeSwitch />
+                        <Skew />
+                    </div>
                 </CntWrap>
             </Grid>
             <Grid item xs={12} sm={8}>

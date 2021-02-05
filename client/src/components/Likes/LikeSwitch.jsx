@@ -57,7 +57,7 @@ const StyledSwitch = withStyles((theme) => ({
     );
 });
 
-const SwitchButton = () => {
+const LikeSwitch = () => {
     const [state, setState] = useState({
         checkedB: true,
     });
@@ -77,4 +77,4 @@ const SwitchButton = () => {
     );
 };
 
-export default SwitchButton;
+export default LikeSwitch;
