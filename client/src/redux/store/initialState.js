@@ -3,6 +3,7 @@ const initialState = {
         userID: 0,
         userName: '',
         isSignedIn: false,
+        likes: [],
     },
     uiState: {
         alert: {

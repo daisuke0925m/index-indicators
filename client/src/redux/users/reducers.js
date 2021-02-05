@@ -12,6 +12,11 @@ export const UsersReducer = (state = initialState.users, action) => {
             return {
                 ...action.payload,
             };
+        case Actions.FETCH_LIKES:
+            return {
+                ...state,
+                likes: [...action.payload],
+            };
         default:
             return state;
     }

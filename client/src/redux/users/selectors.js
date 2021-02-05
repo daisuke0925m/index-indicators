@@ -7,3 +7,5 @@ export const getSignedIn = createSelector([usersSelector], (state) => state.isSi
 export const getUserID = createSelector([usersSelector], (state) => state.userID);
 
 export const getUserName = createSelector([usersSelector], (state) => state.userName);
+
+export const getUsersLikes = createSelector([usersSelector], (state) => state.likes);

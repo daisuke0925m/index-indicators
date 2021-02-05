@@ -1,7 +1,7 @@
 import axios from 'axios';
 import httpClient from '../../axios';
 import { alertOpenAction } from '../uiState/actions';
-import { signInAction, signOutAction } from './actions';
+import { fetchLikesAction, signInAction, signOutAction } from './actions';
 
 export const signIn = (email, password) => {
     if (email === '' || password === '') {
@@ -273,7 +273,6 @@ export const updateUser = (newName, newEmail, newPass, pass, id) => {
                         password: newPass,
                     },
                 });
-                // dispatch(signOut());
                 dispatch(
                     alertOpenAction({
                         alert: {
@@ -316,4 +315,16 @@ export const updateUser = (newName, newEmail, newPass, pass, id) => {
             return;
         };
     }
+};
+
+export const fetchUsersLikes = (userID) => {
+    return async (dispatch) => {
+        try {
+            const res = await httpClient.get(`/users/${userID}/likes`);
+            const likes = res.data.likes;
+            dispatch(fetchLikesAction(likes));
+        } catch (error) {
+            console.error(error);
+        }
+    };
 };
