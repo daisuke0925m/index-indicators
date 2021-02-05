@@ -37,19 +37,35 @@ func (m *ModelsMock) UpdateUser(foundUser entity.User) (err error) {
 func (m *ModelsMock) DeleteUser(id int, pass string) (err error) {
 	return nil
 }
-func (m *ModelsMock) CreateLike(userID int, symbol string) (err error) {
+func (m *ModelsMock) CreateLike(user entity.User, symbol string) (err error) {
 	return nil
 }
 func (m *ModelsMock) CheckLikesSymbol(userID int, symbol string) (entity.Like, error) {
 	return entity.Like{
 		ID:        1,
-		UserID:    1,
-		Symbol:    "test@test",
+		UserID:    userID,
+		Symbol:    "symbol1",
 		CreatedAt: time.Now(),
 	}, nil
 }
 func (m *ModelsMock) FetchSymbol(symbol string) (err error) {
 	return nil
+}
+
+func (m *ModelsMock) FindUsersLikes(user entity.User) ([]entity.Like, error) {
+	likes := []entity.Like{
+		{
+			ID:        1,
+			UserID:    user.ID,
+			Symbol:    "symbol1",
+			CreatedAt: time.Now(),
+		}, {
+			ID:        2,
+			UserID:    user.ID,
+			Symbol:    "symbol2",
+			CreatedAt: time.Now(),
+		}}
+	return likes, nil
 }
 
 func Test_signupHandler(t *testing.T) {

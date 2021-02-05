@@ -7,14 +7,8 @@ import (
 )
 
 // CreateLike like作成
-func (m *Models) CreateLike(userID int, symbol string) (err error) {
-	newLike := &entity.Like{
-		UserID:    userID,
-		Symbol:    symbol,
-		CreatedAt: time.Now(),
-	}
-
-	if err := m.DB.Create(&newLike).Error; err != nil {
+func (m *Models) CreateLike(user entity.User, symbol string) (err error) {
+	if err := m.DB.Model(&user).Association("Likes").Append(&entity.Like{Symbol: symbol, CreatedAt: time.Now()}).Error; err != nil {
 		return err
 	}
 	return nil
@@ -56,4 +50,16 @@ func (m *Models) FetchSymbol(symbol string) (err error) {
 	}
 
 	return nil
+}
+
+// FindUsersLikes Userの全てのLikesを取得
+func (m *Models) FindUsersLikes(user entity.User) ([]entity.Like, error) {
+	var likes []entity.Like
+	// if err := m.DB.Where("user_id = ?", userID).Find(&likes).Error; err != nil {
+	// 	return likes, err
+	// }
+	if err := m.DB.Model(&user).Association("Likes").Find(&likes).Error; err != nil {
+		return likes, err
+	}
+	return likes, nil
 }

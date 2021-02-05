@@ -263,6 +263,39 @@ func (a *App) userUpdateHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // ---------likeHandlers---------
+func (a *App) likeGetALLHandler(w http.ResponseWriter, r *http.Request) {
+	re := regexp.MustCompile(`[\d\-]+`)
+	values := re.FindStringSubmatch(r.URL.Path)
+	userID, err := strconv.Atoi(values[0])
+	if err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	user, err := a.DB.FindUserByID(userID)
+	if err != nil {
+		a.resposeStatusCode(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	likes, err := a.DB.FindUsersLikes(user)
+	if err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	type body struct {
+		Likes []entity.Like `json:"likes,omitempty"`
+	}
+
+	likesBody := body{
+		Likes: likes,
+	}
+
+	a.serveHTTPHeaders(w)
+	json.NewEncoder(w).Encode(likesBody)
+}
+
 func (a *App) likePostHandler(w http.ResponseWriter, r *http.Request) {
 	re := regexp.MustCompile(`[\d\-]+`)
 	values := re.FindStringSubmatch(r.URL.Path)
@@ -310,7 +343,7 @@ func (a *App) likePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := a.DB.CreateLike(user.ID, symbol); err != nil {
+	if err := a.DB.CreateLike(user, symbol); err != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
 		return
 	}

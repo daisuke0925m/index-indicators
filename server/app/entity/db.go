@@ -8,7 +8,8 @@ type DB interface {
 	UpdateUser(foundUser User) (err error)
 	DeleteUser(id int, pass string) (err error)
 	// like
-	CreateLike(userID int, symbol string) (err error)
+	CreateLike(user User, symbol string) (err error)
 	CheckLikesSymbol(userID int, symbol string) (Like, error)
 	FetchSymbol(symbol string) (err error)
+	FindUsersLikes(user User) ([]Like, error)
 }

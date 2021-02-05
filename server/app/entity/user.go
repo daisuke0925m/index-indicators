@@ -12,5 +12,5 @@ type User struct {
 	Password  string    `json:"password,omitempty"`
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	Likes     []Like    `gorm:"foreignkey:UserID"`
+	Likes     []Like    `gorm:"foreignkey:UserID" json:"likes,omitempty"`
 }
