@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"path"
+	"regexp"
 	"strconv"
 	"time"
 
@@ -258,6 +259,63 @@ func (a *App) userUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	a.resposeStatusCode(w, "success", http.StatusOK)
+	return
+}
+
+// ---------likeHandlers---------
+func (a *App) likePostHandler(w http.ResponseWriter, r *http.Request) {
+	re := regexp.MustCompile(`[\d\-]+`)
+	values := re.FindStringSubmatch(r.URL.Path)
+	userID, err := strconv.Atoi(values[0])
+	if err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	user, err := a.DB.FindUserByID(userID)
+	if err != nil {
+		a.resposeStatusCode(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	type reqBody struct {
+		Symbol string `json:"symbol,omitempty"`
+	}
+	var body reqBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		a.resposeStatusCode(w, "request body is invalid", http.StatusBadRequest)
+		return
+	}
+	symbol := body.Symbol
+	// bodyチェック
+	if symbol == "" {
+		a.resposeStatusCode(w, "Symbol is required", http.StatusBadRequest)
+		return
+	}
+
+	// symbolが有効か
+	if err := a.DB.FetchSymbol(symbol); err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	// すでに存在している場合はエラーを返す
+	like, err := a.DB.CheckLikesSymbol(userID, symbol)
+	if err != err {
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if like.Symbol != "" {
+		a.resposeStatusCode(w, "Symbol is already registered", http.StatusConflict)
+		return
+	}
+
+	if err := a.DB.CreateLike(user.ID, symbol); err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	a.resposeStatusCode(w, "success", http.StatusCreated)
 	return
 }
 
