@@ -58,18 +58,18 @@ const StyledSwitch = withStyles((theme) => ({
 });
 
 const LikeSwitch = () => {
-    const [state, setState] = useState({
-        checkedB: true,
+    const [switchState, setSwitchState] = useState({
+        checked: false,
     });
 
     const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });
+        setSwitchState({ ...switchState, [event.target.name]: event.target.checked });
     };
 
     return (
         <FormGroup>
             <FormControlLabel
-                control={<StyledSwitch checked={state.checkedB} onChange={handleChange} name="checkedB" />}
+                control={<StyledSwitch checked={switchState.checked} onChange={handleChange} name="checked" />}
                 label=""
                 style={{ margin: ' 0 0 0 auto' }}
             />
