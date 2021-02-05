@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -34,6 +35,48 @@ func (m *ModelsMock) UpdateUser(foundUser entity.User) (err error) {
 	return nil
 }
 func (m *ModelsMock) DeleteUser(id int, pass string) (err error) {
+	return nil
+}
+func (m *ModelsMock) CreateLike(user entity.User, symbol string) (err error) {
+	return nil
+}
+func (m *ModelsMock) CheckLikesSymbol(userID int, symbol string) (entity.Like, error) {
+	return entity.Like{
+		ID:        1,
+		UserID:    userID,
+		Symbol:    "symbol1",
+		CreatedAt: time.Now(),
+	}, nil
+}
+func (m *ModelsMock) FetchSymbol(symbol string) (err error) {
+	return nil
+}
+
+func (m *ModelsMock) FindUsersLikes(user entity.User) ([]entity.Like, error) {
+	likes := []entity.Like{
+		{
+			ID:        1,
+			UserID:    user.ID,
+			Symbol:    "symbol1",
+			CreatedAt: time.Now(),
+		}, {
+			ID:        2,
+			UserID:    user.ID,
+			Symbol:    "symbol2",
+			CreatedAt: time.Now(),
+		}}
+	return likes, nil
+}
+
+func (m *ModelsMock) FindLikeByID(likeID int) (entity.Like, error) {
+	return entity.Like{
+		ID:        1,
+		UserID:    1,
+		Symbol:    "symbol1",
+		CreatedAt: time.Now(),
+	}, nil
+}
+func (m *ModelsMock) DeleteLike(like entity.Like) (err error) {
 	return nil
 }
 func Test_signupHandler(t *testing.T) {
