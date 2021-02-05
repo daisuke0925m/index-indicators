@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -36,6 +37,21 @@ func (m *ModelsMock) UpdateUser(foundUser entity.User) (err error) {
 func (m *ModelsMock) DeleteUser(id int, pass string) (err error) {
 	return nil
 }
+func (m *ModelsMock) CreateLike(userID int, symbol string) (err error) {
+	return nil
+}
+func (m *ModelsMock) CheckLikesSymbol(userID int, symbol string) (entity.Like, error) {
+	return entity.Like{
+		ID:        1,
+		UserID:    1,
+		Symbol:    "test@test",
+		CreatedAt: time.Now(),
+	}, nil
+}
+func (m *ModelsMock) FetchSymbol(symbol string) (err error) {
+	return nil
+}
+
 func Test_signupHandler(t *testing.T) {
 	app := NewApp(&ModelsMock{})
 	mux := http.NewServeMux()
