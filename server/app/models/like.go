@@ -55,11 +55,25 @@ func (m *Models) FetchSymbol(symbol string) (err error) {
 // FindUsersLikes Userの全てのLikesを取得
 func (m *Models) FindUsersLikes(user entity.User) ([]entity.Like, error) {
 	var likes []entity.Like
-	// if err := m.DB.Where("user_id = ?", userID).Find(&likes).Error; err != nil {
-	// 	return likes, err
-	// }
 	if err := m.DB.Model(&user).Association("Likes").Find(&likes).Error; err != nil {
 		return likes, err
 	}
 	return likes, nil
+}
+
+// FindLikeByID IDからLIKEを取得
+func (m *Models) FindLikeByID(likeID int) (entity.Like, error) {
+	var like entity.Like
+	if err := m.DB.Where("id = ?", likeID).Find(&like).Error; err != nil {
+		return like, err
+	}
+	return like, nil
+}
+
+// DeleteLike LIKEを削除
+func (m *Models) DeleteLike(like entity.Like) (err error) {
+	if err := m.DB.Delete(&like).Error; err != nil {
+		return err
+	}
+	return nil
 }

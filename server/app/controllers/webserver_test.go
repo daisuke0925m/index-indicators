@@ -68,6 +68,17 @@ func (m *ModelsMock) FindUsersLikes(user entity.User) ([]entity.Like, error) {
 	return likes, nil
 }
 
+func (m *ModelsMock) FindLikeByID(likeID int) (entity.Like, error) {
+	return entity.Like{
+		ID:        1,
+		UserID:    1,
+		Symbol:    "symbol1",
+		CreatedAt: time.Now(),
+	}, nil
+}
+func (m *ModelsMock) DeleteLike(like entity.Like) (err error) {
+	return nil
+}
 func Test_signupHandler(t *testing.T) {
 	app := NewApp(&ModelsMock{})
 	mux := http.NewServeMux()

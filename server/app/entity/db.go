@@ -12,4 +12,6 @@ type DB interface {
 	CheckLikesSymbol(userID int, symbol string) (Like, error)
 	FetchSymbol(symbol string) (err error)
 	FindUsersLikes(user User) ([]Like, error)
+	FindLikeByID(likeID int) (Like, error)
+	DeleteLike(like Like) (err error)
 }

@@ -352,6 +352,44 @@ func (a *App) likePostHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func (a *App) likeDeleteHandler(w http.ResponseWriter, r *http.Request) {
+	re, err := regexp.Compile(`[\d\-]+`)
+	if err != nil {
+		a.resposeStatusCode(w, "could not parse path", http.StatusBadRequest)
+		return
+	}
+	values := re.FindAllString(r.URL.Path, -1)
+	userID, err := strconv.Atoi(values[0])
+	if err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	likeID, err := strconv.Atoi(values[1])
+	if err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	_, err = a.DB.FindUserByID(userID)
+	if err != nil {
+		a.resposeStatusCode(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	like, err := a.DB.FindLikeByID(likeID)
+	if err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	if err := a.DB.DeleteLike(like); err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	a.resposeStatusCode(w, "success", http.StatusCreated)
+	return
+}
+
 // ---------authHandlers---------
 func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "OPTIONS" {
