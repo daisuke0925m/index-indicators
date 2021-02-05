@@ -2,7 +2,7 @@ import React from 'react';
 import Fgi from '../Fgi/Fgi';
 import FgiDes from '../Fgi/FgiDes';
 import { Grid } from '@material-ui/core';
-import { CntWrap, SpaceRow } from '../UiKits';
+import { CntWrap, SpaceRow, SwitchButton } from '../UiKits';
 import Skew from '../Skew/Skew';
 import Comparison from '../Comparison/Comparison';
 import Auth from '../../Auth';
@@ -17,7 +17,10 @@ const Main = () => {
                     description={<FgiDes />}
                     accordionHead={'What is the Fear & Greed Index?'}
                 >
-                    <Fgi />
+                    <div>
+                        <SwitchButton />
+                        <Fgi />
+                    </div>
                 </CntWrap>
             </Grid>
             <Grid item xs={12} sm={8}>
