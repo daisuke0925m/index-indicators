@@ -75,6 +75,9 @@ func (a *App) tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request))
 			a.resposeStatusCode(w, "token is not found", http.StatusNotFound)
 			return
 		}
+
+		// TODOユーザー情報の検知
+
 		fn(w, r)
 	})
 }
