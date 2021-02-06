@@ -80,7 +80,7 @@ export const listenAuthState = () => {
             const res = await httpClientSingle.post('/refresh_token');
             const id = res.data.id;
             try {
-                const res = await httpClient.get(`/users/${id}`);
+                const res = await httpClientSingle.get(`/users/${id}`);
                 const data = res.data;
                 dispatch(
                     signInAction({
@@ -322,7 +322,33 @@ export const fetchUsersLikes = (userID) => {
         try {
             const res = await httpClient.get(`/users/${userID}/likes`);
             const likes = res.data.likes;
-            dispatch(fetchLikesAction(likes));
+            if (likes) {
+                dispatch(fetchLikesAction(likes));
+            }
+            return;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+};
+
+export const likePost = (userID, symbol) => {
+    return async (dispatch) => {
+        try {
+            await httpClient.post(`users/${userID}/likes`, {
+                symbol: symbol,
+            });
+            dispatch(
+                alertOpenAction({
+                    alert: {
+                        isOpen: true,
+                        type: 'success',
+                        message: `${symbol}を登録しました。`,
+                    },
+                })
+            );
+            dispatch(fetchUsersLikes(userID));
+            return;
         } catch (error) {
             console.error(error);
         }

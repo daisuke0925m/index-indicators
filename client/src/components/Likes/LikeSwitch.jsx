@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import { likePost } from '../../redux/users/operations';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserID } from '../../redux/users/selectors';
+import PropTypes from 'prop-types';
 
 const StyledSwitch = withStyles((theme) => ({
     root: {
@@ -57,15 +61,36 @@ const StyledSwitch = withStyles((theme) => ({
     );
 });
 
-const LikeSwitch = () => {
+const LikeSwitch = (props) => {
+    LikeSwitch.propTypes = {
+        symbol: PropTypes.string,
+        flag: PropTypes.bool,
+    };
+
+    const flag = props.flag;
+    const symbol = props.symbol;
+    const dispatch = useDispatch();
+    const selector = useSelector((state) => state);
+    const userID = getUserID(selector);
     const [switchState, setSwitchState] = useState({
-        checked: false,
+        checked: flag,
     });
+    console.log('flag', flag);
 
     const handleChange = (event) => {
         setSwitchState({ ...switchState, [event.target.name]: event.target.checked });
+        const checked = event.target.checked;
+        if (checked) {
+            dispatch(likePost(userID, symbol));
+        }
+        //  else if (!checked) {
+        //     dispatch(likeDelete())
+        // }
     };
 
+    useEffect(() => {
+        setSwitchState({ checked: flag });
+    }, [flag]);
     return (
         <FormGroup>
             <FormControlLabel
