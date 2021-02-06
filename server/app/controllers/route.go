@@ -13,8 +13,8 @@ func Route(app *App) *mux.Router {
 	r.HandleFunc("/users/{id:[0-9]+}", app.userDeleteHandler).Methods("DELETE", "OPTIONS")
 	r.HandleFunc("/users/{id:[0-9]+}", app.userUpdateHandler).Methods("PUT")
 	// like
-	r.HandleFunc("/users/{id:[0-9]+}/likes", app.likeGetALLHandler).Methods("GET")
-	r.HandleFunc("/users/{id:[0-9]+}/likes", app.likePostHandler).Methods("POST")
+	r.HandleFunc("/users/{id:[0-9]+}/likes", app.tokenVerifyMiddleWare(app.likeGetALLHandler)).Methods("GET")
+	r.HandleFunc("/users/{id:[0-9]+}/likes", app.tokenVerifyMiddleWare(app.likePostHandler)).Methods("POST", "OPTIONS")
 	r.HandleFunc("/users/{id:[0-9]+}/likes/{id:[0-9]+}", app.likeDeleteHandler).Methods("DELETE")
 	// auth
 	r.HandleFunc("/login", app.loginHandler).Methods("POST", "OPTIONS")
