@@ -15,7 +15,7 @@ func Route(app *App) *mux.Router {
 	// like
 	r.HandleFunc("/users/{id:[0-9]+}/likes", app.tokenVerifyMiddleWare(app.likeGetALLHandler)).Methods("GET")
 	r.HandleFunc("/users/{id:[0-9]+}/likes", app.tokenVerifyMiddleWare(app.likePostHandler)).Methods("POST", "OPTIONS")
-	r.HandleFunc("/users/{id:[0-9]+}/likes/{id:[0-9]+}", app.likeDeleteHandler).Methods("DELETE")
+	r.HandleFunc("/users/{id:[0-9]+}/likes/{id:[0-9]+}", app.tokenVerifyMiddleWare(app.likeDeleteHandler)).Methods("DELETE", "OPTIONS")
 	// auth
 	r.HandleFunc("/login", app.loginHandler).Methods("POST", "OPTIONS")
 	r.HandleFunc("/logout", app.tokenVerifyMiddleWare(app.logoutHandler)).Methods("POST")

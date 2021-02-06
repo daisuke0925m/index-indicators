@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import { likePost } from '../../redux/users/operations';
+import { likePost, likeDelete } from '../../redux/users/operations';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserID } from '../../redux/users/selectors';
 import PropTypes from 'prop-types';
@@ -65,8 +65,10 @@ const LikeSwitch = (props) => {
     LikeSwitch.propTypes = {
         symbol: PropTypes.string,
         flag: PropTypes.bool,
+        likeID: PropTypes.number,
     };
 
+    const likeID = props.likeID;
     const flag = props.flag;
     const symbol = props.symbol;
     const dispatch = useDispatch();
@@ -82,10 +84,10 @@ const LikeSwitch = (props) => {
         const checked = event.target.checked;
         if (checked) {
             dispatch(likePost(userID, symbol));
+        } else if (!checked) {
+            console.log('done');
+            dispatch(likeDelete(userID, likeID, symbol));
         }
-        //  else if (!checked) {
-        //     dispatch(likeDelete())
-        // }
     };
 
     useEffect(() => {

@@ -354,3 +354,24 @@ export const likePost = (userID, symbol) => {
         }
     };
 };
+
+export const likeDelete = (userID, likeID, symbol) => {
+    return async (dispatch) => {
+        try {
+            await httpClient.delete(`users/${userID}/likes/${likeID}`);
+            dispatch(
+                alertOpenAction({
+                    alert: {
+                        isOpen: true,
+                        type: 'warning',
+                        message: `${symbol}を解除しました。`,
+                    },
+                })
+            );
+            dispatch(fetchUsersLikes(userID));
+            return;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+};

@@ -13,16 +13,16 @@ import { useEffect } from 'react';
 const Main = () => {
     const selector = useSelector((state) => state);
     const likes = getUsersLikes(selector);
-    const [fgiFlag, setFgiFlag] = useState(false);
-    const [skewFlag, setSkewFlag] = useState(false);
+    const [isLikedFgi, setIsLikedFgi] = useState({ isFgi: false, id: 0 });
+    const [isLikedSkew, setIsLikedSkew] = useState({ isSkew: false, id: 0 });
 
     const checkLikes = () => {
         for (let i = 0; i < likes.length; i++) {
             if (likes[i].symbol == 'fgi') {
-                setFgiFlag(true);
+                setIsLikedFgi({ isFgi: true, id: likes[i].id });
             }
             if (likes[i].symbol == '^skew') {
-                setSkewFlag(true);
+                setIsLikedSkew({ isSkew: true, id: likes[i].id });
             }
         }
     };
@@ -41,7 +41,7 @@ const Main = () => {
                     accordionHead={'What is the Fear & Greed Index?'}
                 >
                     <div>
-                        <LikeSwitch flag={fgiFlag} symbol={'fgi'} />
+                        <LikeSwitch flag={isLikedFgi.isFgi} symbol={'fgi'} likeID={isLikedFgi.id} />
                         <Fgi />
                     </div>
                 </CntWrap>
@@ -50,7 +50,7 @@ const Main = () => {
                 <SpaceRow height={30} />
                 <CntWrap title={'SKEW'} description={<br />} accordionHead={''}>
                     <div>
-                        <LikeSwitch flag={skewFlag} symbol={'^skew'} />
+                        <LikeSwitch flag={isLikedSkew.isSkew} symbol={'^skew'} likeID={isLikedSkew.id} />
                         <Skew />
                     </div>
                 </CntWrap>
