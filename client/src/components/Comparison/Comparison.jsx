@@ -1,4 +1,4 @@
-import { Button } from '@material-ui/core';
+import { Button, IconButton } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import httpClient from '../../axios';
@@ -6,6 +6,7 @@ import { getUsersLikes } from '../../redux/users/selectors';
 import StockChart from '../Chart/StockChart';
 import { SpaceRow, TagSearch } from '../UiKits';
 import Skeleton from '@material-ui/lab/Skeleton';
+import AutorenewRoundedIcon from '@material-ui/icons/AutorenewRounded';
 
 const Comparison = () => {
     const [chartAry, setChartAry] = useState([]);
@@ -115,6 +116,13 @@ const Comparison = () => {
                     >
                         銘柄を検索する
                     </Button>
+                    <IconButton
+                        style={{ marginLeft: 10, padding: 5 }}
+                        color="primary"
+                        onClick={() => setRegisteredTickers()}
+                    >
+                        <AutorenewRoundedIcon />
+                    </IconButton>
                 </div>
             )}
             {chartAry.length ? (
