@@ -77,7 +77,6 @@ const LikeSwitch = (props) => {
     const [switchState, setSwitchState] = useState({
         checked: flag,
     });
-    console.log('flag', flag);
 
     const handleChange = (event) => {
         setSwitchState({ ...switchState, [event.target.name]: event.target.checked });

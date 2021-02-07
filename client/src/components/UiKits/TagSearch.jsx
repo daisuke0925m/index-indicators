@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import PropTypes from 'prop-types';
-// import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-
-// const useStyles = makeStyles((theme) => ({
-//     root: {
-//         width: 500,
-//         '& > * + *': {
-//             marginTop: theme.spacing(3),
-//         },
-//     },
-// }));
 
 const tickers = ['spy', 'spxl', '^skew', 'tlt', 'gld', 'gldm'];
 
