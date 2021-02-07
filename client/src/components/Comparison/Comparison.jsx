@@ -5,6 +5,7 @@ import httpClient from '../../axios';
 import { getUsersLikes } from '../../redux/users/selectors';
 import StockChart from '../Chart/StockChart';
 import { SpaceRow, TagSearch } from '../UiKits';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 const Comparison = () => {
     const [chartAry, setChartAry] = useState([]);
@@ -116,7 +117,14 @@ const Comparison = () => {
                     </Button>
                 </div>
             )}
-            {chartAry.length ? <StockChart chartAry={chartAry} title={'Compare Chart '} /> : '銘柄を検索できます。'}
+            {chartAry.length ? (
+                <StockChart chartAry={chartAry} title={'Compare Chart '} />
+            ) : (
+                <div style={{ padding: 20 }}>
+                    <span>銘柄を検索できます。</span>
+                    <Skeleton variant="rect" width={'100%'} height={200} animation={false} />
+                </div>
+            )}
         </section>
     );
 };
