@@ -7,6 +7,7 @@ import StockChart from '../Chart/StockChart';
 import { SpaceRow, TagSearch } from '../UiKits';
 import Skeleton from '@material-ui/lab/Skeleton';
 import AutorenewRoundedIcon from '@material-ui/icons/AutorenewRounded';
+import SwitchTable from './SwitchTable';
 
 const Comparison = () => {
     const [chartAry, setChartAry] = useState([]);
@@ -103,34 +104,45 @@ const Comparison = () => {
                     </div>
                     <SpaceRow height={10} />
                     <TagSearch setKeyword={setKeywords} isRegisterBtn={isRegisterBtn} />
+                    {chartAry.length ? (
+                        <StockChart chartAry={chartAry} title={'Compare Chart '} />
+                    ) : (
+                        <div style={{ padding: 20 }}>
+                            <span>銘柄を検索できます。</span>
+                            <Skeleton variant="rect" width={'100%'} height={200} animation={false} />
+                        </div>
+                    )}
                 </div>
             ) : (
-                <div style={{ textAlign: 'right' }}>
-                    <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => {
-                            setIsRegisterBtn(false);
-                            setChartAry([]);
-                        }}
-                    >
-                        銘柄を検索する
-                    </Button>
-                    <IconButton
-                        style={{ marginLeft: 10, padding: 5 }}
-                        color="primary"
-                        onClick={() => setRegisteredTickers()}
-                    >
-                        <AutorenewRoundedIcon />
-                    </IconButton>
-                </div>
-            )}
-            {chartAry.length ? (
-                <StockChart chartAry={chartAry} title={'Compare Chart '} />
-            ) : (
-                <div style={{ padding: 20 }}>
-                    <span>銘柄を検索できます。</span>
-                    <Skeleton variant="rect" width={'100%'} height={200} animation={false} />
+                <div>
+                    <div style={{ textAlign: 'right' }}>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => {
+                                setIsRegisterBtn(false);
+                                setChartAry([]);
+                            }}
+                        >
+                            銘柄を検索する
+                        </Button>
+                        <IconButton
+                            style={{ marginLeft: 10, padding: 5 }}
+                            color="primary"
+                            onClick={() => setRegisteredTickers()}
+                        >
+                            <AutorenewRoundedIcon />
+                        </IconButton>
+                    </div>
+                    <SwitchTable />
+                    {chartAry.length ? (
+                        <StockChart chartAry={chartAry} title={'Compare Chart '} />
+                    ) : (
+                        <div style={{ padding: 20 }}>
+                            <span>登録した銘柄を一括表示できます。</span>
+                            <Skeleton variant="rect" width={'100%'} height={200} animation={false} />
+                        </div>
+                    )}
                 </div>
             )}
         </section>
