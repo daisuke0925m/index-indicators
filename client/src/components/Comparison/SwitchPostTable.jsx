@@ -13,6 +13,8 @@ import PropTypes from 'prop-types';
 import { IconButton, Tooltip } from '@material-ui/core';
 import PlaylistAddRoundedIcon from '@material-ui/icons/PlaylistAddRounded';
 import { likePost } from '../../redux/users/operations';
+import { alertOpenAction } from '../../redux/uiState/actions';
+import PlaylistAddCheckRoundedIcon from '@material-ui/icons/PlaylistAddCheckRounded';
 
 const useStyles = makeStyles({
     table: {
@@ -32,13 +34,17 @@ const SwitchPostTable = (props) => {
     const likes = getUsersLikes(selector);
     const userID = getUserID(selector);
 
-    const rows = likes.reduce((newAry, like) => {
-        if (like.symbol !== 'fgi') {
-            newAry.push({ symbol: like.symbol, id: like.id });
+    const checkSymbol = (symbol) => {
+        let isLiked = false;
+        for (let i = 0; i < likes.length; i++) {
+            const likedSymbol = likes[i].symbol;
+            if (symbol == likedSymbol) {
+                isLiked = true;
+            }
         }
-        return newAry;
-    }, []);
-    console.log(rows);
+        console.log(isLiked);
+        return isLiked;
+    };
 
     return (
         <TableContainer component={Paper}>
@@ -56,16 +62,37 @@ const SwitchPostTable = (props) => {
                                 {symbol}
                             </TableCell>
                             <TableCell align="right">
-                                <Tooltip title="銘柄を登録">
-                                    <IconButton
-                                        color="primary"
-                                        onClick={() => {
-                                            dispatch(likePost(userID, symbol));
-                                        }}
-                                    >
-                                        <PlaylistAddRoundedIcon />
-                                    </IconButton>
-                                </Tooltip>
+                                {!checkSymbol(symbol) ? (
+                                    <Tooltip title="銘柄を登録">
+                                        <IconButton
+                                            color="primary"
+                                            onClick={() => {
+                                                dispatch(likePost(userID, symbol));
+                                            }}
+                                        >
+                                            <PlaylistAddRoundedIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                ) : (
+                                    <Tooltip title="登録済み">
+                                        <IconButton
+                                            color="primary"
+                                            onClick={() => {
+                                                dispatch(
+                                                    alertOpenAction({
+                                                        alert: {
+                                                            isOpen: true,
+                                                            type: 'warning',
+                                                            message: `${symbol}はすでに登録済みです。`,
+                                                        },
+                                                    })
+                                                );
+                                            }}
+                                        >
+                                            <PlaylistAddCheckRoundedIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
                             </TableCell>
                         </TableRow>
                     ))}
