@@ -8,6 +8,7 @@ import { SpaceRow, TagSearch } from '../UiKits';
 import Skeleton from '@material-ui/lab/Skeleton';
 import AutorenewRoundedIcon from '@material-ui/icons/AutorenewRounded';
 import SwitchTable from './SwitchTable';
+import SwitchPostTable from './SwitchPostTable';
 
 const Comparison = () => {
     const [chartAry, setChartAry] = useState([]);
@@ -104,6 +105,7 @@ const Comparison = () => {
                     </div>
                     <SpaceRow height={10} />
                     <TagSearch setKeyword={setKeywords} isRegisterBtn={isRegisterBtn} />
+                    <SwitchPostTable keywords={keywords} />
                     {chartAry.length ? (
                         <StockChart chartAry={chartAry} title={'Compare Chart '} />
                     ) : (
