@@ -96,7 +96,7 @@ const Comparison = () => {
                 <div>
                     <div style={{ textAlign: 'right' }}>
                         <Button variant="contained" color="primary" onClick={() => setRegisteredTickers()}>
-                            登録済みの銘柄を検索する
+                            登録済みの銘柄を表示する
                         </Button>
                     </div>
                     <SpaceRow height={10} />
