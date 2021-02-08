@@ -1,7 +1,7 @@
 import axios from 'axios';
 import httpClient from '../../axios';
 import { alertOpenAction } from '../uiState/actions';
-import { signInAction, signOutAction } from './actions';
+import { fetchLikesAction, signInAction, signOutAction } from './actions';
 
 export const signIn = (email, password) => {
     if (email === '' || password === '') {
@@ -80,7 +80,7 @@ export const listenAuthState = () => {
             const res = await httpClientSingle.post('/refresh_token');
             const id = res.data.id;
             try {
-                const res = await httpClient.get(`/users/${id}`);
+                const res = await httpClientSingle.get(`/users/${id}`);
                 const data = res.data;
                 dispatch(
                     signInAction({
@@ -273,7 +273,6 @@ export const updateUser = (newName, newEmail, newPass, pass, id) => {
                         password: newPass,
                     },
                 });
-                // dispatch(signOut());
                 dispatch(
                     alertOpenAction({
                         alert: {
@@ -316,4 +315,63 @@ export const updateUser = (newName, newEmail, newPass, pass, id) => {
             return;
         };
     }
+};
+
+export const fetchUsersLikes = (userID) => {
+    return async (dispatch) => {
+        try {
+            const res = await httpClient.get(`/users/${userID}/likes`);
+            const likes = res.data.likes;
+            if (likes) {
+                dispatch(fetchLikesAction(likes));
+            }
+            return;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+};
+
+export const likePost = (userID, symbol) => {
+    return async (dispatch) => {
+        try {
+            await httpClient.post(`users/${userID}/likes`, {
+                symbol: symbol,
+            });
+            dispatch(
+                alertOpenAction({
+                    alert: {
+                        isOpen: true,
+                        type: 'success',
+                        message: `${symbol}を登録しました。`,
+                    },
+                })
+            );
+            dispatch(fetchUsersLikes(userID));
+            return;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+};
+
+export const likeDelete = (userID, likeID, symbol) => {
+    return async (dispatch) => {
+        try {
+            await httpClient.delete(`users/${userID}/likes/${likeID}`);
+            dispatch(
+                alertOpenAction({
+                    alert: {
+                        isOpen: true,
+                        type: 'warning',
+                        message: `${symbol}を解除しました。`,
+                    },
+                })
+            );
+            dispatch(fetchUsersLikes(userID));
+            return;
+        } catch (error) {
+            console.error(error);
+        }
+    };
 };
