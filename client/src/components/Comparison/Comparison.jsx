@@ -9,6 +9,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import AutorenewRoundedIcon from '@material-ui/icons/AutorenewRounded';
 import SwitchTable from './SwitchTable';
 import SwitchPostTable from './SwitchPostTable';
+import Auth from '../../Auth';
 
 const Comparison = () => {
     const [chartAry, setChartAry] = useState([]);
@@ -95,9 +96,18 @@ const Comparison = () => {
             {!isRegisterBtn ? (
                 <div>
                     <div style={{ textAlign: 'right' }}>
-                        <Button variant="contained" color="primary" onClick={() => setRegisteredTickers()}>
-                            登録済みの銘柄を表示する
-                        </Button>
+                        <Auth
+                            enableEle={
+                                <Button variant="contained" color="primary" onClick={() => setRegisteredTickers()}>
+                                    登録済みの銘柄を表示する
+                                </Button>
+                            }
+                            disableEle={
+                                <Button variant="contained" disabled={true}>
+                                    登録済みの銘柄を表示する
+                                </Button>
+                            }
+                        />
                     </div>
                     <SpaceRow height={10} />
                     <TagSearch setKeyword={setKeywords} isRegisterBtn={isRegisterBtn} />

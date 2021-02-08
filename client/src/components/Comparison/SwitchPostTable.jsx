@@ -15,6 +15,7 @@ import PlaylistAddRoundedIcon from '@material-ui/icons/PlaylistAddRounded';
 import { likePost } from '../../redux/users/operations';
 import { alertOpenAction } from '../../redux/uiState/actions';
 import PlaylistAddCheckRoundedIcon from '@material-ui/icons/PlaylistAddCheckRounded';
+import Auth from '../../Auth';
 
 const useStyles = makeStyles({
     table: {
@@ -62,16 +63,29 @@ const SwitchPostTable = (props) => {
                             </TableCell>
                             <TableCell align="right">
                                 {!checkSymbol(symbol) ? (
-                                    <Tooltip title="銘柄を登録">
-                                        <IconButton
-                                            color="primary"
-                                            onClick={() => {
-                                                dispatch(likePost(userID, symbol));
-                                            }}
-                                        >
-                                            <PlaylistAddRoundedIcon />
-                                        </IconButton>
-                                    </Tooltip>
+                                    <Auth
+                                        enableEle={
+                                            <Tooltip title="銘柄を登録">
+                                                <IconButton
+                                                    color="primary"
+                                                    onClick={() => {
+                                                        dispatch(likePost(userID, symbol));
+                                                    }}
+                                                >
+                                                    <PlaylistAddRoundedIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        }
+                                        disableEle={
+                                            <div style={{ textAlign: 'right' }}>
+                                                <Tooltip title="ログインユーザーのみ登録できます。" aria-label="add">
+                                                    <IconButton>
+                                                        <PlaylistAddRoundedIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </div>
+                                        }
+                                    />
                                 ) : (
                                     <Tooltip title="登録済み">
                                         <IconButton
