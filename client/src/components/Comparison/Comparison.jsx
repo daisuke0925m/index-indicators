@@ -47,10 +47,6 @@ const Comparison = () => {
             }
         }
     };
-    // console.log("chartAry", chartAry)
-    // console.log("keywords", keywords)
-    // console.log("likes", likes)
-    // console.log("isRegisterBtn", isRegisterBtn)
 
     const setRegisteredTickers = () => {
         const registered = likes.reduce((newAry, like) => {

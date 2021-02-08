@@ -42,7 +42,6 @@ const SwitchPostTable = (props) => {
                 isLiked = true;
             }
         }
-        console.log(isLiked);
         return isLiked;
     };
 

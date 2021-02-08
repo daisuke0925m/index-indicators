@@ -28,7 +28,7 @@ const SwitchTable = () => {
         }
         return newAry;
     }, []);
-    console.log(rows);
+
     return (
         <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="simple table">
