@@ -4,13 +4,15 @@ import PropTypes from 'prop-types';
 
 const Auth = (props) => {
     Auth.propTypes = {
-        children: PropTypes.element,
+        enableEle: PropTypes.element,
+        disableEle: PropTypes.element,
     };
 
     const selector = useSelector((state) => state);
     const isSignedIn = getSignedIn(selector);
+    console.log(isSignedIn);
 
-    return <div>{isSignedIn ? props.children : 'ログインしているーザーのみ使用できます。'}</div>;
+    return <div>{isSignedIn ? props.enableEle : props.disableEle}</div>;
 };
 
 export default Auth;

@@ -3,12 +3,13 @@ import Comparison from '../Comparison/Comparison';
 import { CntWrap, SpaceRow } from '../UiKits';
 import Fgi from '../Fgi/Fgi';
 import FgiDes from '../Fgi/FgiDes';
-import { Grid } from '@material-ui/core';
+import { FormControlLabel, Grid, Switch, Tooltip } from '@material-ui/core';
 import { getUsersLikes } from '../../redux/users/selectors';
 import LikeSwitch from '../Likes/LikeSwitch';
 import Skew from '../Skew/Skew';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import Auth from '../../Auth';
 
 const Main = () => {
     const selector = useSelector((state) => state);
@@ -41,7 +42,20 @@ const Main = () => {
                     accordionHead={'What is the Fear & Greed Index?'}
                 >
                     <div>
-                        <LikeSwitch flag={isLikedFgi.isFgi} symbol={'fgi'} likeID={isLikedFgi.id} />
+                        <Auth
+                            enableEle={
+                                <Tooltip title="登録" aria-label="add">
+                                    <LikeSwitch flag={isLikedFgi.isFgi} symbol={'fgi'} likeID={isLikedFgi.id} />
+                                </Tooltip>
+                            }
+                            disableEle={
+                                <div style={{ textAlign: 'right' }}>
+                                    <Tooltip title="ログインユーザーのみ登録できます。" aria-label="add">
+                                        <FormControlLabel disabled control={<Switch />} />
+                                    </Tooltip>
+                                </div>
+                            }
+                        />
                         <Fgi />
                     </div>
                 </CntWrap>
@@ -50,7 +64,20 @@ const Main = () => {
                 <SpaceRow height={30} />
                 <CntWrap title={'SKEW'} description={<br />} accordionHead={''}>
                     <div>
-                        <LikeSwitch flag={isLikedSkew.isSkew} symbol={'^skew'} likeID={isLikedSkew.id} />
+                        <Auth
+                            enableEle={
+                                <Tooltip title="登録" aria-label="add">
+                                    <LikeSwitch flag={isLikedSkew.isSkew} symbol={'^skew'} likeID={isLikedSkew.id} />
+                                </Tooltip>
+                            }
+                            disableEle={
+                                <div style={{ textAlign: 'right' }}>
+                                    <Tooltip title="ログインユーザーのみ登録できます。" aria-label="add">
+                                        <FormControlLabel disabled control={<Switch />} />
+                                    </Tooltip>
+                                </div>
+                            }
+                        />
                         <Skew />
                     </div>
                 </CntWrap>
