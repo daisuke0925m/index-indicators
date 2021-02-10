@@ -1,5 +1,13 @@
 # index-indicators
 
+```
+git clone
+
+config.iniを設置
+
+docker compose up
+```
+
 ## 起動コマンド
 
 ### docker 
