@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"index-indicator-apis/server/app/entity"
+	"index-indicators/server/app/entity"
 	"io"
 	"log"
 	"net/http"

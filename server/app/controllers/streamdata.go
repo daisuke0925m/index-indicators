@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"index-indicator-apis/server/app/models"
+	"index-indicators/server/app/models"
 
 	"github.com/robfig/cron/v3"
 )

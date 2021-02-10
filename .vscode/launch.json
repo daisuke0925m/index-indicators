@@ -9,7 +9,7 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${workspaceFolder}/server/cmd/index-indicator-apis/main.go",
+            "program": "${workspaceFolder}/server/cmd/index-indicators/main.go",
             "cwd": "${workspaceFolder}/server",
         }
     ]

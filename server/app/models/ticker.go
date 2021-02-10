@@ -1,8 +1,8 @@
 package models
 
 import (
-	"index-indicator-apis/server/app/entity"
-	"index-indicator-apis/server/db"
+	"index-indicators/server/app/entity"
+	"index-indicators/server/db"
 	"time"
 
 	"github.com/markcheno/go-quote"

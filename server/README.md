@@ -1,4 +1,4 @@
-# index-indicator-apis
+# index-indicators
 
 ## 起動コマンド
 
@@ -6,7 +6,7 @@
 `docker-compose up go`
 
 ### ローカルPC
-`SRC_ROOT=$PWD/ go run cmd/index-indicator-apis/main.go`
+`SRC_ROOT=$PWD/ go run cmd/index-indicators/main.go`
 
 
 ## テスト(ローカルPC)

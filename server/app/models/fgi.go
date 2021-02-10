@@ -2,12 +2,12 @@ package models
 
 import (
 	"fmt"
-	"index-indicator-apis/server/app/entity"
-	"index-indicator-apis/server/db"
+	"index-indicators/server/app/entity"
+	"index-indicators/server/db"
 	"time"
 
-	"index-indicator-apis/server/config"
-	"index-indicator-apis/server/fgi"
+	"index-indicators/server/config"
+	"index-indicators/server/fgi"
 )
 
 // CreateNewFgis migration後にapiを叩きdbに保存する

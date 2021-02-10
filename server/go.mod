@@ -1,4 +1,4 @@
-module index-indicator-apis/server
+module index-indicators/server
 
 go 1.15
 
