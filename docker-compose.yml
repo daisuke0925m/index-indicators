@@ -8,7 +8,7 @@ services:
     tty: true
     volumes:
       - "./server:/usr/src/app/server"
-    command: go run cmd/index-indicator-apis/main.go
+    command: go run cmd/index-indicators/main.go
     ports:
       - "8080:8080"
     depends_on:

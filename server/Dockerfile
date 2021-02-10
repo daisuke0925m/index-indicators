@@ -26,7 +26,7 @@ RUN apk add --no-cache ca-certificates && \
 
 # COPY --from=builder usr/src/app/server/main usr/src/app/server/config.ini ./
 
-RUN go build -o main ./cmd/index-indicator-apis/main.go
+RUN go build -o main ./cmd/index-indicators/main.go
 
 CMD ["/usr/src/app/server/./main"]
 # デバック用↓

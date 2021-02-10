@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"index-indicator-apis/server/app/controllers"
-	"index-indicator-apis/server/app/models"
-	"index-indicator-apis/server/config"
-	"index-indicator-apis/server/db"
+	"index-indicators/server/app/controllers"
+	"index-indicators/server/app/models"
+	"index-indicators/server/config"
+	"index-indicators/server/db"
 	"log"
 	"net/http"
 )

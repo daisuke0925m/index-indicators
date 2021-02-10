@@ -2,7 +2,7 @@ package models
 
 import (
 	"fmt"
-	"index-indicator-apis/server/app/entity"
+	"index-indicators/server/app/entity"
 	"time"
 )
 

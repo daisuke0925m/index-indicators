@@ -2,9 +2,9 @@ package models
 
 import (
 	"fmt"
-	"index-indicator-apis/server/app/entity"
-	"index-indicator-apis/server/config"
-	"index-indicator-apis/server/db"
+	"index-indicators/server/app/entity"
+	"index-indicators/server/config"
+	"index-indicators/server/db"
 	"net/http"
 	"strconv"
 	"time"

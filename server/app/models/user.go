@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"index-indicator-apis/server/app/entity"
+	"index-indicators/server/app/entity"
 
 	"golang.org/x/crypto/bcrypt"
 )

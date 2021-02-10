@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"time"
 
-	"index-indicator-apis/server/app/entity"
-	"index-indicator-apis/server/app/models"
+	"index-indicators/server/app/entity"
+	"index-indicators/server/app/models"
 
 	"golang.org/x/crypto/bcrypt"
 )
