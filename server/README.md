@@ -1,4 +1,4 @@
-# index-indicators
+# index_indicators
 
 ```
 git clone
@@ -14,7 +14,7 @@ docker compose up
 `docker-compose up`
 
 ### ローカルPC
-`SRC_ROOT=$PWD/ go run cmd/index-indicators/main.go`
+`SRC_ROOT=$PWD/ go run cmd/index_indicators/main.go`
 
 ## テスト(ローカルPC)
 `SRC_ROOT=$PWD/ go test -v ./テストしたいパッケージディレクトリ`
@@ -22,8 +22,17 @@ modelsパッケージの場合は
 `SRC_ROOT=$PWD/ go test -v ./app/models`
 
 ## ECS
+
+### login 
+`aws ecr get-login-password --region region | docker login --username AWS --password-stdin ID`
+### build
+`docker build -t index_indicators:v1 .`
+
+### tag
+`docker tag index_indicators:v1 ID/index_indicators:latest`
+
 ### ECR push
-`docker push 823425155155.dkr.ecr.ap-northeast-1.amazonaws.com/index_indicators:latest`
+`docker push ID/index_indicators:latest`
 
 ### task definition
 `aws ecs register-task-definition --cli-input-json file://task-definition.json`
