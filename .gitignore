@@ -1,0 +1,6 @@
+*config.ini
+*.vscode
+*_debug_bin
+*.env
+*ecs-service.yml
+*task-definition.yml
