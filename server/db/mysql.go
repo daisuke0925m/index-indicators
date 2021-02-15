@@ -11,10 +11,10 @@ import (
 // SQLConnect DB接続
 func SQLConnect() (database *gorm.DB, err error) {
 	DBMS := "mysql"
-	USER := "index_indicators"
-	PASS := "index_indicators"
+	USER := os.Getenv("MYSQL_USER")
+	PASS := os.Getenv("MYSQL_PASSWORD")
+	DBNAME := os.Getenv("MYSQL_DATABASE")
 	PROTOCOL := "tcp(" + os.Getenv("MYSQL_HOST") + ":3306)"
-	DBNAME := "index_indicators"
 
 	CONNECT := (USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo")
 
