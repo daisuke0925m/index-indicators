@@ -25,10 +25,10 @@ func NewModels() (*Models, error) {
 // SQLConnect is starting connection
 func SQLConnect() (database *gorm.DB, err error) {
 	DBMS := "mysql"
-	USER := "iia"
-	PASS := "iia"
+	USER := os.Getenv("MYSQL_USER")
+	PASS := os.Getenv("MYSQL_PASSWORD")
+	DBNAME := os.Getenv("MYSQL_DATABASE")
 	PROTOCOL := "tcp(" + os.Getenv("MYSQL_HOST") + ":3306)"
-	DBNAME := "index_indicator_apis"
 
 	CONNECT := (USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo")
 
