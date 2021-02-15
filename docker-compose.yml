@@ -14,10 +14,8 @@ services:
     depends_on:
       - "db"
       - "redis"
-    environment:
-      MYSQL_HOST: mysql_container
-      REDIS_HOST: redis_container
-      SRC_ROOT: /usr/src/app/server/
+    env_file:
+      - dev.env
   db:
     image: mysql:8.0
     container_name: mysql_container
@@ -25,12 +23,8 @@ services:
       - db-store:/var/lib/mysql
       - ./DB/logs:/var/log/mysql
       - ./DB/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
-    environment:
-      - MYSQL_DATABASE=index_indicators
-      - MYSQL_USER=index_indicators
-      - MYSQL_PASSWORD=index_indicators
-      - MYSQL_ROOT_PASSWORD=index_indicators
-      - TZ=Asia/Tokyo
+    env_file:
+      - dev.env
     ports:
       - "3306:3306"
   redis:
