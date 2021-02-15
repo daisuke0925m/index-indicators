@@ -26,7 +26,7 @@ services:
       - ./DB/logs:/var/log/mysql
       - ./DB/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
     environment:
-      - MYSQL_DATABASE=index-indicators
+      - MYSQL_DATABASE=index_indicators
       - MYSQL_USER=index_indicators
       - MYSQL_PASSWORD=index_indicators
       - MYSQL_ROOT_PASSWORD=index_indicators
