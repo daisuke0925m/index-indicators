@@ -7,9 +7,9 @@ WORKDIR /usr/src/app/server
 
 COPY server/go.mod server/go.sum ./
 RUN go mod download
-COPY . .
+COPY ./server .
 
-RUN make -C server/
+RUN make
 
 # -----------------------------------
 FROM alpine
