@@ -5,11 +5,11 @@ ENV GOOS=linux
 ENV GOARCH=amd64
 WORKDIR /usr/src/app/server
 
-COPY go.mod go.sum ./
+COPY server/go.mod server/go.sum ./
 RUN go mod download
 COPY . .
 
-RUN make
+RUN make -C server/
 
 # -----------------------------------
 FROM alpine
