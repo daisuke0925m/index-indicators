@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"index-indicators/server/app/controllers"
 	"index-indicators/server/app/models"
-	"index-indicators/server/config"
 	"index-indicators/server/db"
 	"log"
 	"net/http"
@@ -24,8 +23,8 @@ func run() error {
 	app := controllers.NewApp(models)
 	r := controllers.Route(app)
 	http.Handle("/", r)
-	fmt.Printf("connected port :%d|\n", config.Config.Port)
-	return http.ListenAndServe(fmt.Sprintf(":%d", config.Config.Port), nil)
+	fmt.Printf("connected port :%d|\n", 8080)
+	return http.ListenAndServe(fmt.Sprintf(":%d", 8080), nil)
 }
 
 func main() {
