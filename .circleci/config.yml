@@ -13,13 +13,9 @@ workflows:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           create-repo: true
-          # Name of dockerfile to use. Defaults to Dockerfile.
           dockerfile: server/Dockerfile
-          # AWS_REGION_ENV_VAR_NAME
           region: AWS_DEFAULT_REGION
-          # myECRRepository
           repo: "${MY_APP_PREFIX}"
-          # myECRRepoTag
           tag: "$CIRCLE_SHA1"
       - aws-ecs/deploy-service-update:
           requires:

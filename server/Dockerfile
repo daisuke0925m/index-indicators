@@ -14,6 +14,8 @@ RUN make
 # -----------------------------------
 FROM alpine
 
+WORKDIR /server
+
 RUN apk add --no-cache ca-certificates && \
     apk --update add tzdata && \
     cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
