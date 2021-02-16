@@ -13,21 +13,6 @@ docker compose up
 ### docker
 `docker-compose up`
 
-### ローカルPC
-環境変数はenvファイルまたはエディタのコンフィグで管理
-ターミナルで実行する場合は下記コマンド
-```
-SRC_ROOT=$PWD/ \
-MYSQL_HOST=localhost  \
-REDIS_HOST=localhost  \
-API_URL=http://localhost:3000  \
-MYSQL_DATABASE=index_indicators  \
-MYSQL_USER=index_indicators  \
-MYSQL_PASSWORD=index_indicators  \
-MYSQL_ROOT_PASSWORD=index_indicators  \
-go run cmd/index-indicators/main.go
-```
-
 ## テスト(ローカルPC)
 `SRC_ROOT=$PWD/ go test -v ./テストしたいパッケージディレクトリ`
 modelsパッケージの場合は
