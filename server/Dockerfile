@@ -5,7 +5,7 @@ ENV GOOS=linux
 ENV GOARCH=amd64
 WORKDIR /usr/src/app/server
 
-COPY go.mod go.sum ./
+COPY ./go.mod ./go.sum ./
 RUN go mod download
 COPY . .
 
@@ -13,8 +13,6 @@ RUN make
 
 # -----------------------------------
 FROM alpine
-
-WORKDIR /server
 
 RUN apk add --no-cache ca-certificates && \
     apk --update add tzdata && \
