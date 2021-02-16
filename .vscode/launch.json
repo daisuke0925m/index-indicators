@@ -11,6 +11,15 @@
             "mode": "auto",
             "program": "${workspaceFolder}/server/cmd/index-indicators/main.go",
             "cwd": "${workspaceFolder}/server",
+            "env": {
+                "MYSQL_HOST": "localhost",
+                "REDIS_HOST": "localhost",
+                "API_URL": "http://localhost:3000",
+                "MYSQL_DATABASE": "index_indicators",
+                "MYSQL_USER": "index_indicators",
+                "MYSQL_PASSWORD": "index_indicators",
+                "MYSQL_ROOT_PASSWORD": "index_indicators",
+            },
         }
     ]
 }
