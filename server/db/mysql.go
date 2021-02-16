@@ -3,6 +3,9 @@ package db
 import (
 	"os"
 
+	// import tzdata
+	_ "time/tzdata"
+
 	// Register for gorm
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
