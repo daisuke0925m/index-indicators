@@ -1,53 +1,40 @@
-version: '3'
+version: "3"
 services:
-    react:
-        build:
-            context: ./client
-            dockerfile: Dockerfile
-        container_name: react_container
-        tty: true
-        volumes:
-        - ./client:/usr/src/app/client
-        command: bash -c "cd /usr/src/app/client && yarn start"
-        ports:
-        - "3000:3000"
-    go:
-        build:
-            context: ./server
-            dockerfile: Dockerfile
-        container_name: go_container
-        tty: true
-        # volumes:
-        # - ./server:/usr/src/app/server
-        # command: ["/usr/src/app/server/wait-for-it.sh", "db:3306", "--", "/usr/src/app/server/main"]
-        ports:
-        - "8080:8080"
-        depends_on:
-            - "db"
-        environment:
-            MYSQL_HOST: mysql_container
-    nginx:
-        image: nginx
-        container_name: nginx_container
-        ports:
-        - "80:80"
-        environment:
-        - TZ=Asia/Tokyo
-        volumes:
-        - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-    db:
-        image: mysql:8.0
-        container_name: mysql_container
-        volumes:
-            - db-store:/var/lib/mysql
-            - ./DB/logs:/var/log/mysql
-            - ./DB/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
-        environment:
-            - MYSQL_DATABASE=index_indicator_apis
-            - MYSQL_USER=root
-            - MYSQL_ROOT_PASSWORD=root
-            - TZ=Asia/Tokyo
-        ports:
-            - "3306:3306"
+  go:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: go_container
+    tty: true
+    volumes:
+      - "./server:/usr/src/app/server"
+    command: ./main
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "db"
+      - "redis"
+    env_file:
+      - dev.env
+  db:
+    image: mysql:8.0
+    container_name: mysql_container
+    volumes:
+      - db-store:/var/lib/mysql
+      - ./DB/logs:/var/log/mysql
+      - ./DB/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    env_file:
+      - dev.env
+    environment:
+      TZ: Asia/Tokyo
+    ports:
+      - "3306:3306"
+  redis:
+    image: "redis:6.0-alpine"
+    container_name: redis_container
+    volumes:
+      - "./server/redis:/redis"
+    ports:
+      - "6379:6379"
 volumes:
-    db-store:
+  db-store:
