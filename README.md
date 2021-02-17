@@ -1,5 +1,6 @@
 # index_indicators
 
+## 環境構築
 ```
 git clone
 
@@ -8,18 +9,11 @@ config.ini .env を設置
 docker compose up
 ```
 
-## 起動コマンド
-
-### docker
-`docker-compose up`
-
-## テスト(ローカルPC)
-`SRC_ROOT=$PWD/ go test -v ./テストしたいパッケージディレクトリ`
-modelsパッケージの場合は
-`SRC_ROOT=$PWD/ go test -v ./app/models`
-
-## ECS
-
+# テスト
+`go test -v ./テストしたいパッケージディレクトリ`
+<br>
+<br>
+# ECS設定
 ### login 
 `aws ecr get-login-password --region region | docker login --username AWS --password-stdin ID`
 ### build
@@ -36,3 +30,6 @@ modelsパッケージの場合は
 
 ### create service
 `aws ecs create-service --cli-input-json file://ecs-service.json`
+
+# アーキテクチャ
+<img src="./assets/server.svg">
