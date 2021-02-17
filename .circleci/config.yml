@@ -14,6 +14,6 @@ workflows:
       - aws-ecs/deploy-service-update:
           cluster-name: "${CULUSTER_NAME}"
           container-image-name-updates: "container=index_indicators_service,tag=${CIRCLE_SHA1}"
-          family: "index_indicators_service_service"
+          family: "index_indicators_service"
           requires:
             - aws-ecr/build-and-push-image
