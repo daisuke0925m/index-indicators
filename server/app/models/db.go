@@ -5,6 +5,9 @@ import (
 	"index-indicators/server/app/entity"
 	"os"
 
+	// import tzdata
+	_ "time/tzdata"
+
 	"github.com/jinzhu/gorm"
 )
 

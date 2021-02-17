@@ -3,9 +3,9 @@ package models
 import (
 	"fmt"
 	"index-indicators/server/app/entity"
-	"index-indicators/server/config"
 	"index-indicators/server/db"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -50,7 +50,7 @@ func CreateToken(userid int) (*entity.TokenDetails, error) {
 	atClaims["user_id"] = userid
 	atClaims["exp"] = td.AtExpires
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
-	td.AccessToken, err = at.SignedString([]byte(config.Config.JwtAccess))
+	td.AccessToken, err = at.SignedString([]byte(os.Getenv("JWT_ACCESS")))
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func CreateToken(userid int) (*entity.TokenDetails, error) {
 	rtClaims["user_id"] = userid
 	rtClaims["exp"] = td.RtExpires
 	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
-	td.RefreshToken, err = rt.SignedString([]byte(config.Config.JwtRefresh))
+	td.RefreshToken, err = rt.SignedString([]byte(os.Getenv("JWT_REFRESH")))
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +103,7 @@ func VerifyToken(r *http.Request) (*jwt.Token, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(config.Config.JwtAccess), nil
+		return []byte(os.Getenv("JWT_ACCESS")), nil
 	})
 	if err != nil {
 		return nil, err
@@ -176,7 +176,7 @@ func RefreshAuth(r *http.Request, refreshToken string) (map[string]string, strin
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(config.Config.JwtRefresh), nil
+		return []byte(os.Getenv("JWT_REFRESH")), nil
 	})
 
 	// token期限チェック

@@ -4,3 +4,4 @@
 *.env
 *ecs-service.yml
 *task-definition.yml
+.vscode/*

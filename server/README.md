@@ -3,7 +3,7 @@
 ```
 git clone
 
-config.iniを設置
+config.ini .env を設置
 
 docker compose up
 ```
@@ -12,9 +12,6 @@ docker compose up
 
 ### docker
 `docker-compose up`
-
-### ローカルPC
-`SRC_ROOT=$PWD/ go run cmd/index_indicators/main.go`
 
 ## テスト(ローカルPC)
 `SRC_ROOT=$PWD/ go test -v ./テストしたいパッケージディレクトリ`

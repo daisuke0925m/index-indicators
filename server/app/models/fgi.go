@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"index-indicators/server/app/entity"
 	"index-indicators/server/db"
+	"os"
 	"time"
 
-	"index-indicators/server/config"
 	"index-indicators/server/fgi"
 )
 
 // CreateNewFgis migration後にapiを叩きdbに保存する
 func CreateNewFgis() error {
-	fgiClient := fgi.New(config.Config.FgiAPIKey, config.Config.FgiAPIHost)
+	fgiClient := fgi.New(os.Getenv("FGI_KEY"), os.Getenv("FGI_HOST"))
 	f, err := fgiClient.GetFgi()
 	if err != nil {
 		return err

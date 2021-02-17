@@ -8,7 +8,7 @@ services:
     tty: true
     volumes:
       - "./server:/usr/src/app/server"
-    command: go run cmd/index-indicators/main.go
+    command: ./main
     ports:
       - "8080:8080"
     depends_on:
@@ -25,6 +25,8 @@ services:
       - ./DB/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
     env_file:
       - dev.env
+    environment:
+      TZ: Asia/Tokyo
     ports:
       - "3306:3306"
   redis:

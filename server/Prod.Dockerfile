@@ -5,9 +5,9 @@ ENV GOOS=linux
 ENV GOARCH=amd64
 WORKDIR /usr/src/app/server
 
-COPY go.mod go.sum ./
+COPY server/go.mod server/go.sum ./
 RUN go mod download
-COPY . .
+COPY ./server .
 
 RUN make
 
@@ -20,7 +20,7 @@ RUN apk add --no-cache ca-certificates && \
     apk del tzdata && \
     rm -rf /var/cache/apk/*
 
-COPY --from=builder usr/src/app/server/main usr/src/app/server/config.ini ./
+COPY --from=builder usr/src/app/server/main ./
 
 CMD ["./main"]
 
