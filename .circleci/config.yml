@@ -1,19 +1,40 @@
+# version: 2.1
+# orbs:
+#   aws-ecr: circleci/aws-ecr@6.15
+#   aws-ecs: circleci/aws-ecs@2.0.0
+# workflows:
+#   build-and-deploy:
+#     jobs:
+#       - aws-ecr/build-and-push-image:
+#           account-url: AWS_ECR_ACCOUNT_URL
+#           region: AWS_DEFAULT_REGION
+#           dockerfile: server/Prod.Dockerfile
+#           repo: "${MY_APP_PREFIX}"
+#           tag: "${CIRCLE_SHA1}"
+#       - aws-ecs/deploy-service-update:
+#           cluster-name: "${CULUSTER_NAME}"
+#           container-image-name-updates: "container=${MY_APP_PREFIX}_service,tag=${CIRCLE_SHA1}"
+#           family: "${MY_APP_PREFIX}_service"
+#           requires:
+#             - aws-ecr/build-and-push-image
 version: 2.1
-orbs:
-  aws-ecr: circleci/aws-ecr@6.15
-  aws-ecs: circleci/aws-ecs@2.0.0
-workflows:
-  build-and-deploy:
-    jobs:
-      - aws-ecr/build-and-push-image:
-          account-url: AWS_ECR_ACCOUNT_URL
-          region: AWS_DEFAULT_REGION
-          dockerfile: server/Prod.Dockerfile
-          repo: "${MY_APP_PREFIX}"
-          tag: "${CIRCLE_SHA1}"
-      - aws-ecs/deploy-service-update:
-          cluster-name: "${CULUSTER_NAME}"
-          container-image-name-updates: "container=${MY_APP_PREFIX}_service,tag=${CIRCLE_SHA1}"
-          family: "${MY_APP_PREFIX}_service"
-          requires:
-            - aws-ecr/build-and-push-image
+jobs:
+  build:
+    working_directory: ~/server
+    docker:
+      - image: circleci/golang:1.15.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v4-{{ checksum "go.sum" }}
+      - run:
+          name: Install Dependencies
+          command: go get ./...
+      - save_cache:
+          key: go-mod-v4-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Run tests
+          command: go test -v
