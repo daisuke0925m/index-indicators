@@ -20,7 +20,6 @@
 version: 2.1
 jobs:
   build:
-    working_directory: ~/app
     docker:
       - image: circleci/golang:1.15.0
     steps:
@@ -30,11 +29,11 @@ jobs:
             - go-mod-v4-{{ checksum "server/go.sum" }}
       - run:
           name: Install Dependencies
-          command: go get ./...
+          command: cd server/cmd/index-indicators/ && go get
       - save_cache:
           key: go-mod-v4-{{ checksum "server/go.sum" }}
           paths:
             - "/go/pkg/mod"
       - run:
           name: Run tests
-          command: go test -v
+          command: cd server && go test -v ./...
