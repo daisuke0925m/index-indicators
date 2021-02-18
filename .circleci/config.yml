@@ -6,7 +6,7 @@ orbs:
 
 # test
 jobs:
-  build:
+  test:
     docker:
       - image: circleci/golang:1.15.0
     steps:
@@ -29,6 +29,8 @@ jobs:
 workflows:
   build-and-deploy:
     jobs:
+      - test
+
       - aws-ecr/build-and-push-image:
           account-url: AWS_ECR_ACCOUNT_URL
           region: AWS_DEFAULT_REGION
