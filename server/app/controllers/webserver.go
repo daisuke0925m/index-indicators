@@ -71,13 +71,25 @@ func (a *App) tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request))
 		}
 
 		// Redisからtokenを検索して見つからない場合はunauthorizedを返す。
-		_, authErr := models.FetchAuth(accessDetails)
+		uid, authErr := models.FetchAuth(accessDetails)
 		if authErr != nil {
 			a.resposeStatusCode(w, "token is not found", http.StatusNotFound)
 			return
 		}
 
-		// TODOユーザー情報の検知
+		// users/:idにマッチした場合、redisのuuidとパラメータのidが同じかチェック
+		paths := strings.Split(r.URL.Path, "/")
+		if paths[1] == "users" && regexp.MustCompile(`[0-9]`).Match([]byte(paths[2])) {
+			id, err := strconv.Atoi(path.Base((paths[2])))
+			if err != nil {
+				a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			if uid != id {
+				a.resposeStatusCode(w, "token is invalid", http.StatusUnauthorized)
+				return
+			}
+		}
 
 		fn(w, r)
 	})
