@@ -8,7 +8,7 @@ import (
 func Route(app *App) *mux.Router {
 	r := mux.NewRouter()
 	// user
-	r.HandleFunc("/users/{id:[0-9]+}", app.userGetHandler).Methods("GET")
+	r.HandleFunc("/users/{id:[0-9]+}", app.tokenVerifyMiddleWare(app.userGetHandler)).Methods("GET")
 	r.HandleFunc("/users", app.signupHandler).Methods("POST", "OPTIONS")
 	r.HandleFunc("/users/{id:[0-9]+}", app.userDeleteHandler).Methods("DELETE", "OPTIONS")
 	r.HandleFunc("/users/{id:[0-9]+}", app.userUpdateHandler).Methods("PUT")
@@ -19,7 +19,7 @@ func Route(app *App) *mux.Router {
 	// auth
 	r.HandleFunc("/login", app.loginHandler).Methods("POST", "OPTIONS")
 	r.HandleFunc("/logout", app.tokenVerifyMiddleWare(app.logoutHandler)).Methods("POST")
-	r.HandleFunc("/refresh_token", app.tokenVerifyMiddleWare(app.refreshTokenHandler)).Methods("POST")
+	r.HandleFunc("/refresh_token", app.refreshTokenHandler).Methods("POST")
 	// fgi
 	r.HandleFunc("/fgi", app.fgiHandler).Methods("GET")
 	// ticker
