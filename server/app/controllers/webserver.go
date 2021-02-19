@@ -9,6 +9,7 @@ import (
 	"path"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 
 	"index-indicators/server/app/entity"
@@ -71,13 +72,25 @@ func (a *App) tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request))
 		}
 
 		// Redisからtokenを検索して見つからない場合はunauthorizedを返す。
-		_, authErr := models.FetchAuth(accessDetails)
+		uid, authErr := models.FetchAuth(accessDetails)
 		if authErr != nil {
 			a.resposeStatusCode(w, "token is not found", http.StatusNotFound)
 			return
 		}
 
-		// TODOユーザー情報の検知
+		// users/:idにマッチした場合、redisのuuidとパラメータのidが同じかチェック
+		paths := strings.Split(r.URL.Path, "/")
+		if paths[1] == "users" && regexp.MustCompile(`[0-9]`).Match([]byte(paths[2])) {
+			id, err := strconv.Atoi(path.Base((paths[2])))
+			if err != nil {
+				a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			if uid != id {
+				a.resposeStatusCode(w, "token is invalid", http.StatusUnauthorized)
+				return
+			}
+		}
 
 		fn(w, r)
 	})
@@ -483,6 +496,24 @@ func (a *App) logoutHandler(w http.ResponseWriter, r *http.Request) {
 		a.resposeStatusCode(w, "not found", http.StatusNotFound)
 		return
 	}
+
+	at := &http.Cookie{
+		Name:     "at",
+		Value:    "",
+		Path:     "/",
+		Expires:  time.Unix(0, 0),
+		HttpOnly: true,
+	}
+
+	http.SetCookie(w, at)
+	rt := &http.Cookie{
+		Name:     "rt",
+		Value:    "",
+		Path:     "/",
+		Expires:  time.Unix(0, 0),
+		HttpOnly: true,
+	}
+	http.SetCookie(w, rt)
 
 	a.resposeStatusCode(w, "success", http.StatusOK)
 }
