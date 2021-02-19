@@ -20,7 +20,13 @@ RUN apk add --no-cache ca-certificates && \
     apk del tzdata && \
     rm -rf /var/cache/apk/*
 
-COPY --from=builder usr/src/app/server/main usr/src/app/server/config.ini ./
+WORKDIR /app
+
+RUN adduser -S -D -H -h /app appuser
+
+USER appuser
+
+COPY --from=builder usr/src/app/server/main /app/
 
 CMD ["./main"]
 

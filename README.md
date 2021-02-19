@@ -10,7 +10,8 @@ docker compose up
 ```
 
 # テスト
-`go test -v ./テストしたいパッケージディレクトリ`
+ `cd server`
+`go test -v -cover ./app/controllers/`
 <br>
 <br>
 # ECS設定

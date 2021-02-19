@@ -1,19 +1,52 @@
 version: 2.1
+
 orbs:
   aws-ecr: circleci/aws-ecr@6.15
   aws-ecs: circleci/aws-ecs@2.0.0
+
+# test
+jobs:
+  test:
+    docker:
+      - image: circleci/golang:1.15.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v4-{{ checksum "server/go.sum" }}
+      - run:
+          name: Install Dependencies
+          command: cd server/cmd/index-indicators/ && go get
+      - save_cache:
+          key: go-mod-v4-{{ checksum "server/go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Run tests
+          command: cd server && go test -v ./...
+
+# deploy
 workflows:
   build-and-deploy:
     jobs:
+      # test
+      - test
+      # build
       - aws-ecr/build-and-push-image:
           account-url: AWS_ECR_ACCOUNT_URL
           region: AWS_DEFAULT_REGION
           dockerfile: server/Prod.Dockerfile
           repo: "${MY_APP_PREFIX}"
           tag: "${CIRCLE_SHA1}"
+          filters: &master-filters
+            branches:
+              only: master
+      # deploy (update service)
       - aws-ecs/deploy-service-update:
           cluster-name: "${CULUSTER_NAME}"
           container-image-name-updates: "container=${MY_APP_PREFIX}_service,tag=${CIRCLE_SHA1}"
           family: "${MY_APP_PREFIX}_service"
           requires:
             - aws-ecr/build-and-push-image
+          filters:
+            <<: *master-filters
