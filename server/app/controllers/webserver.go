@@ -9,6 +9,7 @@ import (
 	"path"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 
 	"index-indicators/server/app/entity"
@@ -495,6 +496,24 @@ func (a *App) logoutHandler(w http.ResponseWriter, r *http.Request) {
 		a.resposeStatusCode(w, "not found", http.StatusNotFound)
 		return
 	}
+
+	at := &http.Cookie{
+		Name:     "at",
+		Value:    "",
+		Path:     "/",
+		Expires:  time.Unix(0, 0),
+		HttpOnly: true,
+	}
+
+	http.SetCookie(w, at)
+	rt := &http.Cookie{
+		Name:     "rt",
+		Value:    "",
+		Path:     "/",
+		Expires:  time.Unix(0, 0),
+		HttpOnly: true,
+	}
+	http.SetCookie(w, rt)
 
 	a.resposeStatusCode(w, "success", http.StatusOK)
 }
