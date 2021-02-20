@@ -422,7 +422,7 @@ func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 	var user entity.User
 	json.NewDecoder(r.Body).Decode(&user)
 
-	foundUser, err := models.FindUser(user)
+	foundUser, err := a.DB.FindUserByID(user.ID)
 	if err != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusNotFound)
 		return
