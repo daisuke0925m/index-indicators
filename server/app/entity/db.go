@@ -13,5 +13,12 @@ type DB interface {
 	FetchSymbol(symbol string) (err error)
 	FindUsersLikes(user User) ([]Like, error)
 	FindLikeByID(likeID int) (Like, error)
+	FindUserByEmail(email string) (User, error)
 	DeleteLike(like Like) (err error)
+	// fgi
+	GetFgis(limit int) []Fgi
+	CreateNewFgis() error
+	// ticker
+	GetTickerAll(symbol string) ([]Ticker, error)
+	SaveTickers() error
 }

@@ -55,6 +55,15 @@ func (m *Models) FindUserByID(id int) (entity.User, error) {
 	return user, nil
 }
 
+// FindUserByEmail Emailからuserを検索
+func (m *Models) FindUserByEmail(email string) (entity.User, error) {
+	var user entity.User
+	if err := m.DB.Where("email = ?", email).First(&user).Error; err != nil {
+		return user, err
+	}
+	return user, nil
+}
+
 // UpdateUser userアップデート
 func (m *Models) UpdateUser(foundUser entity.User) (err error) {
 	if err := m.DB.Save(&foundUser).Error; err != nil {

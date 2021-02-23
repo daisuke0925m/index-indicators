@@ -422,7 +422,7 @@ func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 	var user entity.User
 	json.NewDecoder(r.Body).Decode(&user)
 
-	foundUser, err := a.DB.FindUserByID(user.ID)
+	foundUser, err := a.DB.FindUserByEmail(user.Email)
 	if err != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusNotFound)
 		return
@@ -570,7 +570,7 @@ func (a *App) fgiHandler(w http.ResponseWriter, r *http.Request) {
 	if strLimit == "" || err != nil || limit < 0 || limit > 100 {
 		limit = 100
 	}
-	fgis := models.GetFgis(limit)
+	fgis := a.DB.GetFgis(limit)
 
 	type body struct {
 		Fgis []entity.Fgi `json:"fgis,omitempty"`
@@ -593,7 +593,7 @@ func (a *App) tickerHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tickers, err := models.GetTickerAll(symbol)
+	tickers, err := a.DB.GetTickerAll(symbol)
 	if err != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
 		return

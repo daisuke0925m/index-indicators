@@ -3,7 +3,6 @@ package models
 import (
 	"fmt"
 	"index-indicators/server/app/entity"
-	"index-indicators/server/db"
 	"os"
 	"time"
 
@@ -11,7 +10,7 @@ import (
 )
 
 // CreateNewFgis migration後にapiを叩きdbに保存する
-func CreateNewFgis() error {
+func (m *Models) CreateNewFgis() error {
 	fgiClient := fgi.New(os.Getenv("FGI_KEY"), os.Getenv("FGI_HOST"))
 	f, err := fgiClient.GetFgi()
 	if err != nil {
@@ -19,12 +18,7 @@ func CreateNewFgis() error {
 	}
 	fmt.Printf("insert value:%v\n", f.Fgi)
 
-	db, err := db.SQLConnect()
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
-	db.Create(&entity.Fgi{
+	m.DB.Create(&entity.Fgi{
 		CreatedAt: time.Now(),
 		NowValue:  f.Fgi.Current.Value,
 		NowText:   f.Fgi.Current.ValueText,
@@ -42,14 +36,9 @@ func CreateNewFgis() error {
 }
 
 // GetFgis api for webserver
-func GetFgis(limit int) []entity.Fgi {
-	db, err := db.SQLConnect()
-	if err != nil {
-		panic(err.Error())
-	}
-	defer db.Close()
+func (m *Models) GetFgis(limit int) []entity.Fgi {
 
 	fgis := []entity.Fgi{}
-	db.Order("created_at desc").Limit(limit).Find(&fgis)
+	m.DB.Order("created_at desc").Limit(limit).Find(&fgis)
 	return fgis
 }
