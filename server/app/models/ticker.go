@@ -2,6 +2,7 @@ package models
 
 import (
 	"index-indicators/server/app/entity"
+	"log"
 	"time"
 
 	"github.com/markcheno/go-quote"
@@ -70,6 +71,8 @@ func (m *Models) SaveTickers() (err error) {
 		if err != nil {
 			return err
 		}
+		// 監視用
+		log.Print(tickerData.CSV() + "\n--" + symbol + "--\n")
 
 		dataLength := len(tickerData.Open)
 		len := dataLength - 1
