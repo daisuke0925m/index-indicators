@@ -11,7 +11,7 @@ func (a *App) StreamIngestionData() {
 	c := cron.New()
 
 	// 平日23:30 TODO米国平日の市場取引時間
-	c.AddFunc("30 23 * * 1-5", func() {
+	c.AddFunc("00 00 * * *", func() {
 		fmt.Println("handle fgis")
 		a.DB.CreateNewFgis()
 		fmt.Println("handle ticers")
