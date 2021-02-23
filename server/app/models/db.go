@@ -9,6 +9,8 @@ import (
 	_ "time/tzdata"
 
 	"github.com/jinzhu/gorm"
+	// import mysql
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 // Models DB models

@@ -2,7 +2,6 @@ package models
 
 import (
 	"index-indicators/server/app/entity"
-	"index-indicators/server/db"
 	"time"
 
 	"github.com/markcheno/go-quote"
@@ -14,13 +13,7 @@ func dateToString(d time.Time) string {
 	return dString
 }
 
-func createTickerRow(symbol string, date time.Time, open, high, low, close, volume float64) error {
-	db, err := db.SQLConnect()
-	if err != nil {
-		return err
-	}
-	defer db.Close()
-
+func (m *Models) createTickerRow(symbol string, date time.Time, open, high, low, close, volume float64) error {
 	tickerRow := &entity.Ticker{
 		Symbol:    symbol,
 		Date:      date,
@@ -31,52 +24,34 @@ func createTickerRow(symbol string, date time.Time, open, high, low, close, volu
 		Volume:    volume,
 		CreatedAt: time.Now(),
 	}
-	if err := db.Create(&tickerRow).Error; err != nil {
+	if err := m.DB.Create(&tickerRow).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func checkSymbolExist(symbol string) (bool, error) {
-	db, err := db.SQLConnect()
-	if err != nil {
-		return false, err
-	}
-	defer db.Close()
-
+func (m *Models) checkSymbolExist(symbol string) (bool, error) {
 	var ticker entity.Ticker
-	if err := db.Where("symbol = ?", symbol).First(&ticker).Error; err != nil {
+	if err := m.DB.Where("symbol = ?", symbol).First(&ticker).Error; err != nil {
 		return false, nil
 	}
 
 	return true, nil
 }
 
-func checkLatestRecord(symbol string, date time.Time) (bool, error) {
-	db, err := db.SQLConnect()
-	if err != nil {
-		return false, err
-	}
-	defer db.Close()
-
+func (m *Models) checkLatestRecord(symbol string, date time.Time) (bool, error) {
 	var ticker entity.Ticker
-	if err := db.Where("symbol = ? AND date = ?", symbol, date).First(&ticker).Error; err != nil {
+	if err := m.DB.Where("symbol = ? AND date = ?", symbol, date).First(&ticker).Error; err != nil {
 		return false, nil
 	}
 
 	return true, nil
 }
 
-func deleteLastRecord(symbol string, date time.Time) error {
-	db, err := db.SQLConnect()
-	if err != nil {
-		return err
-	}
-	defer db.Close()
-
+func (m *Models) deleteLastRecord(symbol string, date time.Time) error {
 	var ticker entity.Ticker
-	if err := db.Where("symbol = ? AND date = ?", symbol, date).Delete(&ticker).Error; err != nil {
+	if err := m.DB.Where("symbol = ? AND date = ?", symbol, date).Delete(&ticker).Error; err != nil {
 		return err
 	}
 
@@ -84,7 +59,7 @@ func deleteLastRecord(symbol string, date time.Time) error {
 }
 
 // SaveTickers save tickers data
-func SaveTickers() (err error) {
+func (m *Models) SaveTickers() (err error) {
 	symbols := []string{"spxl", "^skew", "tlt", "gld", "gldm", "spy"}
 	today := time.Now()
 	twoYAgo := today.AddDate(-2, 0, 0)
@@ -99,7 +74,7 @@ func SaveTickers() (err error) {
 		dataLength := len(tickerData.Open)
 		len := dataLength - 1
 
-		flag, err := checkSymbolExist(symbol)
+		flag, err := m.checkSymbolExist(symbol)
 		if err != nil {
 			return err
 		}
@@ -108,18 +83,18 @@ func SaveTickers() (err error) {
 		if flag {
 			lastRecordDate := tickerData.Date[len]
 
-			checkFlag, err := checkLatestRecord(symbol, lastRecordDate)
+			checkFlag, err := m.checkLatestRecord(symbol, lastRecordDate)
 			if err != nil {
 				return err
 			}
 			// dbにある最新のdateと取得したdateが一致した場合は処理を抜ける
 			if !checkFlag {
 				// 一致しなかった場合は一番古い日付のレコードを削除し最新のレコードをinsert
-				err := deleteLastRecord(symbol, tickerData.Date[0])
+				err := m.deleteLastRecord(symbol, tickerData.Date[0])
 				if err != nil {
 					return err
 				}
-				err = createTickerRow(symbol, tickerData.Date[len], tickerData.Open[len], tickerData.High[len], tickerData.Low[len], tickerData.Close[len], tickerData.Volume[len])
+				err = m.createTickerRow(symbol, tickerData.Date[len], tickerData.Open[len], tickerData.High[len], tickerData.Low[len], tickerData.Close[len], tickerData.Volume[len])
 				if err != nil {
 					return err
 				}
@@ -128,7 +103,7 @@ func SaveTickers() (err error) {
 		} else {
 
 			for i := 0; i < dataLength; i++ {
-				err := createTickerRow(symbol, tickerData.Date[i], tickerData.Open[i], tickerData.High[i], tickerData.Low[i], tickerData.Close[i], tickerData.Volume[i])
+				err := m.createTickerRow(symbol, tickerData.Date[i], tickerData.Open[i], tickerData.High[i], tickerData.Low[i], tickerData.Close[i], tickerData.Volume[i])
 				if err != nil {
 					return err
 				}
@@ -141,15 +116,10 @@ func SaveTickers() (err error) {
 }
 
 // GetTickerAll get 2years ticker data
-func GetTickerAll(symbol string) ([]entity.Ticker, error) {
+func (m *Models) GetTickerAll(symbol string) ([]entity.Ticker, error) {
 	var tickers []entity.Ticker
-	db, err := db.SQLConnect()
-	if err != nil {
-		return tickers, err
-	}
-	defer db.Close()
 
-	if err := db.Where("symbol = ?", symbol).Find(&tickers).Error; err != nil {
+	if err := m.DB.Where("symbol = ?", symbol).Find(&tickers).Error; err != nil {
 		return tickers, err
 	}
 

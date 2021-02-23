@@ -31,6 +31,18 @@ func (m *ModelsMock) FindUserByID(id int) (entity.User, error) {
 		Password: string(hash),
 	}, nil
 }
+func (m *ModelsMock) FindUserByEmail(email string) (entity.User, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte("testpass"), 10)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return entity.User{
+		ID:       1,
+		UserName: "testuser",
+		Email:    "test@test",
+		Password: string(hash),
+	}, nil
+}
 func (m *ModelsMock) UpdateUser(foundUser entity.User) (err error) {
 	return nil
 }
@@ -79,6 +91,42 @@ func (m *ModelsMock) FindLikeByID(likeID int) (entity.Like, error) {
 func (m *ModelsMock) DeleteLike(like entity.Like) (err error) {
 	return nil
 }
+func (m *ModelsMock) GetFgis(limit int) []entity.Fgi {
+	return []entity.Fgi{{
+		ID:        1,
+		CreatedAt: time.Now(),
+		NowValue:  1,
+		NowText:   "fear",
+		PcValue:   1,
+		PcText:    "fear",
+		OneWValue: 1,
+		OneWText:  "fear",
+		OneMValue: 1,
+		OneMText:  "fear",
+		OneYValue: 1,
+		OneYText:  "fear",
+	}}
+}
+func (m *ModelsMock) GetTickerAll(symbol string) ([]entity.Ticker, error) {
+	return []entity.Ticker{{
+		ID:        1,
+		Symbol:    "symbol",
+		Date:      time.Now(),
+		Open:      1,
+		High:      1,
+		Low:       1,
+		Close:     1,
+		Volume:    1,
+		CreatedAt: time.Now(),
+	}}, nil
+}
+func (m *ModelsMock) CreateNewFgis() error {
+	return nil
+}
+func (m *ModelsMock) SaveTickers() error {
+	return nil
+}
+
 func Test_signupHandler(t *testing.T) {
 	app := NewApp(&ModelsMock{})
 	mux := http.NewServeMux()

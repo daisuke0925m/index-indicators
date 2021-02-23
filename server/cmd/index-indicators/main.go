@@ -12,7 +12,6 @@ import (
 func run() error {
 	models.AutoMigrate()
 	db.InitRedis()
-	go controllers.StreamIngestionData() //TODO
 
 	models, err := models.NewModels()
 	if err != nil {
@@ -22,6 +21,7 @@ func run() error {
 
 	app := controllers.NewApp(models)
 	r := controllers.Route(app)
+	go app.StreamIngestionData() //TODO
 	http.Handle("/", r)
 	fmt.Printf("connected port :%d|\n", 8080)
 	return http.ListenAndServe(fmt.Sprintf(":%d", 8080), nil)
