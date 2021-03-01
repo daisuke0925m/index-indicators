@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -16,7 +17,8 @@ import (
 var sender = "noreply@index-indicators.com"
 var title = "昨日の株価・インディケーターをお知らせします。"
 var mailBody = "登録済みの株価・インディケーター ⬇️\n"
-var mailBodyFooter = "通知銘柄・イディケーターの変更はこちら\nhttps://mt.index-indicators.com/"
+var mailBodyFgi = ""
+var mailBodyFooter = "通知銘柄・イディケーターの変更はこちら\nhttps://mt.index-indicators.com"
 
 // PushEmail pushing email for indicators notice
 func (a *App) PushEmail() {
@@ -36,7 +38,18 @@ func (a *App) PushEmail() {
 
 		if len(likes) > 0 {
 			for _, like := range likes {
-				if like.Symbol != "fgi" {
+				if like.Symbol == "fgi" {
+					limit := 1
+					fgis := a.DB.GetFgis(limit)
+					lastFgi := fgis[0]
+					mailBodyFgi = "\n-------------\n" + "Fear & Greed Index\n" +
+						strings.Split(lastFgi.CreatedAt.String(), " ")[0] +
+						" " + lastFgi.NowText + " " + strconv.Itoa(lastFgi.NowValue) +
+						"\n 1Week Ago" + lastFgi.NowText + " " + strconv.Itoa(lastFgi.NowValue) +
+						"\n 1Month Ago" + lastFgi.OneWText + " " + strconv.Itoa(lastFgi.OneWValue) +
+						"\n 1Year Ago" + lastFgi.OneWText + " " + strconv.Itoa(lastFgi.OneWValue) +
+						"\n-------------\n"
+				} else {
 					tickers, err := a.DB.GetTickerAll(like.Symbol)
 					if err != nil {
 						log.Printf("cloud not get %v 's ticker data, db error. \n", like)
@@ -56,8 +69,7 @@ func (a *App) PushEmail() {
 			}
 		}
 
-		fmt.Printf("-------%v", mailBody)
-		err = initEmail(to, title, mailBody+mailBodyFooter)
+		err = initEmail(to, title, mailBody+mailBodyFgi+mailBodyFooter)
 		if err != nil {
 			log.Printf("mail sending error to \n username=%v email=%v", user.UserName, user.Email)
 		}
