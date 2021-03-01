@@ -1,9 +1,10 @@
 package models
 
 import (
-	"fmt"
 	"index-indicators/server/app/entity"
 	"time"
+
+	"google.golang.org/appengine/log"
 )
 
 // CreateLike like作成
@@ -46,7 +47,7 @@ func (m *Models) FetchSymbol(symbol string) (err error) {
 	}
 
 	if !checked {
-		return fmt.Errorf("symbol is invalid")
+		return log.Errorf("symbol is invalid")
 	}
 
 	return nil

@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -428,12 +427,10 @@ func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("compare the password")
 	if err := bcrypt.CompareHashAndPassword([]byte(foundUser.Password), []byte(user.Password)); err != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
-	fmt.Println("password is be valid")
 
 	token, err := models.CreateToken(foundUser.ID)
 	if err != nil {

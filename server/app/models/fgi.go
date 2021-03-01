@@ -1,8 +1,8 @@
 package models
 
 import (
-	"fmt"
 	"index-indicators/server/app/entity"
+	"log"
 	"os"
 	"time"
 
@@ -16,7 +16,7 @@ func (m *Models) CreateNewFgis() error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("insert value:%v\n", f.Fgi)
+	log.Printf("insert value:%v\n", f.Fgi)
 
 	m.DB.Create(&entity.Fgi{
 		CreatedAt: time.Now(),
