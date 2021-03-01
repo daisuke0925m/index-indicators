@@ -21,7 +21,8 @@ func run() error {
 
 	app := controllers.NewApp(models)
 	r := controllers.Route(app)
-	go app.StreamIngestionData() //TODO
+	go app.StreamIngestionData()
+	go app.PushEmail()
 	http.Handle("/", r)
 	fmt.Printf("connected port :%d|\n", 8080)
 	return http.ListenAndServe(fmt.Sprintf(":%d", 8080), nil)
