@@ -71,3 +71,11 @@ func (m *Models) UpdateUser(foundUser entity.User) (err error) {
 	}
 	return nil
 }
+
+// GetAllUsers 全UserとLikesを取得
+func (m *Models) GetAllUsers() (users []entity.User, err error) {
+	if err := m.DB.Find(&users).Error; err != nil {
+		return users, err
+	}
+	return users, nil
+}

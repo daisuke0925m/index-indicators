@@ -49,6 +49,9 @@ func (m *ModelsMock) UpdateUser(foundUser entity.User) (err error) {
 func (m *ModelsMock) DeleteUser(id int, pass string) (err error) {
 	return nil
 }
+func (m *ModelsMock) GetAllUsers() (users []entity.User, err error) {
+	return users, nil
+}
 func (m *ModelsMock) CreateLike(user entity.User, symbol string) (err error) {
 	return nil
 }

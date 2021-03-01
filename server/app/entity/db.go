@@ -7,6 +7,7 @@ type DB interface {
 	FindUserByID(id int) (User, error)
 	UpdateUser(foundUser User) (err error)
 	DeleteUser(id int, pass string) (err error)
+	GetAllUsers() (users []User, err error)
 	// like
 	CreateLike(user User, symbol string) (err error)
 	CheckLikesSymbol(userID int, symbol string) (Like, error)
