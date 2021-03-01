@@ -3,6 +3,7 @@ module index-indicators/server
 go 1.15
 
 require (
+	github.com/aws/aws-sdk-go v1.37.20
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-redis/redis/v7 v7.4.0
@@ -15,7 +16,6 @@ require (
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/twinj/uuid v1.0.0
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
-	golang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect
 	golang.org/x/sys v0.0.0-20210119212857-b64e53b001e4 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gopkg.in/stretchr/testify.v1 v1.2.2 // indirect
