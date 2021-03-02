@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/robfig/cron/v3"
 )
@@ -12,14 +12,14 @@ func (a *App) StreamIngestionData() {
 
 	// 平日23:30 TODO米国平日の市場取引時間
 	c.AddFunc("00 00 * * *", func() {
-		fmt.Println("handle fgis")
+		log.Println("handle fgis")
 		a.DB.CreateNewFgis()
-		fmt.Println("handle ticers")
+		log.Println("handle ticers")
 		err := a.DB.SaveTickers()
 		if err != nil {
-			fmt.Println("error")
+			log.Println("error")
 		}
-		fmt.Println("finish")
+		log.Println("finish")
 	})
 	c.Start()
 

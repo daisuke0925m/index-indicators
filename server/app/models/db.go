@@ -1,8 +1,8 @@
 package models
 
 import (
-	"fmt"
 	"index-indicators/server/app/entity"
+	"log"
 	"os"
 
 	// import tzdata
@@ -42,12 +42,12 @@ func SQLConnect() (database *gorm.DB, err error) {
 
 //AutoMigrate マイグレーション
 func AutoMigrate() {
-	fmt.Println("migrating database...")
+	log.Println("migrating database...")
 	db, err := SQLConnect()
 	if err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
 	db.AutoMigrate(&entity.Fgi{}, &entity.Like{}, &entity.Ticker{}, &entity.User{})
-	fmt.Println("finish migrate!")
+	log.Println("finish migrate!")
 }
