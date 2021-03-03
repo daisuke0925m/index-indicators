@@ -52,11 +52,6 @@ func (a *App) serveHTTPHeaders(w http.ResponseWriter) {
 
 func (a *App) tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == "OPTIONS" {
-			a.serveHTTPHeaders(w)
-			w.WriteHeader(http.StatusOK)
-			return
-		}
 		accessDetails, err := models.ExtractTokenMetadata(r)
 		if err != nil {
 			a.resposeStatusCode(w, "token is invalid", http.StatusUnauthorized)
@@ -85,5 +80,16 @@ func (a *App) tokenVerifyMiddleWare(fn func(http.ResponseWriter, *http.Request))
 		}
 
 		fn(w, r)
+	})
+}
+
+func (a *App) preflitMiddleWare(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "OPTIONS" {
+			a.serveHTTPHeaders(w)
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		next.ServeHTTP(w, r)
 	})
 }

@@ -42,11 +42,6 @@ func (a *App) likeGetALLHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) likePostHandler(w http.ResponseWriter, r *http.Request) {
-	a.serveHTTPHeaders(w)
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 	re := regexp.MustCompile(`[\d\-]+`)
 	values := re.FindStringSubmatch(r.URL.Path)
 	userID, err := strconv.Atoi(values[0])
