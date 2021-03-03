@@ -7,6 +7,7 @@ import (
 // Route return API routing
 func Route(app *App) *mux.Router {
 	r := mux.NewRouter()
+	r.Use(app.preflitMiddleWare)
 	// user
 	r.HandleFunc("/users/{id:[0-9]+}", app.tokenVerifyMiddleWare(app.userGetHandler)).Methods("GET")
 	r.HandleFunc("/users", app.signupHandler).Methods("POST", "OPTIONS")

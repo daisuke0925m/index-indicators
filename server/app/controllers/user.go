@@ -46,11 +46,6 @@ func (a *App) userGetHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) signupHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "OPTIONS" {
-		a.serveHTTPHeaders(w)
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 	var u entity.User
 	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
@@ -84,11 +79,6 @@ func (a *App) signupHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) userDeleteHandler(w http.ResponseWriter, r *http.Request) {
-	a.serveHTTPHeaders(w)
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 	var u entity.User
 	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)

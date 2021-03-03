@@ -12,11 +12,6 @@ import (
 )
 
 func (a *App) loginHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "OPTIONS" {
-		a.serveHTTPHeaders(w)
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 	var user entity.User
 	json.NewDecoder(r.Body).Decode(&user)
 
