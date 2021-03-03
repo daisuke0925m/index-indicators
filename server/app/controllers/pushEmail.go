@@ -116,7 +116,7 @@ func (a *App) PushEmail() {
 	c := cron.New()
 
 	// 平日 AM9:00
-	c.AddFunc("09 00 * * 1-5", func() {
+	c.AddFunc("00 09 * * 1-5", func() {
 		log.Println("pushing email")
 		err := a.createEmail()
 		if err != nil {
