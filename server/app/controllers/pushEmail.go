@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -17,7 +16,8 @@ import (
 
 var sender = "noreply@index-indicators.com"
 var title = "昨日の株価・インディケーターをお知らせします。"
-var mailBody = "登録済みの株価・インディケーター ⬇️\n"
+var mailBodyHeader = "登録済みの株価・インディケーター ⬇️\n"
+var mailBody = ""
 var mailBodyFgi = ""
 var mailBodyFooter = "通知銘柄・イディケーターの変更はこちら\nhttps://mt.index-indicators.com"
 
@@ -54,13 +54,12 @@ func initEmail(to string, title string, body string) error {
 	return nil
 }
 
-// PushEmail pushing email for indicators notice
 func (a *App) createEmail() error {
 	users, err := a.DB.GetAllUsers()
 	if err != nil {
 		log.Println("cloud not get users, db error.")
 	}
-	fmt.Println(users)
+
 	for _, user := range users {
 		to := user.Email
 
@@ -101,12 +100,12 @@ func (a *App) createEmail() error {
 					mailBody = mailBody + body
 				}
 			}
+			if err := initEmail(to, title, mailBodyHeader+mailBodyFgi+mailBody+mailBodyFooter); err != nil {
+				log.Printf("mail sending error to \n username=%v email=%v", user.UserName, user.Email)
+			}
+			mailBody = ""
 		}
 
-		err = initEmail(to, title, mailBody+mailBodyFgi+mailBodyFooter)
-		if err != nil {
-			log.Printf("mail sending error to \n username=%v email=%v", user.UserName, user.Email)
-		}
 	}
 	return nil
 }
@@ -117,11 +116,10 @@ func (a *App) PushEmail() {
 
 	// 平日 AM9:00
 	c.AddFunc("00 09 * * 1-5", func() {
-		log.Println("pushing email")
-		err := a.createEmail()
-		if err != nil {
+		if err := a.createEmail(); err != nil {
 			log.Print(err.Error())
 		}
+		log.Println("pushing email")
 	})
 	c.Start()
 
