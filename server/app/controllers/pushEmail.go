@@ -100,8 +100,7 @@ func (a *App) createEmail() error {
 					mailBody = mailBody + body
 				}
 			}
-			err = initEmail(to, title, mailBodyHeader+mailBodyFgi+mailBody+mailBodyFooter)
-			if err != nil {
+			if err := initEmail(to, title, mailBodyHeader+mailBodyFgi+mailBody+mailBodyFooter); err != nil {
 				log.Printf("mail sending error to \n username=%v email=%v", user.UserName, user.Email)
 			}
 			mailBody = ""
@@ -113,14 +112,13 @@ func (a *App) createEmail() error {
 
 // PushEmail 毎朝プッシュメール通知
 func (a *App) PushEmail() {
-	err := a.createEmail()
-	if err != nil {
-		log.Print(err.Error())
-	}
 	c := cron.New()
 
 	// 平日 AM9:00
 	c.AddFunc("00 09 * * 1-5", func() {
+		if err := a.createEmail(); err != nil {
+			log.Print(err.Error())
+		}
 		log.Println("pushing email")
 	})
 	c.Start()
