@@ -82,10 +82,9 @@ func (m *Models) SaveTickers() (err error) {
 			return err
 		}
 
-		// elseの場合のみ全ての結果をinsertする
+		// trueの場合はlastを削除して最新の1件を書き込み
 		if flag {
 			lastRecordDate := tickerData.Date[len]
-
 			checkFlag, err := m.checkLatestRecord(symbol, lastRecordDate)
 			if err != nil {
 				return err
@@ -102,9 +101,8 @@ func (m *Models) SaveTickers() (err error) {
 					return err
 				}
 			}
-
+			// falseの場合のみ全ての結果をinsertする
 		} else {
-
 			for i := 0; i < dataLength; i++ {
 				err := m.createTickerRow(symbol, tickerData.Date[i], tickerData.Open[i], tickerData.High[i], tickerData.Low[i], tickerData.Close[i], tickerData.Volume[i])
 				if err != nil {
