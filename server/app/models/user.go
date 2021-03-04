@@ -7,7 +7,6 @@ import (
 	"index-indicators/server/app/entity"
 
 	"golang.org/x/crypto/bcrypt"
-	"gopkg.in/go-playground/validator.v9"
 )
 
 // CreateUser user登録
@@ -23,12 +22,6 @@ func (m *Models) CreateUser(name, email, pass string) (err error) {
 		Password:  string(hash),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-	}
-
-	validate := validator.New()
-	err = validate.Struct(newUser)
-	if err != nil {
-		return err
 	}
 
 	if err := m.DB.Create(&newUser).Error; err != nil {

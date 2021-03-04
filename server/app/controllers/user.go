@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
@@ -59,6 +60,12 @@ func (a *App) userGetHandler(w http.ResponseWriter, r *http.Request) {
 func (a *App) signupHandler(w http.ResponseWriter, r *http.Request) {
 	var u entity.User
 	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	validate := validator.New()
+	if err := validate.Struct(u); err != nil {
 		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
 		return
 	}
