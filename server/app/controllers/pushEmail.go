@@ -16,7 +16,8 @@ import (
 
 var sender = "noreply@index-indicators.com"
 var title = "昨日の株価・インディケーターをお知らせします。"
-var mailBody = "登録済みの株価・インディケーター ⬇️\n"
+var mailBodyHeader = "登録済みの株価・インディケーター ⬇️\n"
+var mailBody = ""
 var mailBodyFgi = ""
 var mailBodyFooter = "通知銘柄・イディケーターの変更はこちら\nhttps://mt.index-indicators.com"
 
@@ -99,11 +100,11 @@ func (a *App) createEmail() error {
 					mailBody = mailBody + body
 				}
 			}
-			err = initEmail(to, title, mailBody+mailBodyFgi+mailBodyFooter)
+			err = initEmail(to, title, mailBodyHeader+mailBodyFgi+mailBody+mailBodyFooter)
 			if err != nil {
 				log.Printf("mail sending error to \n username=%v email=%v", user.UserName, user.Email)
 			}
-			mailBody = "登録済みの株価・インディケーター ⬇️\n"
+			mailBody = ""
 		}
 
 	}
