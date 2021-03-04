@@ -21,9 +21,9 @@ func Test_signupHandler(t *testing.T) {
 		{name: "異常系(user_name)", argRequestReader: strings.NewReader(`{"user_name": "","email":"test@test","password": "testpass"}`), wantStatusCode: http.StatusBadRequest},
 		{name: "異常系(email)", argRequestReader: strings.NewReader(`{"user_name": "testuser","email":"","password": "testpass"}`), wantStatusCode: http.StatusBadRequest},
 		{name: "異常系(password)", argRequestReader: strings.NewReader(`{"user_name": "testuser","email":"test@test","password": ""}`), wantStatusCode: http.StatusBadRequest},
-		{name: "異常系(user_name スキーマ)", argRequestReader: strings.NewReader(`{"userName": "testuser","email":"test@test","password": ""}`), wantStatusCode: http.StatusBadRequest},
-		{name: "異常系(email スキーマ)", argRequestReader: strings.NewReader(`{"user_name": "testuser","Email":"test@test","password": ""}`), wantStatusCode: http.StatusBadRequest},
-		{name: "異常系(password スキーマ)", argRequestReader: strings.NewReader(`{"user_name": "testuser","email":"test@test","Password": ""}`), wantStatusCode: http.StatusBadRequest},
+		{name: "異常系(user_name スキーマ)", argRequestReader: strings.NewReader(`{"userNam": "testuser","email":"test@test","password": "testpass"}`), wantStatusCode: http.StatusBadRequest},
+		{name: "異常系(email スキーマ)", argRequestReader: strings.NewReader(`{"user_name": "testuser","mail":"test@test","password": "testpass"}`), wantStatusCode: http.StatusBadRequest},
+		{name: "異常系(password スキーマ)", argRequestReader: strings.NewReader(`{"user_name": "testuser","email":"test@test","assword": "testpass"}`), wantStatusCode: http.StatusBadRequest},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
