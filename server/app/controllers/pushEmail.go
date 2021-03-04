@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -54,7 +53,6 @@ func initEmail(to string, title string, body string) error {
 	return nil
 }
 
-// PushEmail pushing email for indicators notice
 func (a *App) createEmail() error {
 	users, err := a.DB.GetAllUsers()
 	if err != nil {
@@ -99,7 +97,6 @@ func (a *App) createEmail() error {
 						"\n-------------\n"
 
 					mailBody = mailBody + body
-					fmt.Printf("-------%v", mailBody)
 				}
 			}
 			err = initEmail(to, title, mailBody+mailBodyFgi+mailBodyFooter)
