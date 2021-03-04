@@ -60,7 +60,7 @@ func (a *App) createEmail() error {
 	if err != nil {
 		log.Println("cloud not get users, db error.")
 	}
-	fmt.Println(users)
+
 	for _, user := range users {
 		to := user.Email
 
@@ -99,29 +99,31 @@ func (a *App) createEmail() error {
 						"\n-------------\n"
 
 					mailBody = mailBody + body
+					fmt.Printf("-------%v", mailBody)
 				}
 			}
+			err = initEmail(to, title, mailBody+mailBodyFgi+mailBodyFooter)
+			if err != nil {
+				log.Printf("mail sending error to \n username=%v email=%v", user.UserName, user.Email)
+			}
+			mailBody = "登録済みの株価・インディケーター ⬇️\n"
 		}
 
-		err = initEmail(to, title, mailBody+mailBodyFgi+mailBodyFooter)
-		if err != nil {
-			log.Printf("mail sending error to \n username=%v email=%v", user.UserName, user.Email)
-		}
 	}
 	return nil
 }
 
 // PushEmail 毎朝プッシュメール通知
 func (a *App) PushEmail() {
+	err := a.createEmail()
+	if err != nil {
+		log.Print(err.Error())
+	}
 	c := cron.New()
 
 	// 平日 AM9:00
 	c.AddFunc("00 09 * * 1-5", func() {
 		log.Println("pushing email")
-		err := a.createEmail()
-		if err != nil {
-			log.Print(err.Error())
-		}
 	})
 	c.Start()
 
