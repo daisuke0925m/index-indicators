@@ -2,14 +2,26 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"index-indicators/server/app/entity"
 	"net/http"
 	"path"
+	"regexp"
 	"strconv"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/go-playground/validator.v9"
 )
+
+var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+
+func isEmailValid(e string) bool {
+	if len(e) < 3 && len(e) > 254 {
+		return false
+	}
+	return emailRegex.MatchString(e)
+}
 
 func (a *App) userGetHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(path.Base(r.URL.Path))
@@ -52,25 +64,24 @@ func (a *App) signupHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	validate := validator.New()
+	if err := validate.Struct(u); err != nil {
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	name := u.UserName
 	email := u.Email
 	pass := u.Password
 
-	if name == "" {
-		a.resposeStatusCode(w, "UserName is required", http.StatusBadRequest)
-		return
-	}
-	if email == "" {
-		a.resposeStatusCode(w, "Email is required", http.StatusBadRequest)
-		return
-	}
-	if pass == "" {
-		a.resposeStatusCode(w, "Password is required", http.StatusBadRequest)
+	if !isEmailValid(email) {
+		err := errors.New("email is invalid")
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	if err := a.DB.CreateUser(name, email, pass); err != nil {
-		a.resposeStatusCode(w, "username or email are duplicated", http.StatusConflict)
+		a.resposeStatusCode(w, err.Error(), http.StatusConflict)
 		return
 	}
 
@@ -172,6 +183,12 @@ func (a *App) userUpdateHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		foundUser.Password = string(hash)
+	}
+
+	if !isEmailValid(foundUser.Email) {
+		err := errors.New("email is invalid")
+		a.resposeStatusCode(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	if err := a.DB.UpdateUser(foundUser); err != nil {

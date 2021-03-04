@@ -15,6 +15,7 @@ func (m *Models) CreateUser(name, email, pass string) (err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	newUser := &entity.User{
 		UserName:  name,
 		Email:     email,
