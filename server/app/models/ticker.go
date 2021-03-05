@@ -2,7 +2,6 @@ package models
 
 import (
 	"index-indicators/server/app/entity"
-	"log"
 	"time"
 
 	"github.com/markcheno/go-quote"
@@ -65,6 +64,8 @@ func (m *Models) SaveTickers() (err error) {
 	today := time.Now()
 	twoYAgo := today.AddDate(-2, 0, 0)
 
+	// トランザクション
+	m.DB = m.DB.Begin()
 	for _, symbol := range symbols {
 		// save 2years data
 		tickerData, err := quote.NewQuoteFromYahoo(symbol, dateToString(twoYAgo), dateToString(today), quote.Daily, true)
@@ -72,7 +73,7 @@ func (m *Models) SaveTickers() (err error) {
 			return err
 		}
 		// 監視用
-		log.Print(tickerData.CSV() + "\n--" + symbol + "--\n")
+		// log.Print(tickerData.CSV() + "\n--" + symbol + "--\n")
 
 		dataLength := len(tickerData.Open)
 		len := dataLength - 1
@@ -87,6 +88,7 @@ func (m *Models) SaveTickers() (err error) {
 			lastRecordDate := tickerData.Date[len]
 			checkFlag, err := m.checkLatestRecord(symbol, lastRecordDate)
 			if err != nil {
+				m.DB.Rollback()
 				return err
 			}
 			// dbにある最新のdateと取得したdateが一致した場合は処理を抜ける
@@ -94,10 +96,12 @@ func (m *Models) SaveTickers() (err error) {
 				// 一致しなかった場合は一番古い日付のレコードを削除し最新のレコードをinsert
 				err := m.deleteLastRecord(symbol, tickerData.Date[0])
 				if err != nil {
+					m.DB.Rollback()
 					return err
 				}
 				err = m.createTickerRow(symbol, tickerData.Date[len], tickerData.Open[len], tickerData.High[len], tickerData.Low[len], tickerData.Close[len], tickerData.Volume[len])
 				if err != nil {
+					m.DB.Rollback()
 					return err
 				}
 			}
@@ -106,13 +110,13 @@ func (m *Models) SaveTickers() (err error) {
 			for i := 0; i < dataLength; i++ {
 				err := m.createTickerRow(symbol, tickerData.Date[i], tickerData.Open[i], tickerData.High[i], tickerData.Low[i], tickerData.Close[i], tickerData.Volume[i])
 				if err != nil {
+					m.DB.Rollback()
 					return err
 				}
 			}
-
 		}
 	}
-
+	m.DB.Commit()
 	return nil
 }
 
